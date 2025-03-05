@@ -6,21 +6,11 @@ import theme from "../../../../styles/theme";
 import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
 
-function TrainingPlans() {
+function TrainingPlans({ token }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
 
     async function getTrainingPlansForUser() {
-        // Get auth token
-        const token = localStorage.getItem('authToken');
-
-        // Remove token if not valid
-        if (!token) {
-            console.log('Profile can\'t be deleted, because auth token doesn\'t exist');
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
-            return;
-        }
-
+        
         try {
             // Authorize token
             const user = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/protected`, {

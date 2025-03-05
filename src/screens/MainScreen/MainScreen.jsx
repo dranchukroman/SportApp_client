@@ -15,10 +15,12 @@ import Dashboard from '../otherViews/Dashboard/Dashboard';
 import TrainingPlans from '../otherViews/Trainings/TrainingPlans/TrainingPlans';
 import Diet from '../otherViews/Diet/Diet';
 import Calculator from '../otherViews/Calculator/Calculator';
+import NotFound from '../otherViews/NotFound/NotFound'
 
 function MainScreen(){
     // Go to login if auth token doesn't exist
-    if(!localStorage.getItem('authToken')){
+    const token = localStorage.getItem('authToken');
+    if(!token){
         window.location.href = '/login';
     }
 
@@ -47,14 +49,15 @@ function MainScreen(){
     const renderScreen = () =>{
         switch (currentScreen) {
             case 'Dashboard':
-                return <Dashboard/>
+                return <Dashboard token={token}/>
                 break;
             case 'Trainings':
-                return <TrainingPlans/>
+                return <TrainingPlans token={token}/>
                 break;
             case 'Diet':
                 return (
                     <Diet
+                        token={token}
                         onScreenChange={setCurrentScreen}
                     />
                 )
@@ -62,10 +65,19 @@ function MainScreen(){
             case 'Calculator':
                 return (
                     <Calculator
+                        token={token}
                         onScreenChange={setCurrentScreen}
                     />
                 )
                 break;
+            default: 
+                return (
+                    <NotFound
+                        token={token}
+                        onScreenChange={setCurrentScreen}
+                    />
+                )
+                return 
         }
     }
 

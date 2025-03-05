@@ -5,88 +5,97 @@ import Button from '../../../components/Buttons/Button'
 import DivideLine from '../../../components/Dividers/DivideLine';
 import Heading from '../../../components/Headings/Heading';
 import theme from "../../../styles/theme";
+import axios from 'axios';
 
-function Dashboard({ children }) {
-    // Get training plan from server
-    const trainingPlan = useMemo(() => getTrainingPlan(), []);
-
-    function getTrainingPlan(){
-        // logic for getting current training plan
-        return null;
-    };
-
-    // Get current progress data from server
-    const trainingProgress = useMemo(() => getTrainingProgress(), []);
-
-    function getTrainingProgress() {
-        // logic for getting current progress
-
-        const progressData = {
-            spentExercising: '137 min',
-            trainingPeWeek: '4',
-            workoutsCompleted: '22'
-        }
-
-        return progressData;
-    }
-
+function Dashboard({ children, token }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
     const [currentTraining, setCurrentTraining] = useState(null);
+    const [trainingProgress, setTrainingProgress] = useState({workoutsCompleted: 4, trainingPeWeek: 4, spentExercising: 134});
 
     // Use effect to not create infinite loop by rerendering page
     useEffect(() => {
-        // Check if current training exist
-        if (trainingPlan?.length > 0) {
-            // Change header
-            setHeaderUnderTraininTile('Today');
+        const fetchData = async () => {
+            try {
+                const userauth = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/protected`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
 
-            // Go to training tile
-            setCurrentTraining(
-                <div>
-                    <Card
-                        paddingBottom={'10px'}
-                        style={{
-                            marginTop: '10px',
-                        }}
-                    >
-                        <Heading
-                            fontSize={'18px'}
-                            style={{ padding: '7px 0 25px 0' }}
-                        >
-                            {trainingPlan[0]}
-                        </Heading>
-                        <Button
-                            width={'280px'}
-                        >
-                            Start
-                        </Button>
-                    </Card>
-                </div>
-            );
-        } else {
-            // Change header
-            setHeaderUnderTraininTile('Set up your first training plan');
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
+                    params: { email: userauth.data.user.email }
+                });
 
-            // Create training plan tile
-            setCurrentTraining(
-                <div>
-                    <Card
-                        paddingBottom={'40px'}
-                        paddingTop={'40px'}
-                        style={{
-                            marginTop: '10px',
-                        }}
-                    >
-                        <Button
-                            width={'280px'}
-                        >
-                            Create training plan
-                        </Button>
-                    </Card>
-                </div>
-            );
-        }
-    }, [trainingPlan]);
+                setCurrentTraining(response?.data?.data[0]?.name);
+
+                // Check if current training exists
+                if (response?.data?.data[0]?.name) {
+                    // Change header
+                    setHeaderUnderTraininTile('To change text');
+
+                    // Go to training tile
+                    setCurrentTraining(
+                        <div>
+                            <Card
+                                $paddingBottom={'10px'}
+                                style={{
+                                    marginTop: '10px',
+                                }}
+                            >
+                                <Heading
+                                    fontSize={'18px'}
+                                    style={{ padding: '7px 0 25px 0' }}
+                                >
+                                    {response.data.data[0].name}
+                                </Heading>
+                                <Button
+                                    onClick={() => { redirectToTrainingPlan() }}
+                                    width={'280px'}
+                                >
+                                    Start training
+                                </Button>
+                            </Card>
+                        </div>
+                    );
+                } else {
+                    // Change header
+                    setHeaderUnderTraininTile('Set up your first training plan');
+
+                    // Create training plan tile
+                    setCurrentTraining(
+                        <div>
+                            <Card
+                                $paddingBottom={'40px'}
+                                $paddingTop={'40px'}
+                                style={{
+                                    marginTop: '10px',
+                                }}
+                            >
+                                <Button
+                                    onClick={() => { redirectToCreateTrainingPlan() }}
+                                    width={'280px'}
+                                >
+                                    Create training plan
+                                </Button>
+                            </Card>
+                        </div>
+                    );
+                }
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchData();
+    }, [token]);
+
+    function redirectToTrainingPlan(location){
+        // Function to do in future
+    }
+
+    function redirectToCreateTrainingPlan(location){
+        // Funciton to do in future
+    }
 
     return (
         <StyledDashboard>
