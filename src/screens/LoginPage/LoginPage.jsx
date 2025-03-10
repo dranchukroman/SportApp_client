@@ -15,7 +15,18 @@ function LoginPage(){
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
+    const [isRegistration, setIsRegistration] = useState(false);
+
+    useEffect(() => {
+        const userLocation = window.location.href;
+        if (userLocation.includes('/registration')) {
+            setIsRegistration(true);
+        } else {
+            setIsRegistration(false);
+        }
+    }, []);
 
     const handleLogin = async () =>{
         try {
@@ -42,14 +53,32 @@ function LoginPage(){
     const handleRegistration = async () =>{
         try {
             // Check if email and password exist
-            if(email !== '' && password !== ''){               
-                const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
+            if(email !== '' && password !== ''){       
+                if(password !== '' && password2 !== '' && password === password2){
+                    const registerResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
+
             
-                // Check status code
-                if(response.status === 201){
-                    window.location.href = '/login'
+                    // Check status code
+                    if(registerResponse.status === 201){
+                        try {
+                            const loginResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
+    
+                            if(loginResponse?.data.token){
+                                localStorage.setItem('authToken', loginResponse.data.token);
+                                window.location.href = '/dashboard'
+                            } else{
+                                window.location.href = '/login'
+                                setErrorMessage(loginResponse.data.message);
+                            }
+                        } catch (error) {
+                            window.location.href = '/login'
+                            setErrorMessage(`Try to login again`);
+                        }
+                    } else{
+                        setErrorMessage(registerResponse.data.message);
+                    }
                 } else{
-                    setErrorMessage(response.data.message);
+                    setErrorMessage(`Passwords in both fields should be the same`);
                 }
             } else{
                 setErrorMessage(`Email and password are required`);
@@ -180,6 +209,21 @@ function LoginPage(){
                     }}
                 />
                 
+
+                {/* Repeat Password input for registration */}
+                {isRegistration && (
+                    <Input
+                        className='password2'
+                        placeholder='Repeat password'
+                        value={password2}
+                        type='password'
+                        onChange={(e) => setPassword2(e.target.value)}
+                        style={{
+                            marginBottom: '10px'
+                        }}
+                    />
+                )}
+                
                 {/* Button with margin for login or registration */}
                 <div
                     style={{
@@ -190,7 +234,9 @@ function LoginPage(){
                 </div>
 
                 {/* Login by Google button */}
-                <Button>
+                <Button
+                    style={{display: 'none'}}
+                >
                     <div 
                         style={{
                             display: 'flex',
