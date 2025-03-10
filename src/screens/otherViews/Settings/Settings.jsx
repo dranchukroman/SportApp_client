@@ -30,9 +30,15 @@ function Settings (){
             return;
         }
 
-        const deleteResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, { user });
+        console.log(user)
 
-        console.log(deleteResponse);
+        const deleteResponse = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            },
+            data: { email: user.data.user.email }
+        })
+
 
         if(deleteResponse.status){
             localStorage.removeItem('authToken');
