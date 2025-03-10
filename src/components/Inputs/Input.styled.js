@@ -32,6 +32,6 @@ export const StyledInput = styled.input`
     &:focus {
         outline: none;
         // background-image: linear-gradient(${theme.colors.darkBackground}, ${theme.colors.darkBackground}), 
-        //                   ${theme.colors.gradient};
+        // ${theme.colors.gradient};
     }
 `;

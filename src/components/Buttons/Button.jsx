@@ -1,15 +1,19 @@
 import React from "react";
 import { StyledButton } from './Button.styled'
 
-function Button({children = 'Set button text', width, bgColor, onClick}){
+function Button({ children = 'Set button text', width, bgColor, onClick, style }) {
     return (
-        <StyledButton 
-            width={width} 
-            bgColor={bgColor}
-            onClick={onClick}
+        <div
+            style={style}
         >
-            {children}
-        </StyledButton>
+            <StyledButton
+                width={width}
+                bgColor={bgColor}
+                onClick={onClick}
+            >
+                {children}
+            </StyledButton>
+        </div>
     );
 }
 
