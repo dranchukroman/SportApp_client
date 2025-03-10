@@ -5,12 +5,15 @@ import theme from "../../../../styles/theme";
 
 import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
+import Card from '../../../../components/Cards/InfoCard'
+
+import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 
 function TrainingPlans({ token }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
 
+
     async function getTrainingPlansForUser() {
-        
         try {
             // Authorize token
             const user = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/protected`, {
@@ -62,18 +65,31 @@ function TrainingPlans({ token }) {
                             No training plans yet
                         </Heading>
                     </div>
-                    <Button>
-                        Add new training plan
-                    </Button>
                 </div>
             );
         } else {
             // Map training plans
             return trainingPlans.map(plan => (
-                <div style={{color: "white"}} key={plan.id}>
-                    <h3>{plan.name}</h3>
-                    <p>{plan.description}</p>
-                </div>
+                <Card
+                    key={plan.id}
+                    style={{ marginBottom: '14px', position: 'relative' }}
+                >
+                    <div style={{ color: "white" }}>
+                        <Heading
+                            fontSize={'18px'}
+                        >
+                            {plan.name}
+                        </Heading>
+                    </div>
+
+                    <EditIcon
+                        style={{
+                            position: 'absolute',
+                            right: 0,
+                            top: 0
+                        }}
+                    />
+                </Card>
             ));
         }
     }
@@ -81,8 +97,15 @@ function TrainingPlans({ token }) {
     return (
         <StyledTraining>
             {TrainingScreenView()}
+            <Button>
+                Add new training plan
+            </Button> 
         </StyledTraining>
     );
+}
+
+export function redirectToCreateTrainingPlan(location){
+
 }
 
 export default TrainingPlans;
