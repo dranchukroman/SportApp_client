@@ -7,6 +7,8 @@ import Heading from '../../../components/Headings/Heading';
 import theme from "../../../styles/theme";
 import axios from 'axios';
 
+import { redirectToCreateTrainingPlan } from "../Trainings/TrainingPlans/TrainingPlans";
+
 function Dashboard({ children, token }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
     const [currentTraining, setCurrentTraining] = useState(null);
@@ -91,10 +93,6 @@ function Dashboard({ children, token }) {
 
     function redirectToTrainingPlan(location){
         // Function to do in future
-    }
-
-    function redirectToCreateTrainingPlan(location){
-        // Funciton to do in future
     }
 
     return (
