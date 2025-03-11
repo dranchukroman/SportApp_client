@@ -12,11 +12,17 @@ import Settings from '../otherViews/Settings/Settings';
 
 // Views on functional bar
 import Dashboard from '../otherViews/Dashboard/Dashboard';
+
 import TrainingPlans from '../otherViews/Trainings/TrainingPlans/TrainingPlans';
 import CreateTrainingPlan from '../otherViews/Trainings/CreateTrainingPlan/CreateTrainingPlan';
+import SetUpTrainingDays from '../otherViews/Trainings/SetUpTrainingDays/SetUpTrainingDays';
+import SetUpExercises from '../otherViews/Trainings/SetUpExercises/SetUpExercises';
+import SetUpExercise from '../otherViews/Trainings/SetUpExercise/SetUpExercise';
+
 import Diet from '../otherViews/Diet/Diet';
 import Calculator from '../otherViews/Calculator/Calculator';
 import NotFound from '../otherViews/NotFound/NotFound'
+
 
 function MainScreen(){
     // Go to login if auth token doesn't exist
@@ -32,7 +38,7 @@ function MainScreen(){
     const [pageTitle, changePageTitle] = useState(`Hi, ${userName}`)
 
     // Set current screen as dashboard
-    const [currentScreen, setCurrentScreen] = useState('Dashboard'); 
+    const [currentScreen, setCurrentScreen] = useState('SetUpExercise'); 
 
     // Create trainin plan
     const [traininPlanId, setTraininPlanId] = useState(0);
@@ -43,11 +49,13 @@ function MainScreen(){
             Dashboard: `Hi, ${userName}`,
             Trainings: 'Trainings',
             NewTrainingPlan: 'New training plan',
+            SetUpTrainingDays: 'Set up training days',
+            SetUpExercises: 'Set up exercises',
+            SetUpExercise: 'Set up exercise',
             Diet: 'Diet',
             Calculator: 'Calculator'
         }
         changePageTitle(titles[currentScreen])
-        console.log(traininPlanId);
     }, [currentScreen, userName]);
 
     // Render new screen
@@ -55,10 +63,18 @@ function MainScreen(){
         switch (currentScreen) {
             case 'Dashboard':
                 return <Dashboard token={token} onScreenChange={setCurrentScreen}/>
+
             case 'Trainings':
                 return <TrainingPlans token={token} onScreenChange={setCurrentScreen}/>
             case 'NewTrainingPlan':
                 return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+            case 'SetUpTrainingDays':
+                return <SetUpTrainingDays token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+            case 'SetUpExercises':
+                return <SetUpExercises token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+            case 'SetUpExercise':
+                return <SetUpExercise token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+
             case 'Diet':
                 return (
                     <Diet
