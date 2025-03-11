@@ -28,10 +28,11 @@ function Dashboard({ children, token }) {
                     params: { email: userauth.data.user.email }
                 });
 
-                setCurrentTraining(response?.data?.data[0]?.name);
 
                 // Check if current training exists
                 if (response?.data?.data[0]?.name) {
+                    setCurrentTraining(response.data.data[0].name);
+
                     // Change header
                     setHeaderUnderTraininTile('To change text');
 
@@ -94,6 +95,8 @@ function Dashboard({ children, token }) {
     function redirectToTrainingPlan(location){
         // Function to do in future
     }
+
+
 
     return (
         <StyledDashboard>
