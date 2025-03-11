@@ -9,7 +9,7 @@ import axios from 'axios';
 
 import { redirectToCreateTrainingPlan } from "../Trainings/TrainingPlans/TrainingPlans";
 
-function Dashboard({ children, token }) {
+function Dashboard({ children, token, onScreenChange }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
     const [currentTraining, setCurrentTraining] = useState(null);
     const [trainingProgress, setTrainingProgress] = useState({workoutsCompleted: 4, trainingPeWeek: 4, spentExercising: 134});
@@ -75,7 +75,7 @@ function Dashboard({ children, token }) {
                                 }}
                             >
                                 <Button
-                                    onClick={() => { redirectToCreateTrainingPlan() }}
+                                    onClick={() => { onScreenChange('NewTrainingPlan') }}
                                     width={'280px'}
                                 >
                                     Create training plan
@@ -86,6 +86,24 @@ function Dashboard({ children, token }) {
                 }
             } catch (error) {
                 console.error('Error fetching data:', error);
+                setCurrentTraining(
+                    <div>
+                        <Card
+                            $paddingBottom={'40px'}
+                            $paddingTop={'40px'}
+                            style={{
+                                marginTop: '10px',
+                            }}
+                        >
+                            <Button
+                                onClick={() => { onScreenChange('NewTrainingPlan') }}
+                                width={'280px'}
+                            >
+                                Create training plan
+                            </Button>
+                        </Card>
+                    </div>
+                );
             }
         };
 
