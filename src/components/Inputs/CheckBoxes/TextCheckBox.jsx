@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { TextCheckboxWrapper } from './CheckBox.styled'
+import React from 'react';
+import { TextCheckboxWrapper } from './CheckBox.styled';
 
-function TextCheckBox({ isActive = false, children, onClick }){
+function TextCheckBox({ isActive = false, children, onClick }) {
     return (
         <TextCheckboxWrapper
             isActive={isActive}
@@ -9,7 +9,7 @@ function TextCheckBox({ isActive = false, children, onClick }){
         >
             {children}
         </TextCheckboxWrapper>
-    )
+    );
 }
 
 export default TextCheckBox;

@@ -2,11 +2,11 @@ import React from "react";
 import { StyledCheckbox, StyledCheckboxWrapper, StyledCheckboxLabel } from './CheckBox.styled';
 
 
-function CheckBox( onChange, style, isChecked = false){
+function CheckBox( onChange, style, ischecked = false){
     return (
         <StyledCheckboxWrapper style={style}>
             <StyledCheckbox
-                isChecked={isChecked}
+                ischecked={ischecked}
                 onChange={onChange}
             />
             <StyledCheckboxLabel />

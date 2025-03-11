@@ -13,6 +13,7 @@ import Settings from '../otherViews/Settings/Settings';
 // Views on functional bar
 import Dashboard from '../otherViews/Dashboard/Dashboard';
 import TrainingPlans from '../otherViews/Trainings/TrainingPlans/TrainingPlans';
+import CreateTrainingPlan from '../otherViews/Trainings/CreateTrainingPlan/CreateTrainingPlan';
 import Diet from '../otherViews/Diet/Diet';
 import Calculator from '../otherViews/Calculator/Calculator';
 import NotFound from '../otherViews/NotFound/NotFound'
@@ -33,27 +34,31 @@ function MainScreen(){
     // Set current screen as dashboard
     const [currentScreen, setCurrentScreen] = useState('Dashboard'); 
 
+    // Create trainin plan
+    const [traininPlanId, setTraininPlanId] = useState(0);
 
     // Change page title
     useEffect(() => {
         const titles = {
             Dashboard: `Hi, ${userName}`,
             Trainings: 'Trainings',
+            NewTrainingPlan: 'New training plan',
             Diet: 'Diet',
             Calculator: 'Calculator'
         }
         changePageTitle(titles[currentScreen])
+        console.log(traininPlanId);
     }, [currentScreen, userName]);
 
     // Render new screen
     const renderScreen = () =>{
         switch (currentScreen) {
             case 'Dashboard':
-                return <Dashboard token={token}/>
-                break;
+                return <Dashboard token={token} onScreenChange={setCurrentScreen}/>
             case 'Trainings':
-                return <TrainingPlans token={token}/>
-                break;
+                return <TrainingPlans token={token} onScreenChange={setCurrentScreen}/>
+            case 'NewTrainingPlan':
+                return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
             case 'Diet':
                 return (
                     <Diet
@@ -61,7 +66,6 @@ function MainScreen(){
                         onScreenChange={setCurrentScreen}
                     />
                 )
-                break;
             case 'Calculator':
                 return (
                     <Calculator
@@ -69,7 +73,6 @@ function MainScreen(){
                         onScreenChange={setCurrentScreen}
                     />
                 )
-                break;
             default: 
                 return (
                     <NotFound

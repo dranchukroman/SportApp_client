@@ -26,7 +26,7 @@ function Navigation({currentScreen, onScreenChange}){
                     />
                     <TrainingsdIcon 
                         activeIcon={
-                            currentScreen === 'Trainings'
+                            currentScreen === 'Trainings' || currentScreen === 'NewTrainingPlan'
                         }
                         onClick={() => onScreenChange('Trainings')}
                     />

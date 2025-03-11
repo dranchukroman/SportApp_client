@@ -9,26 +9,16 @@ import Card from '../../../../components/Cards/InfoCard'
 
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 
-function TrainingPlans({ token }) {
+function TrainingPlans({ token, onScreenChange }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
 
 
     async function getTrainingPlansForUser() {
         try {
-            // Authorize token
-            const user = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/protected`, {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
                 headers: {
                     Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (!user || !user.data || !user.data.user) {
-                console.error('User data is not available');
-                return null;
-            }
-
-            const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-                params: { email: user.data.user.email }
+                },
             });
 
             return response.data;
@@ -97,15 +87,13 @@ function TrainingPlans({ token }) {
     return (
         <StyledTraining>
             {TrainingScreenView()}
-            <Button>
+            <Button
+                onClick={() => onScreenChange('NewTrainingPlan')}
+            >
                 Add new training plan
             </Button> 
         </StyledTraining>
     );
-}
-
-export function redirectToCreateTrainingPlan(location){
-
 }
 
 export default TrainingPlans;

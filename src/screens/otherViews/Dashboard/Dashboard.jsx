@@ -18,14 +18,10 @@ function Dashboard({ children, token, onScreenChange }) {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const userauth = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/protected`, {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
                     headers: {
                         Authorization: `Bearer ${token}`
-                    }
-                });
-
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-                    params: { email: userauth.data.user.email }
+                    },
                 });
 
 
