@@ -77,7 +77,7 @@ function MainScreen(){
             case 'AddTrainingDay':
                 return <AddTrainingDay token={token} onScreenChange={setCurrentScreen} trainingPlanId={traininPlanId}/>
             case 'SetUpExercises':
-                return <SetUpExercises token={token} onScreenChange={setCurrentScreen} setTrainingExerciseId={setTrainingExerciseId}/>
+                return <SetUpExercises token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId}/>
             case 'SetUpExercise':
                 return <SetUpExercise token={token} onScreenChange={setCurrentScreen}/>
 

@@ -3,12 +3,11 @@ import axios from "axios";
 import theme from "../../../../styles/theme";
 
 import Heading from "../../../../components/Headings/Heading";
-import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import Card from "../../../../components/Cards/InfoCard";
 
-function SetUpTrainingDays({ token, onScreenChange, trainingPlanId}){
+function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDayId}){
     const [trainingDays, setTrainingDays ] = useState(null);
 
     const [deleteDayId, setDeleteDayId] = useState(null);
@@ -57,6 +56,11 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId}){
         setDeleteDayId(deleteDayId);
     }
 
+    const setUpExercises = (dayId) => {
+        setTraininDayId(dayId);
+        onScreenChange('SetUpExercises');
+    }
+
     const getTraingDays = () => {
         if(!trainingDays || trainingDays.length <= 0){
 
@@ -82,6 +86,7 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId}){
                 key={day.day_id}
                 data-elem={day.day_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
+                onClick={() => setUpExercises(day.day_id)}
             >
             <div style={{ color: "white" }}>
                 <Heading
