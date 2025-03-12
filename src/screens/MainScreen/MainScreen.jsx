@@ -38,10 +38,12 @@ function MainScreen(){
     const [pageTitle, changePageTitle] = useState(`Hi, ${userName}`)
 
     // Set current screen as dashboard
-    const [currentScreen, setCurrentScreen] = useState('SetUpExercise'); 
+    const [currentScreen, setCurrentScreen] = useState('Dashboard'); 
 
     // Create trainin plan
-    const [traininPlanId, setTraininPlanId] = useState(0);
+    const [traininPlanId, setTrainingPlanId] = useState(0);
+    const [traininDayId, setTraininDayId] = useState(0);
+    const [trainingExerciseId, setTrainingExerciseId] = useState(0);
 
     // Change page title
     useEffect(() => {
@@ -65,15 +67,15 @@ function MainScreen(){
                 return <Dashboard token={token} onScreenChange={setCurrentScreen}/>
 
             case 'Trainings':
-                return <TrainingPlans token={token} onScreenChange={setCurrentScreen}/>
+                return <TrainingPlans token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId}/>
             case 'NewTrainingPlan':
-                return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+                return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId}/>
             case 'SetUpTrainingDays':
-                return <SetUpTrainingDays token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+                return <SetUpTrainingDays token={token} onScreenChange={setCurrentScreen} trainingPlanId={traininPlanId} setTraininDayId={setTraininDayId}/>
             case 'SetUpExercises':
-                return <SetUpExercises token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+                return <SetUpExercises token={token} onScreenChange={setCurrentScreen} setTrainingExerciseId={setTrainingExerciseId}/>
             case 'SetUpExercise':
-                return <SetUpExercise token={token} onScreenChange={setCurrentScreen} setTraininPlanId={setTraininPlanId}/>
+                return <SetUpExercise token={token} onScreenChange={setCurrentScreen}/>
 
             case 'Diet':
                 return (

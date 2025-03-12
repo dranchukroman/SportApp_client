@@ -9,7 +9,7 @@ import Card from '../../../../components/Cards/InfoCard'
 
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 
-function TrainingPlans({ token, onScreenChange }) {
+function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
 
 
@@ -40,6 +40,12 @@ function TrainingPlans({ token, onScreenChange }) {
         fetchData();
     }, []);
 
+    // Get training plan id for edit and change screen
+    function editTrainingDays(planId){
+        setTrainingPlanId(planId);
+        onScreenChange('SetUpTrainingDays');
+    }
+
     const TrainingScreenView = () => {
         if (!trainingPlans || trainingPlans.length === 0) {
             return (
@@ -57,31 +63,34 @@ function TrainingPlans({ token, onScreenChange }) {
                     </div>
                 </div>
             );
-        } else {
-            // Map training plans
-            return trainingPlans.map(plan => (
-                <Card
-                    key={plan.id}
-                    style={{ marginBottom: '14px', position: 'relative' }}
-                >
-                    <div style={{ color: "white" }}>
-                        <Heading
-                            fontSize={'18px'}
-                        >
-                            {plan.name}
-                        </Heading>
-                    </div>
+        } 
+        
+        // Map training plans
+        return trainingPlans.map(plan => (
+            <Card
+                key={plan.plan_id}
+                data-elem={plan.plan_id}
+                style={{ marginBottom: '14px', position: 'relative' }}
+            >
+                <div style={{ color: "white" }}>
+                    <Heading
+                        fontSize={'18px'}
+                    >
+                        {plan.name}
+                    </Heading>
+                </div>
 
-                    <EditIcon
-                        style={{
-                            position: 'absolute',
-                            right: 0,
-                            top: 0
-                        }}
-                    />
-                </Card>
-            ));
-        }
+                <EditIcon
+                    style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0
+                    }}
+
+                    onClick={() => editTrainingDays(plan.plan_id)}
+                />
+            </Card>
+        ));
     }
 
     return (
