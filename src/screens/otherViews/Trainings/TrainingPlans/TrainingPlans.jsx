@@ -12,6 +12,7 @@ import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
 
+    const [deletePlanId, setDeletePlanId] = useState(null);
 
     async function getTrainingPlansForUser() {
         try {
@@ -41,9 +42,35 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
     }, []);
 
     // Get training plan id for edit and change screen
-    function editTrainingDays(planId){
+    function editTrainingDays(planId) {
         setTrainingPlanId(planId);
         onScreenChange('SetUpTrainingDays');
+    }
+
+    useEffect(() => {
+        const deletePlan = async () => {
+            const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }, 
+                    data: {
+                        trainingPlanId: deletePlanId
+                    }
+                }
+            )
+
+            if (response.status === 200) {
+                setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
+            }
+            setDeletePlanId(null);
+        }
+
+        if(deletePlanId) deletePlan();
+    }, [deletePlanId, token]);
+
+    const deletePlan = (deletePlanId) => {
+        setDeletePlanId(deletePlanId);
     }
 
     const TrainingScreenView = () => {
@@ -63,8 +90,8 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
                     </div>
                 </div>
             );
-        } 
-        
+        }
+
         // Map training plans
         return trainingPlans.map(plan => (
             <Card
@@ -89,6 +116,23 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
 
                     onClick={() => editTrainingDays(plan.plan_id)}
                 />
+                <div
+                    style={{
+                        position: 'absolute',
+                        left: 7,
+                        top: 7,
+                        padding: '10px',
+                        border: 'solid 1px red'
+                    }}
+                >
+                    <Heading
+
+                        onClick={() => deletePlan(plan.plan_id)}
+                        fontSize={'16px'}
+                    >
+                        DEL
+                    </Heading>
+                </div>
             </Card>
         ));
     }
@@ -100,7 +144,7 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
                 onClick={() => onScreenChange('NewTrainingPlan')}
             >
                 Add new training plan
-            </Button> 
+            </Button>
         </StyledTraining>
     );
 }

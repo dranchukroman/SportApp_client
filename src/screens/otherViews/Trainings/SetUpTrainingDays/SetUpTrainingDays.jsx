@@ -5,11 +5,13 @@ import theme from "../../../../styles/theme";
 import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
-import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
+import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import Card from "../../../../components/Cards/InfoCard";
 
 function SetUpTrainingDays({ token, onScreenChange, trainingPlanId}){
     const [trainingDays, setTrainingDays ] = useState(null);
+
+    const [deleteDayId, setDeleteDayId] = useState(null);
 
     useEffect(() => {
         const fetchData = async (trainingPlanId) => {
@@ -24,14 +26,38 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId}){
 
             if(response?.data?.trainingDaysData?.data.length > 0){
                 setTrainingDays(response.data.trainingDaysData.data);
-                console.log(response.data.trainingDaysData.data);
             }
         }
         fetchData(trainingPlanId);
     }, [])
 
+    useEffect(() => {
+        const deleteDay = async () => {
+            const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingDays`, 
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }, 
+                    data: {
+                        day_id: deleteDayId
+                    }
+                }
+            )
+
+            if (response.status === 200) {
+                setTrainingDays(prevDays => prevDays.filter(day => day.day_id !== deleteDayId));
+            }
+            setDeleteDayId(null);
+        }
+
+        if(deleteDayId) deleteDay();
+    }, [deleteDayId, token]);
+
+    const deleteDay = (deleteDayId) => {
+        setDeleteDayId(deleteDayId);
+    }
+
     const getTraingDays = () => {
-        console.log(trainingDays)
         if(!trainingDays || trainingDays.length <= 0){
 
             return (
@@ -70,27 +96,66 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId}){
                 </p>
             </div>
 
-            <ChooseImageIcon
+            <EditIcon
                 style={{
                     position: 'absolute',
-                    right: 9,
-                    top: 9
+                    right: 0,
+                    top: 0
                 }}
 
-                // onClick={() => editTrainingDays(day.day_id)}
+                onClick={() => editTrainingDay()}
             />
+
+            <div
+                style={{
+                    position: 'absolute',
+                    left: 7,
+                    top: 7,
+                    padding: '10px',
+                    border: 'solid 1px red'
+                }}
+            >
+                <Heading
+
+                    onClick={() => deleteDay(day.day_id)}
+                    fontSize={'16px'}
+                >
+                    DEL
+                </Heading>
+            </div>
         </Card>
         ));
+    }
+
+    function editTrainingDay(){
+
     }
 
     return (
         <div>
             {getTraingDays()}
-            <Button
-                onClick={() => onScreenChange('AddTrainingDay')}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: '10px'
+                }}
             >
-                Add training day
-            </Button> 
+                <Button
+                    onClick={() => onScreenChange('Trainings')}
+                    width={'172px'}
+                >
+                    Back
+                </Button>
+
+                <Button
+                    onClick={() => onScreenChange('AddTrainingDay')}
+                    width={'172px'}
+                >
+                    Add day
+                </Button>
+            </div>
+
         </div>
     );
 }

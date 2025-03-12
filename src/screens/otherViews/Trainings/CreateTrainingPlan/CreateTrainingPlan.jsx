@@ -19,36 +19,37 @@ function CreateTrainingPlan({ token, setTraininPlanId, onScreenChange }) {
 
     const [errorMessage, setErrorMessage] = useState(null);
 
+    // Create training day
     useEffect(() => {
         const createTraininPlan = async () => {
-            if(fieldsStatus){
-                try {        
-                    const planData = {
-                        // email: userauth.data.user.email, 
-                        name: planName, 
-                        description: planDescription, 
-                        days_per_week: plandaysPerWeek, 
-                        thumbnail_image: planThumbnailImage, 
-                        is_current_plan: isCurrentPlan,
-                    }
-
-                    const createPlan = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addTrainingPlan`, 
-                        planData,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    )
-
-                    setTraininPlanId(createPlan.data.planId);
-                    onScreenChange('Dashboard');
-                } catch (error) {
-                    console.error('Error while creating training plan: ', error);
+            try {        
+                const planData = {
+                    // email: userauth.data.user.email, 
+                    name: planName, 
+                    description: planDescription, 
+                    days_per_week: plandaysPerWeek, 
+                    thumbnail_image: planThumbnailImage, 
+                    is_current_plan: isCurrentPlan,
                 }
+
+                const createPlan = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addTrainingPlan`, 
+                    planData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                )
+
+                setTraininPlanId(createPlan.data.planId);
+            } catch (error) {
+                console.error('Error while creating training plan: ', error);
             }
         }
-        createTraininPlan();
+        if(fieldsStatus) {
+            createTraininPlan();
+            onScreenChange('SetUpTrainingDays');
+        }
     }, [fieldsStatus]);
 
     function checkFields(){
@@ -182,14 +183,29 @@ function CreateTrainingPlan({ token, setTraininPlanId, onScreenChange }) {
 
             {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
 
-            <Button
-                onClick={checkFields}
+            <div
+                style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    marginTop: '10px'
+                }}
             >
-                Next
-            </Button>
+                <Button
+                    onClick={() => onScreenChange('Trainings')}
+                    width={'172px'}
+                >
+                    Back
+                </Button>
+
+                <Button
+                    onClick={checkFields}
+                    width={'172px'}
+                >
+                    Next
+                </Button>
+            </div>
 
         </div>
-
     )
 }
 

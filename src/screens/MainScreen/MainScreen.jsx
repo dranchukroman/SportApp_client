@@ -16,6 +16,7 @@ import Dashboard from '../otherViews/Dashboard/Dashboard';
 import TrainingPlans from '../otherViews/Trainings/TrainingPlans/TrainingPlans';
 import CreateTrainingPlan from '../otherViews/Trainings/CreateTrainingPlan/CreateTrainingPlan';
 import SetUpTrainingDays from '../otherViews/Trainings/SetUpTrainingDays/SetUpTrainingDays';
+import AddTrainingDay from '../otherViews/Trainings/AddTrainingDay/AddTrainingDay';
 import SetUpExercises from '../otherViews/Trainings/SetUpExercises/SetUpExercises';
 import SetUpExercise from '../otherViews/Trainings/SetUpExercise/SetUpExercise';
 
@@ -52,6 +53,7 @@ function MainScreen(){
             Trainings: 'Trainings',
             NewTrainingPlan: 'New training plan',
             SetUpTrainingDays: 'Set up training days',
+            AddTrainingDay: 'Set up training days',
             SetUpExercises: 'Set up exercises',
             SetUpExercise: 'Set up exercise',
             Diet: 'Diet',
@@ -72,6 +74,8 @@ function MainScreen(){
                 return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId}/>
             case 'SetUpTrainingDays':
                 return <SetUpTrainingDays token={token} onScreenChange={setCurrentScreen} trainingPlanId={traininPlanId} setTraininDayId={setTraininDayId}/>
+            case 'AddTrainingDay':
+                return <AddTrainingDay token={token} onScreenChange={setCurrentScreen} trainingPlanId={traininPlanId}/>
             case 'SetUpExercises':
                 return <SetUpExercises token={token} onScreenChange={setCurrentScreen} setTrainingExerciseId={setTrainingExerciseId}/>
             case 'SetUpExercise':
