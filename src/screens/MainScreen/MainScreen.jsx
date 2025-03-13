@@ -79,7 +79,7 @@ function MainScreen(){
             case 'SetUpExercises':
                 return <SetUpExercises token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId}/>
             case 'SetUpExercise':
-                return <SetUpExercise token={token} onScreenChange={setCurrentScreen}/>
+                return <SetUpExercise token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId}/>
 
             case 'Diet':
                 return (

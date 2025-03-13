@@ -7,10 +7,9 @@ import Button from "../../../../components/Buttons/Button";
 import Card from "../../../../components/Cards/InfoCard";
 import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 
-function SetUpExercises({ token, onScreenChange, traininDayId}){
+function SetUpExercises({ token, onScreenChange, traininDayId }) {
     const [exercises, setExercises] = useState(null);
-
-    const [deleteExercises, setDeleteExercises] = useState(null);
+    const [deleteExercise, setDeleteExercise] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -24,7 +23,6 @@ function SetUpExercises({ token, onScreenChange, traininDayId}){
                     }
                 });
 
-                console.log(response?.data?.exerciseData?.data);
                 setExercises(response?.data?.exerciseData?.data);
             } catch (error) {
                 console.error('Error fetching exercises:', error);
@@ -33,21 +31,46 @@ function SetUpExercises({ token, onScreenChange, traininDayId}){
         fetchData();
     }, [token, traininDayId]);
 
-    function setUpExercise(){
+    useEffect(() => {
+        const reduceExercises = async () => {
+            try {
+                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteDayExercise`, 
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }, 
+                        data: {
+                            day_exercise_id: deleteExercise
+                        }
+                    }
+                );
 
+                if (response.status === 200) {
+                    setExercises(prevExercises => prevExercises.filter(exercise => exercise.day_exercise_id !== deleteExercise));
+                }
+                setDeleteExercise(null);
+            } catch (error) {
+                console.error('Error deleting exercise:', error);
+            }
+        };
+
+        if (deleteExercise) reduceExercises();
+    }, [deleteExercise, token]);
+
+    function setUpExercise() {
+        onScreenChange('SetUpExercise');
     }
 
-    function editExercise(){
-
+    function editExercise() {
+        // Implement edit exercise functionality
     }
 
-    function deleteExercise(){
-        
+    function deleteExerciseFromList(day_exercise_id) {
+        setDeleteExercise(day_exercise_id);
     }
 
     const getExercises = () => {
-        if(!exercises || exercises.length <= 0){
-
+        if (!exercises || exercises.length <= 0) {
             return (
                 <div>
                     <div
@@ -68,71 +91,59 @@ function SetUpExercises({ token, onScreenChange, traininDayId}){
         return exercises.map(exercise => (
             <Card
                 key={exercise.day_exercise_id}
-                data-elem={exercise.day_exercise_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
-                onClick={() => setUpExercise(exercise.day_exercise_id)}
+                // onClick={() => setUpExercise(exercise.day_exercise_id)}
             >
-            <div style={{ color: "white" }}>
-                <Heading
-                    fontSize={'18px'}
-                >
-                    {exercise.name}
-                </Heading>
-                <div
-                    style={{marginBottom: '0'}}
-                >
-                    Reps: {exercise.reps}
+                <div style={{ color: "white" }}>
+                    <Heading
+                        fontSize={'18px'}
+                    >
+                        {exercise.exercise_name}
+                    </Heading>
+                    <div style={{ marginBottom: '0' }}>
+                        Reps: {exercise.reps}
+                    </div>
+                    <div style={{ marginBottom: '0' }}>
+                        Weight: {exercise.weight}
+                    </div>
+                    <div style={{ marginBottom: '0' }}>
+                        Sets: {exercise.sets}
+                    </div>
+                    <div style={{ marginBottom: '0' }}>
+                        Rest: {exercise.rest_time}
+                    </div>
                 </div>
+
+                <EditIcon
+                    style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0
+                    }}
+                    onClick={() => editExercise()}
+                />
+
                 <div
-                    style={{marginBottom: '0'}}
+                    style={{
+                        position: 'absolute',
+                        left: 7,
+                        top: 7,
+                        padding: '10px',
+                        border: 'solid 1px red'
+                    }}
                 >
-                    Weight: {exercise.weight}
+                    <Heading
+                        onClick={() => deleteExerciseFromList(exercise.day_exercise_id)}
+                        fontSize={'16px'}
+                    >
+                        DEL
+                    </Heading>
                 </div>
-                <div
-                    style={{marginBottom: '0'}}
-                >
-                    Sets: {exercise.sets}
-                </div>
-                <div
-                    style={{marginBottom: '0'}}
-                >
-                    Rest: {exercise.rest_time}
-                </div>
-            </div>
-
-            <EditIcon
-                style={{
-                    position: 'absolute',
-                    right: 0,
-                    top: 0
-                }}
-
-                onClick={() => editExercise()}
-            />
-
-            <div
-                style={{
-                    position: 'absolute',
-                    left: 7,
-                    top: 7,
-                    padding: '10px',
-                    border: 'solid 1px red'
-                }}
-            >
-                <Heading
-
-                    onClick={() => deleteExercise(exercise.day_id)}
-                    fontSize={'16px'}
-                >
-                    DEL
-                </Heading>
-            </div>
-        </Card>
+            </Card>
         ));
-    }
+    };
 
     return (
-        <div>
         <div>
             {getExercises()}
             <div
@@ -150,14 +161,12 @@ function SetUpExercises({ token, onScreenChange, traininDayId}){
                 </Button>
 
                 <Button
-                    // onClick={() => onScreenChange('AddTrainingDay')}
+                    onClick={() => onScreenChange('SetUpExercise')}
                     width={'172px'}
                 >
                     Add exercise
                 </Button>
             </div>
-
-        </div>
         </div>
     );
 }
