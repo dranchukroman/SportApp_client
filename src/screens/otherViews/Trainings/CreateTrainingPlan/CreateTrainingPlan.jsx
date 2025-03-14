@@ -12,7 +12,11 @@ function CreateTrainingPlan({ token, setTraininPlanId, onScreenChange }) {
     const [planName, setPlanName] = useState('');
     const [planDescription, setPlanDescription] = useState('');
     const [plandaysPerWeek, setPlandaysPerWeek] = useState([]);
-    const [planThumbnailImage, setPlanThumbnailImage] = useState(null);
+
+    // Temporary fix
+    // const [planThumbnailImage, setPlanThumbnailImage] = useState(null);
+    const planThumbnailImage = null
+
     const [isCurrentPlan, setIsCurrentPlan] = useState(false);
 
     const [fieldsStatus, setFieldsStatus] = useState(false);
@@ -50,7 +54,7 @@ function CreateTrainingPlan({ token, setTraininPlanId, onScreenChange }) {
             createTraininPlan();
             onScreenChange('SetUpTrainingDays');
         }
-    }, [fieldsStatus]);
+    }, [fieldsStatus, planName, planDescription, plandaysPerWeek, planThumbnailImage, isCurrentPlan, token, setTraininPlanId, onScreenChange]);
 
     function checkFields(){
         if(planName !== '' && planDescription !== '' && plandaysPerWeek.length > 0){

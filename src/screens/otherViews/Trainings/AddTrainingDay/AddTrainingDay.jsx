@@ -5,17 +5,12 @@ import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
-import CheckBox from "../../../../components/Inputs/CheckBoxes/CheckBox";
-import TextCheckBox from "../../../../components/Inputs/CheckBoxes/TextCheckBox";
-
-
-
 
 function AddTrainingDay({ token, onScreenChange, trainingPlanId }){
 
     const [dayName, setDayName] = useState('');
     const [dayDescription, setDayDescription] = useState('');
-    const [dayThumbnailImage, setDayThumbnailImage] = useState(null);
+    // const [dayThumbnailImage, setDayThumbnailImage] = useState(null);
 
     const [fieldsStatus, setFieldsStatus] = useState(false);
 
@@ -32,7 +27,7 @@ function AddTrainingDay({ token, onScreenChange, trainingPlanId }){
 
     useEffect(() => {
         const addTrainingPlan = async () => {
-            const addDay = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addTrainingDay`,
+            await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addTrainingDay`,
                 {
                     trainingPlanId, 
                     dayName, 
@@ -48,7 +43,7 @@ function AddTrainingDay({ token, onScreenChange, trainingPlanId }){
             onScreenChange('SetUpTrainingDays');
         }
         if(fieldsStatus) addTrainingPlan();
-    }, [fieldsStatus]);
+    }, [fieldsStatus, dayName, dayDescription, onScreenChange, token, trainingPlanId]);
 
     return (
         <div>

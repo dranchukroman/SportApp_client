@@ -79,7 +79,7 @@ function MainScreen(){
             case 'SetUpExercises':
                 return <SetUpExercises token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId}/>
             case 'SetUpExercise':
-                return <SetUpExercise token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId}/>
+                return <SetUpExercise token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId}/>
 
             case 'Diet':
                 return (
@@ -102,7 +102,6 @@ function MainScreen(){
                         onScreenChange={setCurrentScreen}
                     />
                 )
-                return 
         }
     }
 
@@ -162,7 +161,7 @@ function MainScreen(){
                 }}
             >
                 {/* Settings view */}
-                <Settings/>
+                <Settings token={token}/>
             </div>
 
             {/* Functional bar with different views */}

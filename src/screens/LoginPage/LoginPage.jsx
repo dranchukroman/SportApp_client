@@ -13,8 +13,8 @@ function LoginPage(){
         window.location.href = '/dashboard';
     }
 
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('test2');
+    const [password, setPassword] = useState('test2');
     const [password2, setPassword2] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
     const [isRegistration, setIsRegistration] = useState(false);
@@ -236,6 +236,7 @@ function LoginPage(){
                 {/* Login by Google button */}
                 <Button
                     style={{display: 'none'}}
+                    onClick={logInByGoogle}
                 >
                     <div 
                         style={{

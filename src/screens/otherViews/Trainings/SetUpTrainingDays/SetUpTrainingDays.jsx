@@ -28,7 +28,7 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDa
             }
         }
         fetchData(trainingPlanId);
-    }, [])
+    }, [token, trainingPlanId]);
 
     useEffect(() => {
         const deleteDay = async () => {
@@ -53,6 +53,7 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDa
     }, [deleteDayId, token]);
 
     const deleteDay = (deleteDayId) => {
+        console.log('delete day')
         setDeleteDayId(deleteDayId);
     }
 

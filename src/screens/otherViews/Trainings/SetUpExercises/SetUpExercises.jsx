@@ -57,9 +57,6 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
         if (deleteExercise) reduceExercises();
     }, [deleteExercise, token]);
 
-    function setUpExercise() {
-        onScreenChange('SetUpExercise');
-    }
 
     function editExercise() {
         // Implement edit exercise functionality

@@ -11,35 +11,24 @@ import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 
 function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
-
     const [deletePlanId, setDeletePlanId] = useState(null);
 
-    async function getTrainingPlansForUser() {
-        try {
+    useEffect(() => {
+        async function fetchData() {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 },
             });
 
-            return response.data;
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-            return null;
-        }
-    }
-
-    useEffect(() => {
-        async function fetchData() {
-            const plans = await getTrainingPlansForUser();
-            if (plans && plans.data) {
-                setTrainingPlans(plans.data);
+            if (response && response?.data?.data) {
+                setTrainingPlans(response.data.data);
             } else {
                 setTrainingPlans(null);
             }
         }
         fetchData();
-    }, []);
+    }, [token]);
 
     // Get training plan id for edit and change screen
     function editTrainingDays(planId) {
@@ -49,22 +38,28 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
 
     useEffect(() => {
         const deletePlan = async () => {
-            const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`, 
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }, 
-                    data: {
-                        trainingPlanId: deletePlanId
+            try {
+                console.log('Deleting training plan with ID:', deletePlanId);
+                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`, 
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }, 
+                        data: {
+                            trainingPlanId: deletePlanId
+                        }
                     }
-                }
-            )
+                );
+                console.log('Delete response:', response);
 
-            if (response.status === 200) {
-                setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
+                if (response.status === 200) {
+                    setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
+                }
+                setDeletePlanId(null);
+            } catch (error) {
+                console.error('Error deleting training plan:', error);
             }
-            setDeletePlanId(null);
-        }
+        };
 
         if(deletePlanId) deletePlan();
     }, [deletePlanId, token]);

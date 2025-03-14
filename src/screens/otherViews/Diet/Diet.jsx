@@ -2,7 +2,6 @@ import React from "react";
 import StyledDiet from './Diet.styled'
 import Heading from "../../../components/Headings/Heading";
 import Button from "../../../components/Buttons/Button";
-import theme from "../../../styles/theme";
 
 function Diet({children, onScreenChange}){
     const handleGoToDashboard = () =>{

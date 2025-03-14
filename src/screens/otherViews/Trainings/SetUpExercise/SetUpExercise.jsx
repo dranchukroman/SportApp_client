@@ -4,12 +4,15 @@ import axios from "axios";
 import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
-import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
 
 function SetUpExercise({ token, onScreenChange, traininDayId }) {
     const [exerciseList, setExerciseList] = useState([]);
     const [exercise, setExercise] = useState({ name: '', exerciseId: '' });
-    const [muscleGroupList, setMuscleGroupList] = useState(['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core']);
+
+    //Temporary fix
+    // const [muscleGroupList, setMuscleGroupList] = useState(['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core']);
+    const muscleGroupList = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core']
+    
     const [muscleGroup, setMuscleGroup] = useState('Chest');
 
     const [series, setSeries] = useState(null);
@@ -78,7 +81,7 @@ function SetUpExercise({ token, onScreenChange, traininDayId }) {
 
     useEffect(() => {
         const addExercise = async () => {
-            const addExercise = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addDayExercise`,
+            await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addDayExercise`,
                 {
                     day_id: traininDayId,
                     exercise_id: exercise.exerciseId,
@@ -98,7 +101,20 @@ function SetUpExercise({ token, onScreenChange, traininDayId }) {
             onScreenChange('SetUpExercises');
         }
         if(fieldsStatus) addExercise();
-    }, [fieldsStatus]);
+    }, [
+        fieldsStatus, 
+        traininDayId, 
+        exercise.exerciseId, 
+        muscleGroup, 
+        series, 
+        weight, 
+        times, 
+        description, 
+        minutes, 
+        seconds, 
+        token, 
+        onScreenChange
+    ]);
 
     return (
         <div>

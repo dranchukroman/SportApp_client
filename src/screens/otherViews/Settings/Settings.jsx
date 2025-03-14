@@ -6,41 +6,15 @@ import theme from "../../../styles/theme";
 import DivideLine from "../../../components/Dividers/DivideLine";
 
 
-function Settings (){
+function Settings ({ token }){
     async function deleteAccount(){
-        const token = localStorage.getItem('authToken');
-
-        if(!token){
-            console.log('Profile can\'t be deleted, because auth token doesn\'t exist');
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
-            return;
-        }
-
-        const user = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/protected`, {
+        const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
 
-        if(!user){
-            console.log('Something went wrong login one more time');
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
-            return;
-        }
-
-        console.log(user)
-
-        const deleteResponse = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            },
-            data: { email: user.data.user.email }
-        })
-
-
-        if(deleteResponse.status){
+        if(response.status){
             localStorage.removeItem('authToken');
             window.location.href = '/login';
             return;
@@ -53,15 +27,6 @@ function Settings (){
             window.location.href = '/login';
         }
     }
-
-    async function setPersonalInformation(){
-
-    }
-
-    async function share(){
-
-    }
-
 
     return (
         <SettingScreen>
@@ -224,7 +189,6 @@ function Settings (){
                 </Button>
             </ButtonsGroup>
             <DivideLine/>
-
             
             {/* Danger zone */}
             <ButtonsGroup>
@@ -272,11 +236,8 @@ function Settings (){
                     </div>                   
                 </Button>
             </ButtonsGroup>
-
-
         </SettingScreen>
     )
-
 }
 
 export default Settings;
