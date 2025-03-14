@@ -42,7 +42,7 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDa
                     }
                 }
             )
-
+            console.log(response);
             if (response.status === 200) {
                 setTrainingDays(prevDays => prevDays.filter(day => day.day_id !== deleteDayId));
             }
@@ -50,17 +50,7 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDa
         }
 
         if(deleteDayId) deleteDay();
-    }, [deleteDayId, token]);
-
-    const deleteDay = (deleteDayId) => {
-        console.log('delete day')
-        setDeleteDayId(deleteDayId);
-    }
-
-    const setUpExercises = (dayId) => {
-        setTraininDayId(dayId);
-        onScreenChange('SetUpExercises');
-    }
+    }, [deleteDayId, token, setDeleteDayId]);
 
     const getTraingDays = () => {
         if(!trainingDays || trainingDays.length <= 0){
@@ -87,7 +77,10 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDa
                 key={day.day_id}
                 data-elem={day.day_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
-                onClick={() => setUpExercises(day.day_id)}
+                onClick={() => {
+                    setTraininDayId(day.day_id);
+                    onScreenChange('SetUpExercises');
+                }}
             >
             <div style={{ color: "white" }}>
                 <Heading
@@ -123,7 +116,11 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDa
             >
                 <Heading
 
-                    onClick={() => deleteDay(day.day_id)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteDayId(day.day_id);
+                    }
+                    }
                     fontSize={'16px'}
                 >
                     DEL

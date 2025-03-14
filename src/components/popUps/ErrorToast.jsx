@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import theme from "../../styles/theme";
 import { ToastPopUp } from './popUps.styled';
 
 function ErrorToast({ message, showError = false, setErrorMessage }) {
@@ -15,7 +14,7 @@ function ErrorToast({ message, showError = false, setErrorMessage }) {
     }, 6000); 
 
     return () => clearTimeout(timer);
-  }, [message]);
+  }, [message, setErrorMessage]);
 
 
   return (

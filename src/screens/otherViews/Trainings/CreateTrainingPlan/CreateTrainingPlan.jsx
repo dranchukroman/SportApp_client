@@ -8,7 +8,7 @@ import TextCheckBox from "../../../../components/Inputs/CheckBoxes/TextCheckBox"
 import axios from "axios";
 
 
-function CreateTrainingPlan({ token, setTraininPlanId, onScreenChange }) {
+function CreateTrainingPlan({ token, setTrainingPlanId, onScreenChange }) {
     const [planName, setPlanName] = useState('');
     const [planDescription, setPlanDescription] = useState('');
     const [plandaysPerWeek, setPlandaysPerWeek] = useState([]);
@@ -43,18 +43,18 @@ function CreateTrainingPlan({ token, setTraininPlanId, onScreenChange }) {
                             Authorization: `Bearer ${token}`,
                         },
                     }
-                )
+                );
 
-                setTraininPlanId(createPlan.data.planId);
+                setTrainingPlanId(createPlan.data.planId);
+                onScreenChange('SetUpTrainingDays');
             } catch (error) {
                 console.error('Error while creating training plan: ', error);
             }
         }
         if(fieldsStatus) {
             createTraininPlan();
-            onScreenChange('SetUpTrainingDays');
         }
-    }, [fieldsStatus, planName, planDescription, plandaysPerWeek, planThumbnailImage, isCurrentPlan, token, setTraininPlanId, onScreenChange]);
+    }, [fieldsStatus, planName, planDescription, plandaysPerWeek, planThumbnailImage, isCurrentPlan, token, setTrainingPlanId, onScreenChange]);
 
     function checkFields(){
         if(planName !== '' && planDescription !== '' && plandaysPerWeek.length > 0){

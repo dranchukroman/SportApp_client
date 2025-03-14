@@ -36,7 +36,7 @@ function MainScreen() {
     }
 
     // User data
-    const userName = () => 'Roman';
+    const userName = getUserName();
 
     // Change screen
     const initialScreen = sessionStorage.getItem('userView') || 'Diet';
@@ -47,15 +47,16 @@ function MainScreen() {
     }, [currentScreen]);
 
     // App data
-    const [pageTitle, changePageTitle] = useState(`Hi, ${userName()}`); // Page title
+    const [pageTitle, changePageTitle] = useState(`Hi, ${userName}`); // Page title
     const [traininPlanId, setTrainingPlanId] = useState(0); // Save training plan id to work with
-    const [traininDayId, setTraininDayId] = useState(0); // Save training day id to work with
+    // const [traininDayId, setTraininDayId] = useState(0); // Save training day id to work with
+    const traininDayId = 0; // Save training day id to work with
     const [trainingExerciseId, setTrainingExerciseId] = useState(0); // Save exercise id to work with
 
     // Change page title
     useEffect(() => {
         const titles = {
-            Dashboard: `Hi, ${userName()}`,
+            Dashboard: `Hi, ${userName}`,
             Trainings: 'Trainings',
             NewTrainingPlan: 'New training plan',
             SetUpTrainingDays: 'Set up training days',
@@ -186,6 +187,10 @@ function MainScreen() {
             />
         </div>
     );
+}
+
+const getUserName = () => {
+    return "Roman";
 }
 
 export default MainScreen;
