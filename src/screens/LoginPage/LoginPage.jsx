@@ -6,14 +6,26 @@ import Headeing from '../../components/Headings/Heading';
 import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import GoogleIcon from '../../assets/icons/LoginPage/google';
+import ErrorToast from '../../components/popUps/ErrorToast'
 
 function LoginPage(){
-    // Redirect if authToken exist
-    if(localStorage.getItem('authToken')){
-        window.location.href = '/dashboard';
-    }
+    const token = localStorage.getItem('authToken') || '';
+    
+    useEffect(() => {
+        const checkIfTokenValid = async () => {
+            const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/checkToken`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+            if(response.status === 200){
+                window.location.href = '/dashboard';
+            }
+        }
+        if(token !== '') checkIfTokenValid()
+    }, [token]);
 
-    const [email, setEmail] = useState('test2');
+    const [email, setEmail] = useState('test21');
     const [password, setPassword] = useState('test2');
     const [password2, setPassword2] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -30,12 +42,9 @@ function LoginPage(){
 
     const handleLogin = async () =>{
         try {
-            // Check if email and password exist
             if(email !== '' && password !== ''){
-                // const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
-                const response = await axios.post(`https://sportappserver-production.up.railway.app/api/login`, { email, password });
+                const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
 
-                // Check if token exist
                 if(response?.data.token){
                     localStorage.setItem('authToken', response.data.token);
                     window.location.href = '/dashboard'
@@ -53,14 +62,10 @@ function LoginPage(){
 
     const handleRegistration = async () =>{
         try {
-            // Check if email and password exist
             if(email !== '' && password !== ''){       
                 if(password !== '' && password2 !== '' && password === password2){
-                    // const registerResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
-                    const registerResponse = await axios.post(`https://sportappserver-production.up.railway.app/api/register`, { email, password });
-
+                    const registerResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
             
-                    // Check status code
                     if(registerResponse.status === 201){
                         try {
                             const loginResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
@@ -93,14 +98,11 @@ function LoginPage(){
 
     const logInByGoogle = async () => {
         console.log(process.env.REACT_APP_SERVER_LINK);
-        console.log('Hello')
     }
 
-    // Change text and redirect for button below login form
     function LoginOrRegistrationButton(){
         const [button, setButtonText] = useState(null);
       
-        // Change based on user location
         useEffect(() => {
           const userLocation = window.location.href;
       
@@ -122,10 +124,8 @@ function LoginPage(){
           }
         }, []);
       
-        // Check if button exist
         if (!button) return null;
       
-        // Return changed button
         return (
             <Button
                 onClick={button.loginMethod}
@@ -135,11 +135,9 @@ function LoginPage(){
         );
     }
 
-    // Change info below login buttons 
     function LoginOrRegistrationLink() {
         const [link, setLink] = useState(null);
       
-        // Change based on location
         useEffect(() => {
           const userLocation = window.location.href;
       
@@ -161,10 +159,8 @@ function LoginPage(){
           }
         }, []);
       
-        // Check if link exist
         if (!link) return null;
       
-        // Retunr formated link
         return (
             <a 
             href={link.href}
@@ -180,16 +176,13 @@ function LoginPage(){
     return (
         <LoginPageContainer>
             <StyledLoginPage>
-                {/* App name */}
                 <Headeing>
                     Sport App
                 </Headeing>
-                {/* Description for motivation */}
                 <p>
                     Dream big, work hard, stay focused.
                 </p>
 
-                {/* Email input */}
                 <Input 
                     placeholder='Email'
                     value={email}
@@ -200,7 +193,6 @@ function LoginPage(){
                     }}
                 />
                     
-                {/* Password input */}
                 <Input
                     className='password1'
                     placeholder='Password'
@@ -211,9 +203,7 @@ function LoginPage(){
                         marginBottom: '10px'
                     }}
                 />
-                
 
-                {/* Repeat Password input for registration */}
                 {isRegistration && (
                     <Input
                         className='password2'
@@ -226,55 +216,34 @@ function LoginPage(){
                         }}
                     />
                 )}
-                
-                {/* Button with margin for login or registration */}
-                <div
-                    style={{
-                        marginBottom: '20px'
-                    }}
-                >
+
+                <div style={{ marginBottom: '20px' }}>
                     <LoginOrRegistrationButton/>
                 </div>
 
-                {/* Login by Google button */}
-                <Button
-                    // style={{display: 'none'}}
-                    onClick={logInByGoogle}
-                >
-                    <div 
-                        style={{
+                <Button style={{display: 'none'}} onClick={logInByGoogle}>
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative',
+                        width: '100%',
+                    }}>
+                        <div style={{
+                            position: 'absolute',
+                            left: '29px',
                             display: 'flex',
                             alignItems: 'center',
-                            justifyContent: 'center',
-                            position: 'relative',
-                            width: '100%',
-                        }}
-                    >
-                        <div 
-                            style={{
-                                position: 'absolute',
-                                left: '29px',
-                                display: 'flex',
-                                alignItems: 'center',
-                            }}
-                        >
+                        }}>
                             <GoogleIcon />
                         </div>
-                        <p 
-                            style={{ 
-                                margin: 0 
-                            }}
-                        >
-                            Log in by Google
-                        </p>
+                        <p style={{ margin: 0 }}>Log in by Google</p>
                     </div>
                 </Button>
 
-                {/* Formated info link */}
                 <LoginOrRegistrationLink />
 
-                {/* Error message if exist */}
-                {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+                <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage}/>
             </StyledLoginPage>
         </LoginPageContainer>
     );

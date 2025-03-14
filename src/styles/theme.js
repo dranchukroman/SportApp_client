@@ -3,6 +3,7 @@ const theme = {
       whiteText: '#EEE',
       darkText: '#181818',
       darkBackground: '#181818',
+      errorBackGround: '#9F1B00',
       lightBackground: 'none',
       gradientBase: '#C84B31',
       gradient: 'linear-gradient(#C84B31, #622518)'
