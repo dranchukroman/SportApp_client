@@ -32,7 +32,8 @@ function LoginPage(){
         try {
             // Check if email and password exist
             if(email !== '' && password !== ''){
-                const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
+                // const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
+                const response = await axios.post(`https://sportappserver-production.up.railway.app/api/login`, { email, password });
 
                 // Check if token exist
                 if(response?.data.token){
@@ -55,7 +56,8 @@ function LoginPage(){
             // Check if email and password exist
             if(email !== '' && password !== ''){       
                 if(password !== '' && password2 !== '' && password === password2){
-                    const registerResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
+                    // const registerResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
+                    const registerResponse = await axios.post(`https://sportappserver-production.up.railway.app/api/register`, { email, password });
 
             
                     // Check status code
