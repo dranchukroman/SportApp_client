@@ -10,6 +10,8 @@ import ErrorToast from '../../components/popUps/ErrorToast'
 
 function LoginPage(){
     const token = localStorage.getItem('authToken') || '';
+    sessionStorage.removeItem('userView');
+
     
     useEffect(() => {
         const checkIfTokenValid = async () => {

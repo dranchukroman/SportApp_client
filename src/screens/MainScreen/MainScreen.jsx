@@ -43,7 +43,6 @@ function MainScreen() {
     const [currentScreen, setCurrentScreen] = useState(initialScreen);
     useEffect(() => {
         sessionStorage.setItem('userView', currentScreen);
-        console.log('change screen');
     }, [currentScreen]);
 
     // App data
