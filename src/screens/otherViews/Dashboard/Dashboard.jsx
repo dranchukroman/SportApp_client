@@ -15,9 +15,8 @@ function Dashboard({ children, token, onScreenChange }) {
     // const [trainingProgress, setTrainingProgress] = useState({workoutsCompleted: 4, trainingPeWeek: 4, spentExercising: 134});
     const trainingProgress = { workoutsCompleted: 4, trainingPeWeek: 4, spentExercising: 134 };
 
-    // Use effect to not create infinite loop by rerendering page
     useEffect(() => {
-        const fetchData = async () => {
+        const fetchTrainingPlans = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
                     headers: {
@@ -25,10 +24,9 @@ function Dashboard({ children, token, onScreenChange }) {
                     },
                 });
 
-                // Check if current training exists
                 if (response.status === 200 && response?.data?.data.length > 0) {
                     setTrainingPlans(response.data.data);
-                    setHeaderUnderTraininTile('Today')
+                    setHeaderUnderTraininTile('Current training plan')
                 }
 
             } catch (error) {
@@ -36,13 +34,13 @@ function Dashboard({ children, token, onScreenChange }) {
             }
         };
 
-        fetchData();
+        fetchTrainingPlans();
     }, [token]);
 
-    function createtrainingPlansPlan() {
+    function createTrainingTile() {
         if (trainingPlans.length > 0) {
             const currentPlan = trainingPlans.filter(plan => plan.is_current_plan === true);
-            if (currentPlan.length <= 0) {
+            if (currentPlan.length === 1) {
                 return (
                     <Card
                         $paddingBottom={'10px'}
@@ -51,13 +49,13 @@ function Dashboard({ children, token, onScreenChange }) {
                         }}
                     >
                         <Heading
-                            fontSize={'18px'}
+                            fontSize={theme.fontSizes.smallHeader}
                             style={{ padding: '7px 0 25px 0' }}
                         >
-                            {trainingPlans[0].name}
+                            {currentPlan[0].name}
                         </Heading>
                         <Button
-                            onClick={() => { console.log('Button to start training') }}
+                            onClick={() => { console.log(`Button to start training, planId ${currentPlan[0].plan_id}`) }}
                             width={'280px'}
                         >
                             Start training
@@ -65,7 +63,6 @@ function Dashboard({ children, token, onScreenChange }) {
                     </Card>
                 )
             }
-            console.log(currentPlan)
         } return (
             <Card
                 $paddingBottom={'40px'}
@@ -86,25 +83,22 @@ function Dashboard({ children, token, onScreenChange }) {
 
     return (
         <StyledDashboard>
-            {/* Dashboard header */}
+            {/* Current plan data */}
             <Heading
                 fontSize={theme.fontSizes.mediumHeader}
             >
                 {headerUnderTraininTile}
             </Heading>
-            {/* Card with current training */}
-            {createtrainingPlansPlan()}
-
+            {createTrainingTile()}
             <DivideLine />
 
-            {/* Progress header */}
             <Heading
                 fontSize={theme.fontSizes.mediumHeader}
             >
                 Progress
             </Heading>
 
-            {/* Progress tiles */}
+            {/* Statistic */}
             <div
                 style={{
                     display: 'flex',
@@ -113,7 +107,6 @@ function Dashboard({ children, token, onScreenChange }) {
                     marginTop: '10px'
                 }}
             >
-                {/* Full exercising time */}
                 <Card
                     style={{
                         width: '172px',
@@ -122,22 +115,21 @@ function Dashboard({ children, token, onScreenChange }) {
                     }}
                 >
                     <Heading
-                        fontSize={'33px'}
+                        fontSize={theme.fontSizes.largeHeader}
                     >
                         {trainingProgress.spentExercising ? trainingProgress.spentExercising : '0 min'}
                     </Heading>
                     <p
                         style={{
-                            color: '#EEE',
+                            color: theme.colors.whiteText,
                             margin: '8px 0 0 0',
-                            fontSize: '15px'
+                            fontSize: theme.fontSizes.largeParagraph
                         }}
                     >
                         Spent exercising
                     </p>
                 </Card>
 
-                {/* Trainings per week */}
                 <Card
                     style={{
                         width: '172px',
@@ -146,23 +138,21 @@ function Dashboard({ children, token, onScreenChange }) {
                     }}
                 >
                     <Heading
-                        fontSize={'33px'}
+                        fontSize={theme.fontSizes.largeHeader}
                     >
                         {trainingProgress.trainingPeWeek ? trainingProgress.trainingPeWeek : '0'}
                     </Heading>
                     <p
                         style={{
-                            color: '#EEE',
+                            color: theme.colors.whiteText,
                             margin: '8px 0 0 0',
-                            fontSize: '15px'
+                            fontSize: theme.fontSizes.largeParagraph
                         }}
                     >
                         Training per week
                     </p>
                 </Card>
             </div>
-
-            {/* How much workouts have been completed */}
             <Card
                 style={{
                     marginTop: '16px'
@@ -171,15 +161,15 @@ function Dashboard({ children, token, onScreenChange }) {
                 paddingTop={'18px'}
             >
                 <Heading
-                    fontSize={'33px'}
+                    fontSize={theme.fontSizes.largeHeader}
                 >
                     {trainingProgress.workoutsCompleted ? trainingProgress.workoutsCompleted : '0'}
                 </Heading>
                 <p
                     style={{
-                        color: '#EEE',
+                        color: theme.colors.whiteText,
                         margin: '8px 0 0 0',
-                        fontSize: '15px'
+                        fontSize: theme.fontSizes.largeParagraph
                     }}
                 >
                     Workouts completed
