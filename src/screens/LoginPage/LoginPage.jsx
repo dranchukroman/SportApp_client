@@ -8,11 +8,10 @@ import Button from '../../components/Buttons/Button';
 import GoogleIcon from '../../assets/icons/LoginPage/google';
 import ErrorToast from '../../components/popUps/ErrorToast'
 
-function LoginPage(){
+function LoginPage() {
     const token = localStorage.getItem('authToken') || '';
     sessionStorage.removeItem('userView');
 
-    
     useEffect(() => {
         const checkIfTokenValid = async () => {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/checkToken`, {
@@ -20,14 +19,14 @@ function LoginPage(){
                     Authorization: `Bearer ${token}`
                 }
             })
-            if(response.status === 200){
+            if (response.status === 200) {
                 window.location.href = '/dashboard';
             }
         }
-        if(token !== '') checkIfTokenValid()
+        if (token !== '') checkIfTokenValid()
     }, [token]);
 
-    const [email, setEmail] = useState('test21');
+    const [email, setEmail] = useState('test2');
     const [password, setPassword] = useState('test2');
     const [password2, setPassword2] = useState('');
     const [errorMessage, setErrorMessage] = useState('');
@@ -42,18 +41,18 @@ function LoginPage(){
         }
     }, []);
 
-    const handleLogin = async () =>{
+    const handleLogin = async () => {
         try {
-            if(email !== '' && password !== ''){
+            if (email !== '' && password !== '') {
                 const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
 
-                if(response?.data.token){
+                if (response?.data.token) {
                     localStorage.setItem('authToken', response.data.token);
                     window.location.href = '/dashboard'
-                } else{
+                } else {
                     setErrorMessage(response.data.message);
                 }
-            } else{
+            } else {
                 setErrorMessage(`Email and password are required`);
             }
         } catch (error) {
@@ -62,20 +61,20 @@ function LoginPage(){
         }
     }
 
-    const handleRegistration = async () =>{
+    const handleRegistration = async () => {
         try {
-            if(email !== '' && password !== ''){       
-                if(password !== '' && password2 !== '' && password === password2){
+            if (email !== '' && password !== '') {
+                if (password !== '' && password2 !== '' && password === password2) {
                     const registerResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
-            
-                    if(registerResponse.status === 201){
+
+                    if (registerResponse.status === 201) {
                         try {
                             const loginResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
-    
-                            if(loginResponse?.data.token){
+
+                            if (loginResponse?.data.token) {
                                 localStorage.setItem('authToken', loginResponse.data.token);
                                 window.location.href = '/dashboard'
-                            } else{
+                            } else {
                                 window.location.href = '/login'
                                 setErrorMessage(loginResponse.data.message);
                             }
@@ -83,13 +82,13 @@ function LoginPage(){
                             window.location.href = '/login'
                             setErrorMessage(`Try to login again`);
                         }
-                    } else{
+                    } else {
                         setErrorMessage(registerResponse.data.message);
                     }
-                } else{
+                } else {
                     setErrorMessage(`Passwords in both fields should be the same`);
                 }
-            } else{
+            } else {
                 setErrorMessage(`Email and password are required`);
             }
         } catch (error) {
@@ -102,32 +101,32 @@ function LoginPage(){
         console.log(process.env.REACT_APP_SERVER_LINK);
     }
 
-    function LoginOrRegistrationButton(){
+    function LoginOrRegistrationButton() {
         const [button, setButtonText] = useState(null);
-      
+
         useEffect(() => {
-          const userLocation = window.location.href;
-      
-          if (userLocation.includes('/login')) {
-            setButtonText({
-                text: "Log In",
-                loginMethod: handleLogin
-            })
-          } else if (userLocation.includes('/registration')) {
-            setButtonText({
-                text: 'Sing Up',
-                loginMethod: handleRegistration
-            })
-          } else {
-            setButtonText({
-                text: 'Log In',
-                loginMethod: handleLogin
-            })
-          }
+            const userLocation = window.location.href;
+
+            if (userLocation.includes('/login')) {
+                setButtonText({
+                    text: "Log In",
+                    loginMethod: handleLogin
+                })
+            } else if (userLocation.includes('/registration')) {
+                setButtonText({
+                    text: 'Sing Up',
+                    loginMethod: handleRegistration
+                })
+            } else {
+                setButtonText({
+                    text: 'Log In',
+                    loginMethod: handleLogin
+                })
+            }
         }, []);
-      
+
         if (!button) return null;
-      
+
         return (
             <Button
                 onClick={button.loginMethod}
@@ -139,36 +138,36 @@ function LoginPage(){
 
     function LoginOrRegistrationLink() {
         const [link, setLink] = useState(null);
-      
+
         useEffect(() => {
-          const userLocation = window.location.href;
-      
-          if (userLocation.includes('/login')) {
-            setLink({
-              href: '/registration',
-              text: "Don't have an account yet? Click here",
-            });
-          } else if (userLocation.includes('/registration')) {
-            setLink({
-              href: '/login',
-              text: 'Do you already have an account? Click here',
-            });
-          } else {
-            setLink({
-              href: '/login',
-              text: 'Click here if you want to log in',
-            });
-          }
+            const userLocation = window.location.href;
+
+            if (userLocation.includes('/login')) {
+                setLink({
+                    href: '/registration',
+                    text: "Don't have an account yet? Click here",
+                });
+            } else if (userLocation.includes('/registration')) {
+                setLink({
+                    href: '/login',
+                    text: 'Do you already have an account? Click here',
+                });
+            } else {
+                setLink({
+                    href: '/login',
+                    text: 'Click here if you want to log in',
+                });
+            }
         }, []);
-      
+
         if (!link) return null;
-      
+
         return (
-            <a 
-            href={link.href}
-            style={{
-                borderBottom: 'white'
-            }}
+            <a
+                href={link.href}
+                style={{
+                    borderBottom: 'white'
+                }}
             >
                 <p>{link.text}</p>
             </a>
@@ -185,7 +184,7 @@ function LoginPage(){
                     Dream big, work hard, stay focused.
                 </p>
 
-                <Input 
+                <Input
                     placeholder='Email'
                     value={email}
                     type='email'
@@ -194,7 +193,7 @@ function LoginPage(){
                         margin: '100px 0 10px 0'
                     }}
                 />
-                    
+
                 <Input
                     className='password1'
                     placeholder='Password'
@@ -220,10 +219,10 @@ function LoginPage(){
                 )}
 
                 <div style={{ marginBottom: '20px' }}>
-                    <LoginOrRegistrationButton/>
+                    <LoginOrRegistrationButton />
                 </div>
 
-                <Button style={{display: 'none'}} onClick={logInByGoogle}>
+                <Button style={{ display: 'none' }} onClick={logInByGoogle}>
                     <div style={{
                         display: 'flex',
                         alignItems: 'center',
@@ -245,7 +244,7 @@ function LoginPage(){
 
                 <LoginOrRegistrationLink />
 
-                <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage}/>
+                <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
             </StyledLoginPage>
         </LoginPageContainer>
     );
