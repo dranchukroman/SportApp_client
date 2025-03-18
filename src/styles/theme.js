@@ -10,7 +10,7 @@ const theme = {
     },
     fontSizes: {
       largeHeader: '27px',
-      mediumHeader: '23px',
+      mediumHeader: '20px',
       smallHeader: '18px',
       largeParagraph: '15px',
       mediumParagraph: '12px',
