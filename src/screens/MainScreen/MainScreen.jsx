@@ -40,7 +40,7 @@ function MainScreen() {
     const userName = getUserName();
 
     // Change screen
-    const initialScreen = sessionStorage.getItem('userView') || 'Dashboard';
+    const initialScreen = sessionStorage.getItem('userView') || 'TrainingDaysView';
     const [currentScreen, setCurrentScreen] = useState(initialScreen);
     useEffect(() => {
         sessionStorage.setItem('userView', currentScreen);
@@ -81,9 +81,9 @@ function MainScreen() {
             case 'TrainingPlanDetails':
                 return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} />
             case 'TrainingDaysView':
-                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} setTrainingPlanId={setTrainingPlanId} setTraininDayId={setTraininDayId} />
+                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTraininDayId={setTraininDayId} />
             case 'TrainingDaysDetails':
-                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} />
+                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} />
             case 'SetUpExercises':
                 return <SetUpExercises token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} />
             case 'SetUpExercise':

@@ -6,9 +6,10 @@ import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import Card from "../../../../components/Cards/InfoCard";
+import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDayId}){
-    const [trainingDays, setTrainingDays ] = useState(null);
+function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDayId, editModeStatus }) {
+    const [trainingDays, setTrainingDays] = useState(null);
 
     const [deleteDayId, setDeleteDayId] = useState(null);
 
@@ -23,7 +24,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
                 }
             })
 
-            if(response?.data?.trainingDaysData?.data.length > 0){
+            if (response?.data?.trainingDaysData?.data.length > 0) {
                 setTrainingDays(response.data.trainingDaysData.data);
             }
         }
@@ -32,11 +33,11 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
 
     useEffect(() => {
         const deleteDay = async () => {
-            const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingDays`, 
+            const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingDays`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`
-                    }, 
+                    },
                     data: {
                         day_id: deleteDayId
                     }
@@ -49,11 +50,11 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
             setDeleteDayId(null);
         }
 
-        if(deleteDayId) deleteDay();
+        if (deleteDayId) deleteDay();
     }, [deleteDayId, token, setDeleteDayId]);
 
     const getTraingDays = () => {
-        if(!trainingDays || trainingDays.length <= 0){
+        if (!trainingDays || trainingDays.length <= 0) {
 
             return (
                 <div>
@@ -82,56 +83,49 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
                     onScreenChange('SetUpExercises');
                 }}
             >
-            <div style={{ color: "white" }}>
-                <Heading
-                    fontSize={'18px'}
-                >
-                    {day.name}
-                </Heading>
-                <p
-                    style={{marginBottom: '0'}}
-                >
-                    {day.description}
-                </p>
-            </div>
+                <div style={{ color: "white" }}>
+                    <Heading
+                        fontSize={theme.fontSizes.smallHeader}
+                    >
+                        {day.name}
+                    </Heading>
+                    <p
+                        style={{ marginBottom: '0' }}
+                    >
+                        {day.description}
+                    </p>
+                </div>
 
-            <EditIcon
-                style={{
-                    position: 'absolute',
-                    right: 0,
-                    top: 0
-                }}
-
-                onClick={() => editTrainingDay()}
-            />
-
-            <div
-                style={{
-                    position: 'absolute',
-                    left: 7,
-                    top: 7,
-                    padding: '10px',
-                    border: 'solid 1px red'
-                }}
-            >
-                <Heading
+                <EditIcon
+                    style={{
+                        position: 'absolute',
+                        right: 0,
+                        top: 0,
+                        display: editModeStatus ? 'block' : 'none',
+                    }}
 
                     onClick={(e) => {
                         e.stopPropagation();
+                        setTraininDayId(day.day_id);
+                        onScreenChange('TrainingDaysDetails');
+                    }}
+                />
+                <DeleteIcon
+                    style={{
+                        position: 'absolute',
+                        left: 7,
+                        top: 4,
+                        zIndex: '100',
+                        display: editModeStatus ? 'block' : 'none',
+                        cursor: 'pointer',
+                    }}
+                    onClick={(e) => {
+                        e.stopPropagation();
                         setDeleteDayId(day.day_id);
-                    }
-                    }
-                    fontSize={'16px'}
-                >
-                    DEL
-                </Heading>
-            </div>
-        </Card>
+                    }}
+                />
+            </Card>
         ));
-    }
-
-    function editTrainingDay(){
-
     }
 
     return (
@@ -152,7 +146,10 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
                 </Button>
 
                 <Button
-                    onClick={() => onScreenChange('AddTrainingDay')}
+                    onClick={() => {
+                        setTraininDayId(0);
+                        onScreenChange('TrainingDaysDetails')
+                    }}
                     width={'172px'}
                 >
                     Add day

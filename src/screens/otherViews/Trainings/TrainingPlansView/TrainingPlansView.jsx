@@ -134,7 +134,6 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
                     }}
                     onClick={(e) => {
                         e.stopPropagation();
-                        console.log('Delete');
                         setDeletePlanId(plan.plan_id);
                     }}
                 />

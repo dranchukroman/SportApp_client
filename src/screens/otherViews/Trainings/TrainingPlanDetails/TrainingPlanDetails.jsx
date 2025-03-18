@@ -45,10 +45,10 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
         console.log('Choose image')
     }
 
-    // Get training plans
+    // Get training plans data
     useEffect(() => {
         // Get training plan data to edit
-        const fetchTraininPlans = async () => {
+        const fetchTraininPlansData = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlan`, {
                     headers: {
@@ -71,7 +71,7 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
                 setErrorMessage(error.response?.data?.message);
             }
         }
-        if (editModeStatus) fetchTraininPlans();
+        if (editModeStatus) fetchTraininPlansData();
 
     }, [editModeStatus, trainingPlanId, token]);
 
@@ -110,7 +110,7 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
                 // Redirect to correct screen depends on editModeStatus
                 if (!editModeStatus) {
                     setTrainingPlanId(response.data.planId);
-                    onScreenChange('SetUpTrainingDays');
+                    onScreenChange('TrainingDaysView');
                 } else onScreenChange('Trainings');
 
             } catch (error) {
