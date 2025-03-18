@@ -72,7 +72,7 @@ function Dashboard({ children, token, onScreenChange }) {
                 }}
             >
                 <Button
-                    onClick={() => { onScreenChange('NewTrainingPlan') }}
+                    onClick={() => { onScreenChange('TrainingPlanDetails') }}
                     width={'280px'}
                 >
                     Create training plan

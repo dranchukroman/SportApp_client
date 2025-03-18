@@ -7,7 +7,7 @@ import Button from "../../../../components/Buttons/Button";
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import Card from "../../../../components/Cards/InfoCard";
 
-function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDayId}){
+function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDayId}){
     const [trainingDays, setTrainingDays ] = useState(null);
 
     const [deleteDayId, setDeleteDayId] = useState(null);
@@ -163,4 +163,4 @@ function SetUpTrainingDays({ token, onScreenChange, trainingPlanId, setTraininDa
     );
 }
 
-export default SetUpTrainingDays;
+export default TrainingDaysView;

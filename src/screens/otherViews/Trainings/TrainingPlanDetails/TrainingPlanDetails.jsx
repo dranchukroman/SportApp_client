@@ -9,7 +9,7 @@ import axios from "axios";
 import ErrorToast from "../../../../components/popUps/ErrorToast";
 import theme from "../../../../styles/theme";
 
-function CreateTrainingPlan({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId }) {
+function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId }) {
     // Training plan data
     const [planName, setPlanName] = useState('');
     const [planDescription, setPlanDescription] = useState('');
@@ -260,7 +260,7 @@ function CreateTrainingPlan({ token, setTrainingPlanId, onScreenChange, editMode
     )
 }
 
-export default CreateTrainingPlan;
+export default TrainingPlanDetails;
 
 function convertStringToArray(str) {
     // Replace curly braces with square brackets

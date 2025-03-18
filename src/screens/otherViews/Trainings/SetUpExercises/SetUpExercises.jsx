@@ -151,7 +151,7 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
                 }}
             >
                 <Button
-                    onClick={() => onScreenChange('SetUpTrainingDays')}
+                    onClick={() => onScreenChange('TrainingDaysView')}
                     width={'172px'}
                 >
                     Back

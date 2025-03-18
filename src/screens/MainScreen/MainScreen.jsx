@@ -15,10 +15,11 @@ import Settings from '../otherViews/Settings/Settings';
 //// Dashboard
 import Dashboard from '../otherViews/Dashboard/Dashboard';
 //// Trainings
-import TrainingPlans from '../otherViews/Trainings/TrainingPlans/TrainingPlans';
-import CreateTrainingPlan from '../otherViews/Trainings/CreateTrainingPlan/CreateTrainingPlan';
-import SetUpTrainingDays from '../otherViews/Trainings/SetUpTrainingDays/SetUpTrainingDays';
-import AddTrainingDay from '../otherViews/Trainings/AddTrainingDay/AddTrainingDay';
+import TrainingPlansView from '../otherViews/Trainings/TrainingPlansView/TrainingPlansView.jsx';
+import TrainingPlanDetails from '../otherViews/Trainings/TrainingPlanDetails/TrainingPlanDetails.jsx';
+
+import TrainingDaysView from '../otherViews/Trainings/TrainingDaysView/TrainingDaysView.jsx';
+import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
 import SetUpExercises from '../otherViews/Trainings/SetUpExercises/SetUpExercises';
 import SetUpExercise from '../otherViews/Trainings/SetUpExercise/SetUpExercise';
 //// Diet
@@ -39,7 +40,7 @@ function MainScreen() {
     const userName = getUserName();
 
     // Change screen
-    const initialScreen = sessionStorage.getItem('userView') || 'Diet';
+    const initialScreen = sessionStorage.getItem('userView') || 'Dashboard';
     const [currentScreen, setCurrentScreen] = useState(initialScreen);
     useEffect(() => {
         sessionStorage.setItem('userView', currentScreen);
@@ -58,9 +59,9 @@ function MainScreen() {
         const titles = {
             Dashboard: `Hi, ${userName}`,
             Trainings: 'Trainings',
-            NewTrainingPlan: 'New training plan',
-            SetUpTrainingDays: 'Set up training days',
-            AddTrainingDay: 'Set up training days',
+            TrainingPlanDetails: 'New training plan',
+            TrainingDaysView: 'Set up training days',
+            TrainingDaysDetails: 'Set up training days',
             SetUpExercises: 'Set up exercises',
             SetUpExercise: 'Set up exercise',
             Diet: 'Diet',
@@ -76,13 +77,13 @@ function MainScreen() {
                 return <Dashboard token={token} onScreenChange={setCurrentScreen} />
 
             case 'Trainings':
-                return <TrainingPlans token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
-            case 'NewTrainingPlan':
-                return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} />
-            case 'SetUpTrainingDays':
-                return <SetUpTrainingDays token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} setTrainingPlanId={setTrainingPlanId} setTraininDayId={setTraininDayId} />
-            case 'AddTrainingDay':
-                return <AddTrainingDay token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} />
+                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
+            case 'TrainingPlanDetails':
+                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} />
+            case 'TrainingDaysView':
+                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} setTrainingPlanId={setTrainingPlanId} setTraininDayId={setTraininDayId} />
+            case 'TrainingDaysDetails':
+                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} />
             case 'SetUpExercises':
                 return <SetUpExercises token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} />
             case 'SetUpExercise':

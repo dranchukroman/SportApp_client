@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import StyledTraining from './TrainingPlans.styled'
+import StyledTraining from './TrainingPlansView.styled'
 import theme from "../../../../styles/theme";
 
 import Heading from "../../../../components/Headings/Heading";
@@ -11,7 +11,7 @@ import ErrorToast from "../../../../components/popUps/ErrorToast";
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus }) {
+function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
@@ -70,7 +70,7 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeSt
     // Get training plan id for edit and change screen
     function editTrainingDays(planId) {
         setTrainingPlanId(planId);
-        onScreenChange('SetUpTrainingDays');
+        onScreenChange('TrainingDaysView');
     }
 
 
@@ -112,6 +112,7 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeSt
                         position: 'absolute',
                         right: 0,
                         top: 0,
+                        zIndex: '100',
                         cursor: 'pointer',
                         display: editModeStatus ? 'block' : 'none'
                     }}
@@ -119,7 +120,7 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeSt
                     onClick={(e) => {
                         e.stopPropagation();
                         setTrainingPlanId(plan.plan_id);
-                        onScreenChange('NewTrainingPlan');
+                        onScreenChange('TrainingPlanDetails');
                     }}
                 />
                 <DeleteIcon
@@ -127,11 +128,13 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeSt
                         position: 'absolute',
                         left: 7,
                         top: 4,
+                        zIndex: '100',                        
                         display: editModeStatus ? 'block' : 'none',
                         cursor: 'pointer',
                     }}
                     onClick={(e) => {
                         e.stopPropagation();
+                        console.log('Delete');
                         setDeletePlanId(plan.plan_id);
                     }}
                 />
@@ -165,7 +168,7 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeSt
                 <Button
                     onClick={() => {
                         setEditModeStatus(false)
-                        onScreenChange('NewTrainingPlan')
+                        onScreenChange('TrainingPlanDetails')
                     }}
                     width={trainingPlans?.length <= 0 ? '' : '172px'}
                 >
@@ -178,4 +181,4 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeSt
     );
 }
 
-export default TrainingPlans;
+export default TrainingPlansView;

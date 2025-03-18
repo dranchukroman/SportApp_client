@@ -6,7 +6,7 @@ import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
 
-function AddTrainingDay({ token, onScreenChange, trainingPlanId }){
+function TrainingDaysDetails({ token, onScreenChange, trainingPlanId }){
 
     const [dayName, setDayName] = useState('');
     const [dayDescription, setDayDescription] = useState('');
@@ -101,7 +101,7 @@ function AddTrainingDay({ token, onScreenChange, trainingPlanId }){
                 }}
             >
                 <Button
-                    onClick={() => onScreenChange('SetUpTrainingDays')}
+                    onClick={() => onScreenChange('TrainingDaysView')}
                     width={'172px'}
                 >
                     Back
@@ -119,4 +119,4 @@ function AddTrainingDay({ token, onScreenChange, trainingPlanId }){
     )
 }
 
-export default AddTrainingDay;
+export default TrainingDaysDetails;
