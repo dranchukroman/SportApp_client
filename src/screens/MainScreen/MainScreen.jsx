@@ -47,10 +47,11 @@ function MainScreen() {
 
     // App data
     const [pageTitle, changePageTitle] = useState(`Hi, ${userName}`); // Page title
-    const [traininPlanId, setTrainingPlanId] = useState(0); // Save training plan id to work with
-    // const [traininDayId, setTraininDayId] = useState(0); // Save training day id to work with
-    const traininDayId = 0; // Save training day id to work with
+    const [trainingPlanId, setTrainingPlanId] = useState(0); // Save training plan id to work with
+    const [traininDayId, setTraininDayId] = useState(0); // Save training day id to work with
     const [trainingExerciseId, setTrainingExerciseId] = useState(0); // Save exercise id to work with
+
+    const [editModeStatus, setEditModeStatus] = useState(false);
 
     // Change page title
     useEffect(() => {
@@ -75,13 +76,13 @@ function MainScreen() {
                 return <Dashboard token={token} onScreenChange={setCurrentScreen} />
 
             case 'Trainings':
-                return <TrainingPlans token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} />
+                return <TrainingPlans token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
             case 'NewTrainingPlan':
-                return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} />
+                return <CreateTrainingPlan token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} />
             case 'SetUpTrainingDays':
-                return <SetUpTrainingDays token={token} onScreenChange={setCurrentScreen} trainingPlanId={traininPlanId} setTrainingPlanId={setTrainingPlanId} />
+                return <SetUpTrainingDays token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} setTrainingPlanId={setTrainingPlanId} setTraininDayId={setTraininDayId} />
             case 'AddTrainingDay':
-                return <AddTrainingDay token={token} onScreenChange={setCurrentScreen} trainingPlanId={traininPlanId} />
+                return <AddTrainingDay token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} />
             case 'SetUpExercises':
                 return <SetUpExercises token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} />
             case 'SetUpExercise':
@@ -137,7 +138,7 @@ function MainScreen() {
                 <div>
                     <Heading
                         color={theme.colors.darkBackground}
-                        fontSize={'27px'}
+                        fontSize={theme.fontSizes.largeHeader}
                     >
                         {pageTitle}
                     </Heading>

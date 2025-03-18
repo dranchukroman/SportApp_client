@@ -6,45 +6,46 @@ import theme from "../../../../styles/theme";
 import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
 import Card from '../../../../components/Cards/InfoCard'
+import ErrorToast from "../../../../components/popUps/ErrorToast";
 
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
+import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
+function TrainingPlans({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
-        async function fetchData() {
-            const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                },
-            });
+        // Fetch training plan data
+        const fetchTrainingPlans = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
 
-            if (response && response?.data?.data) {
-                setTrainingPlans(response.data.data);
-            } else {
-                setTrainingPlans(null);
+                if (response.status === 200 && response?.data?.data) {
+                    setTrainingPlans(response.data.data);
+                } else setErrorMessage('Cant get training plans')
+            } catch (error) {
+                setErrorMessage(error.response?.data?.message);
             }
         }
-        fetchData();
-    }, [token]);
-
-    // Get training plan id for edit and change screen
-    function editTrainingDays(planId) {
-        setTrainingPlanId(planId);
-        onScreenChange('SetUpTrainingDays');
-    }
+        fetchTrainingPlans();
+    }, [deletePlanId, token]);
 
     useEffect(() => {
+        // Delete plan
         const deletePlan = async () => {
             try {
                 console.log('Deleting training plan with ID:', deletePlanId);
-                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`, 
+                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
-                        }, 
+                        },
                         data: {
                             trainingPlanId: deletePlanId
                         }
@@ -57,18 +58,24 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
                 }
                 setDeletePlanId(null);
             } catch (error) {
-                console.error('Error deleting training plan:', error);
+                setErrorMessage(error.response?.data?.message)
             }
         };
 
-        if(deletePlanId) deletePlan();
+        if (deletePlanId) deletePlan();
     }, [deletePlanId, token]);
 
-    const deletePlan = (deletePlanId) => {
-        setDeletePlanId(deletePlanId);
+
+
+    // Get training plan id for edit and change screen
+    function editTrainingDays(planId) {
+        setTrainingPlanId(planId);
+        onScreenChange('SetUpTrainingDays');
     }
 
-    const TrainingScreenView = () => {
+
+
+    const showTrainingPlans = () => {
         if (!trainingPlans || trainingPlans.length === 0) {
             return (
                 <div>
@@ -86,60 +93,87 @@ function TrainingPlans({ token, onScreenChange, setTrainingPlanId }) {
                 </div>
             );
         }
-
         // Map training plans
         return trainingPlans.map(plan => (
             <Card
                 key={plan.plan_id}
                 data-elem={plan.plan_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
+                onClick={() => editModeStatus ? editTrainingDays(plan.plan_id) : startTraining(plan.plan_id)}
             >
-                <div style={{ color: "white" }}>
-                    <Heading
-                        fontSize={'18px'}
-                    >
-                        {plan.name}
-                    </Heading>
-                </div>
-
+                <Heading
+                    fontSize={theme.fontSizes.smallHeader}
+                    color={theme.colors.whiteText}
+                >
+                    {plan.name}
+                </Heading>
                 <EditIcon
                     style={{
                         position: 'absolute',
                         right: 0,
-                        top: 0
+                        top: 0,
+                        cursor: 'pointer',
+                        display: editModeStatus ? 'block' : 'none'
                     }}
 
-                    onClick={() => editTrainingDays(plan.plan_id)}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setTrainingPlanId(plan.plan_id);
+                        onScreenChange('NewTrainingPlan');
+                    }}
                 />
-                <div
+                <DeleteIcon
                     style={{
                         position: 'absolute',
                         left: 7,
-                        top: 7,
-                        padding: '10px',
-                        border: 'solid 1px red'
+                        top: 4,
+                        display: editModeStatus ? 'block' : 'none',
+                        cursor: 'pointer',
                     }}
-                >
-                    <Heading
-
-                        onClick={() => deletePlan(plan.plan_id)}
-                        fontSize={'16px'}
-                    >
-                        DEL
-                    </Heading>
-                </div>
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setDeletePlanId(plan.plan_id);
+                    }}
+                />
             </Card>
         ));
     }
 
+    function startTraining(planId) {
+        console.log(`Start training ${planId}`);
+    }
+
     return (
         <StyledTraining>
-            {TrainingScreenView()}
-            <Button
-                onClick={() => onScreenChange('NewTrainingPlan')}
+            {showTrainingPlans()}
+
+            <div
+                style={{
+                    display: trainingPlans?.length <= 0 ? 'block' : "flex",
+                    justifyContent: "space-between",
+                    marginTop: '10px'
+                }}
             >
-                Add new training plan
-            </Button>
+                <Button
+                    style={{ display: trainingPlans?.length <= 0 ? 'none' : 'block' }}
+                    onClick={() => setEditModeStatus((prev) => !prev)}
+                    width={'172px'}
+                >
+                    {editModeStatus ? 'Save editing' : 'Edit mode'}
+                </Button>
+
+                <Button
+                    onClick={() => {
+                        setEditModeStatus(false)
+                        onScreenChange('NewTrainingPlan')
+                    }}
+                    width={trainingPlans?.length <= 0 ? '' : '172px'}
+                >
+                    Add new training plan
+                </Button>
+            </div>
+
+            <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
         </StyledTraining>
     );
 }
