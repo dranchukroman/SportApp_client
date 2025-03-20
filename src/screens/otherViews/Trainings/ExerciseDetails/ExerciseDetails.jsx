@@ -118,12 +118,12 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
                 };
                 if (editModeStatus) exerciseData.day_exercise_id = trainingExerciseId;
 
-                const url = editModeStatus && trainingExerciseId != 0
+                const url = editModeStatus && trainingExerciseId !== 0
                     ? `${process.env.REACT_APP_SERVER_LINK}/api/updateDayExercise`
                     : `${process.env.REACT_APP_SERVER_LINK}/api/addDayExercise`;
 
                 await axios({
-                    method: editModeStatus && trainingExerciseId != 0 ? 'put' : 'post',
+                    method: editModeStatus && trainingExerciseId !== 0 ? 'put' : 'post',
                     url: url,
                     data: exerciseData,
                     headers: { Authorization: `Bearer ${token}` }
