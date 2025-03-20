@@ -6,8 +6,9 @@ import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
 import Card from "../../../../components/Cards/InfoCard";
 import EditIcon from "../../../../assets/icons/Trainings/editIcon";
+import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function SetUpExercises({ token, onScreenChange, traininDayId }) {
+function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId }) {
     const [exercises, setExercises] = useState(null);
     const [deleteExercise, setDeleteExercise] = useState(null);
 
@@ -34,11 +35,11 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
     useEffect(() => {
         const reduceExercises = async () => {
             try {
-                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteDayExercise`, 
+                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteDayExercise`,
                     {
                         headers: {
                             Authorization: `Bearer ${token}`
-                        }, 
+                        },
                         data: {
                             day_exercise_id: deleteExercise
                         }
@@ -56,15 +57,6 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
 
         if (deleteExercise) reduceExercises();
     }, [deleteExercise, token]);
-
-
-    function editExercise() {
-        // Implement edit exercise functionality
-    }
-
-    function deleteExerciseFromList(day_exercise_id) {
-        setDeleteExercise(day_exercise_id);
-    }
 
     const getExercises = () => {
         if (!exercises || exercises.length <= 0) {
@@ -89,7 +81,7 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
             <Card
                 key={exercise.day_exercise_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
-                // onClick={() => setUpExercise(exercise.day_exercise_id)}
+            // onClick={() => setUpExercise(exercise.day_exercise_id)}
             >
                 <div style={{ color: "white" }}>
                     <Heading
@@ -117,25 +109,25 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
                         right: 0,
                         top: 0
                     }}
-                    onClick={() => editExercise()}
+                    onClick={() => {
+                        setTrainingExerciseId(exercise.day_exercise_id);
+                        onScreenChange('ExerciseDetails');
+                    }}
                 />
-
-                <div
+                <DeleteIcon
                     style={{
                         position: 'absolute',
                         left: 7,
-                        top: 7,
-                        padding: '10px',
-                        border: 'solid 1px red'
+                        top: 4,
+                        zIndex: '100',
+                        display: editModeStatus ? 'block' : 'none',
+                        cursor: 'pointer',
                     }}
-                >
-                    <Heading
-                        onClick={() => deleteExerciseFromList(exercise.day_exercise_id)}
-                        fontSize={'16px'}
-                    >
-                        DEL
-                    </Heading>
-                </div>
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        setDeleteExercise(exercise.day_exercise_id);
+                    }}
+                />
             </Card>
         ));
     };
@@ -158,7 +150,10 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
                 </Button>
 
                 <Button
-                    onClick={() => onScreenChange('SetUpExercise')}
+                    onClick={() => {
+                        setTrainingExerciseId(0);
+                        onScreenChange('ExerciseDetails');
+                    }}
                     width={'172px'}
                 >
                     Add exercise
@@ -168,4 +163,4 @@ function SetUpExercises({ token, onScreenChange, traininDayId }) {
     );
 }
 
-export default SetUpExercises;
+export default ExercisesView;

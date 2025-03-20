@@ -36,8 +36,6 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                     params: {
                         trainingDayId: traininDayId
                     }
-
-
                 })
 
                 if (response.status === 200 && response?.data?.trainingDaysData) {

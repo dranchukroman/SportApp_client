@@ -80,7 +80,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
                 style={{ marginBottom: '14px', position: 'relative' }}
                 onClick={() => {
                     setTraininDayId(day.day_id);
-                    onScreenChange('SetUpExercises');
+                    onScreenChange('ExercisesView');
                 }}
             >
                 <div style={{ color: "white" }}>

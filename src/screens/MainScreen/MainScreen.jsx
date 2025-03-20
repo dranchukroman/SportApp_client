@@ -20,8 +20,8 @@ import TrainingPlanDetails from '../otherViews/Trainings/TrainingPlanDetails/Tra
 
 import TrainingDaysView from '../otherViews/Trainings/TrainingDaysView/TrainingDaysView.jsx';
 import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
-import SetUpExercises from '../otherViews/Trainings/SetUpExercises/SetUpExercises';
-import SetUpExercise from '../otherViews/Trainings/SetUpExercise/SetUpExercise';
+import ExercisesView from '../otherViews/Trainings/ExercisesView/ExercisesView.jsx';
+import ExerciseDetails from '../otherViews/Trainings/ExerciseDetails/ExerciseDetails.jsx';
 //// Diet
 import Diet from '../otherViews/Diet/Diet';
 //// Calculator
@@ -40,7 +40,7 @@ function MainScreen() {
     const userName = getUserName();
 
     // Change screen
-    const initialScreen = sessionStorage.getItem('userView') || 'TrainingDaysView';
+    const initialScreen = sessionStorage.getItem('userView') || 'Dashboard';
     const [currentScreen, setCurrentScreen] = useState(initialScreen);
     useEffect(() => {
         sessionStorage.setItem('userView', currentScreen);
@@ -62,8 +62,8 @@ function MainScreen() {
             TrainingPlanDetails: 'New training plan',
             TrainingDaysView: 'Set up training days',
             TrainingDaysDetails: 'Set up training days',
-            SetUpExercises: 'Set up exercises',
-            SetUpExercise: 'Set up exercise',
+            ExercisesView: 'Set up exercises',
+            ExerciseDetails: 'Set up exercise',
             Diet: 'Diet',
             Calculator: 'Calculator'
         }
@@ -84,10 +84,10 @@ function MainScreen() {
                 return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTraininDayId={setTraininDayId} />
             case 'TrainingDaysDetails':
                 return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} />
-            case 'SetUpExercises':
-                return <SetUpExercises token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} />
-            case 'SetUpExercise':
-                return <SetUpExercise token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} />
+            case 'ExercisesView':
+                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} />
+            case 'ExerciseDetails':
+                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} />
 
             case 'Diet':
                 return <Diet token={token} onScreenChange={setCurrentScreen} />
