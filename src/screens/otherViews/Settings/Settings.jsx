@@ -1,28 +1,49 @@
 import React from "react";
 import axios from "axios";
 
-import { SettingScreen, ButtonsGroup, Button } from "./Settings.styled";
+import { SettingScreen, ButtonsGroup, Button, SettingInput } from "./Settings.styled";
 import theme from "../../../styles/theme";
 import DivideLine from "../../../components/Dividers/DivideLine";
 
 
-function Settings ({ token }){
-    async function deleteAccount(){
+function Settings(
+    {
+        token,
+        setUserName,
+        setUserSurname,
+        setHeight,
+        setWeight,
+        setAge,
+        setGender,
+        setGoal,
+        setActivityLevel,
+        userName,
+        userSurname,
+        height,
+        weight,
+        age,
+        gender,
+        goal,
+        activityLevel,
+        visiblePartOfScreen,
+        setUserDataChanged
+    }) {
+    async function deleteAccount() {
         const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }
         })
 
-        if(response.status){
+        if (response.status) {
             localStorage.removeItem('authToken');
             window.location.href = '/login';
             return;
         }
     }
 
-    async function logOut(){
-        if(localStorage.getItem('authToken')){
+    async function logOut() {
+        if (localStorage.getItem('authToken')) {
             localStorage.removeItem('authToken');
             window.location.href = '/login';
         }
@@ -30,212 +51,218 @@ function Settings ({ token }){
 
     return (
         <SettingScreen>
+            <div
+                className='no-scrollbar'
+                style={{
+                    height: visiblePartOfScreen - 305 + "px",
+                    overflowY: 'scroll',
+                    overflowX: 'hidden',
+                }}
+            >
+                {/* Persolnal information */}
+                <ButtonsGroup>
+                    <Button>
+                        <SettingInput
+                            placeholder={'Name'}
+                            onChange={(e) => {
+                                setUserName(e.target.value);
+                                setUserDataChanged(true);
+                            }}
+                            value={userName}
 
-            {/* Persolnal information */}
-            <ButtonsGroup>
-                <Button>
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
+                        />
+                    </Button>
+                    <Button>
+                        <SettingInput
+                            placeholder={'Surname'}
+                            onChange={(e) => {
+                                setUserSurname(e.target.value);
+                                setUserDataChanged(true);
                             }}
-                        >
-                            Age
-                        </p>
-                    </div>  
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0,
-                                paddingRight: '15px'
-                            }}
-                        >
-                            19 20 21 Years
-                        </p>
-                    </div>                      
-                </Button>
-                <Button>
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
-                            }}
-                        >
-                            Height
-                        </p>
-                    </div>  
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0,
-                                paddingRight: '15px'
-                            }}
-                        >
-                            174 175 176 Cm
-                        </p>
-                    </div>                      
-                </Button>
-                <Button
-                    style={{
-                        border: 'none'
-                    }}
-                >
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
-                            }}
-                        >
-                            Weight
-                        </p>
-                    </div>  
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0,
-                                paddingRight: '15px'
-                            }}
-                        >
-                            74 75 76 Kg
-                        </p>
-                    </div>                      
-                </Button>
-            </ButtonsGroup>
-            <DivideLine/>
+                            value={userSurname}
 
-            {/* Other information */}
-            <ButtonsGroup>
-                <Button
-                    style={{
-                        justifyContent: 'center'
-                    }}
-                >
-                    <div>
-                        <p
+                        />
+                    </Button>
+                    <Button>
+                        <SettingInput
+                            placeholder={'Height'}
+                            onChange={(e) => {
+                                setHeight(e.target.value);
+                                setUserDataChanged(true);
+                            }}
+                            value={height}
+                            type="number"
+                        />
+                    </Button>
+                    <Button>
+                        <SettingInput
+                            placeholder={'Weight'}
+                            onChange={(e) => {
+                                setWeight(e.target.value);
+                                setUserDataChanged(true);
+                            }}
+                            value={weight}
+                            type="number"
+                        />
+                    </Button>
+                    <Button>
+                        <SettingInput
+                            placeholder={'Age'}
+                            onChange={(e) => {
+                                setAge(e.target.value);
+                                setUserDataChanged(true);
+                            }}
+                            value={age}
+                            type="number"
+                        />
+                    </Button>
+                    <Button
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'left'
+                        }}
+                    >
+                        <div
                             style={{
                                 fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
                                 color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
+                                marginRight: '10px',
                             }}
                         >
-                            Support
-                        </p>
-                    </div>  
-                </Button>
-                <Button
-                    style={{
-                        justifyContent: 'center'
-                    }}
-                >
-                    <div>
-                        <p
+                            Gender:
+                        </div>
+                        <select
+                            onChange={(e) => {
+                                setGender(e.target.value);
+                                setUserDataChanged(true);
+                            }}
+                            value={gender}
+                            style={{
+                                backgroundColor: 'transparent',
+                                border: 'none',
+                                color: theme.colors.whiteText,
+                                fontSize: theme.fontSizes.largeParagraph
+                            }}
+                        >
+                            <option value="male">
+                                Male
+                            </option>
+                            <option value="female">
+                                Female
+                            </option>
+                            <option value="other">
+                                Other
+                            </option>
+                        </select>
+                    </Button>
+                    <Button
+                        style={{
+                            display: 'flex',
+                            justifyContent: 'left',
+                        }}
+                    >
+                        <div
                             style={{
                                 fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
                                 color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
+                                marginRight: '10px',
                             }}
                         >
-                            Web-site
-                        </p>
-                    </div>                     
-                </Button>
-                <Button
-                    style={{
-                        justifyContent: 'center',
-                        border: 'none'
-                    }}
-                >
-                    <div>
-                        <p
+                            Activity level:
+                        </div>
+                        <select
+                            onChange={(e) => {
+                                setActivityLevel(e.target.value);
+                                setUserDataChanged(true);
+                            }}
+                            value={activityLevel}
                             style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
+                                backgroundColor: 'transparent',
+                                border: 'none',
                                 color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
+                                fontSize: theme.fontSizes.largeParagraph
                             }}
                         >
-                            Share
-                        </p>
-                    </div>                   
-                </Button>
-            </ButtonsGroup>
-            <DivideLine/>
-            
-            {/* Danger zone */}
-            <ButtonsGroup>
-                <Button
-                    style={{
-                        justifyContent: 'center'
-                    }}
+                            <option value="low">
+                                Low
+                            </option>
+                            <option value="medium">
+                                Medium
+                            </option>
+                            <option value="high">
+                                High
+                            </option>
 
-                    onClick={logOut}
-                >
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
+                        </select>
+                    </Button>
+                    <Button
+                        style={{
+                            border: 'none'
+                        }}
+                    >
+                        <SettingInput
+                            placeholder={'Your goal'}
+                            onChange={(e) => {
+                                setGoal(e.target.value);
+                                setUserDataChanged(true);
                             }}
-                        >
-                            Log out
-                        </p>
-                    </div>  
-                </Button>
-                <Button
-                    style={{
-                        justifyContent: 'center',
-                        border: 'none'
-                    }}
+                            value={goal}
+                        />
+                    </Button>
+                </ButtonsGroup>
+                <DivideLine />
 
-                    onClick={deleteAccount}
+                {/* Danger zone */}
+                <ButtonsGroup
+                    style={{
+                        marginBottom: '20px'
+                    }}
                 >
-                    <div>
-                        <p
-                            style={{
-                                fontSize: theme.fontSizes.largeParagraph,
-                                fontWeight: theme.fontWeights.largeHeader,
-                                color: theme.colors.whiteText,
-                                margin: 0,
-                                padding: 0
-                            }}
-                        >
-                            Delete account
-                        </p>
-                    </div>                   
-                </Button>
-            </ButtonsGroup>
+                    <Button
+                        style={{
+                            justifyContent: 'center'
+                        }}
+
+                        onClick={logOut}
+                    >
+                        <div>
+                            <p
+                                style={{
+                                    fontSize: theme.fontSizes.largeParagraph,
+                                    fontWeight: theme.fontWeights.largeHeader,
+                                    color: theme.colors.whiteText,
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                            >
+                                Log out
+                            </p>
+                        </div>
+                    </Button>
+                    <Button
+                        style={{
+                            justifyContent: 'center',
+                            border: 'none'
+                        }}
+
+                        onClick={deleteAccount}
+                    >
+                        <div>
+                            <p
+                                style={{
+                                    fontSize: theme.fontSizes.largeParagraph,
+                                    fontWeight: theme.fontWeights.largeHeader,
+                                    color: 'red',
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                            >
+                                Delete account
+                            </p>
+                        </div>
+                    </Button>
+                </ButtonsGroup>
+            </div>
         </SettingScreen>
     )
 }

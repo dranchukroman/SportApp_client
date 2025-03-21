@@ -6,6 +6,7 @@ import theme from './styles/theme';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import LoginPage from './screens/LoginPage/LoginPage';
 import MainScreen from './screens/MainScreen/MainScreen';
+import UserProfileCreation from './screens/UserProfileCreation/UserProfileCreation'
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -22,13 +23,13 @@ function App() {
         <Routes>
           <Route
             path='/'
-            element={<Navigate to='/dashboard' replace/>}
+            element={<Navigate to='/dashboard' replace />}
           />
           <Route
             path='/dashboard'
             element={
               <PageWithBackground $bgColor='#EEE'>
-                <MainScreen/>
+                <MainScreen />
               </PageWithBackground>
             }
           />
@@ -45,6 +46,14 @@ function App() {
             element={
               <PageWithBackground $bgColor="#181818">
                 <LoginPage />
+              </PageWithBackground>
+            }
+          />
+          <Route
+            path='/createProfile'
+            element={
+              <PageWithBackground $bgColor="#181818">
+                <UserProfileCreation />
               </PageWithBackground>
             }
           />

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { StyledLoginPage, LoginPageContainer } from './LoginPage.styled'
 
-import Headeing from '../../components/Headings/Heading';
+import Heading from '../../components/Headings/Heading';
 import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import GoogleIcon from '../../assets/icons/LoginPage/google';
@@ -73,7 +73,7 @@ function LoginPage() {
 
                             if (loginResponse?.data.token) {
                                 localStorage.setItem('authToken', loginResponse.data.token);
-                                window.location.href = '/dashboard'
+                                window.location.href = '/createProfile'
                             } else {
                                 window.location.href = '/login'
                                 setErrorMessage(loginResponse.data.message);
@@ -177,9 +177,9 @@ function LoginPage() {
     return (
         <LoginPageContainer>
             <StyledLoginPage>
-                <Headeing>
+                <Heading>
                     Sport App
-                </Headeing>
+                </Heading>
                 <p>
                     Dream big, work hard, stay focused.
                 </p>

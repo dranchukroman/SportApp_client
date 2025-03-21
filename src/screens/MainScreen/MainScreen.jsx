@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import axios from 'axios';
 
 // Styles
 import './MainScreen.styled'
@@ -10,6 +11,7 @@ import FunctionalBar from '../../components/FunctionalBar/FunctionalBar';
 import Navigation from '../../components/Navigation/Navigation'
 import UserIcon from '../../components/UserIcon/UserIcon';
 import Settings from '../otherViews/Settings/Settings';
+import ErrorToast from '../../components/popUps/ErrorToast.jsx';
 
 // Views on functional bar
 //// Dashboard
@@ -37,7 +39,74 @@ function MainScreen() {
     }
 
     // User data
-    const userName = getUserName();
+    const [userName, setUserName] = useState('');
+    const [userSurname, setUserSurname] = useState('');
+    const [height, setHeight] = useState('');
+    const [weight, setWeight] = useState('');
+    const [age, setAge] = useState('');
+    const [gender, setGender] = useState('');
+    const [goal, setGoal] = useState('');
+    const [activityLevel, setActivityLevel] = useState('');
+    const [userDataChanged, setUserDataChanged] = useState(false);
+    const [updateData, setUpdateData] = useState(false);
+
+    useEffect(() => {
+        const updateUserData = async () => {
+            try {
+                const profileData = {
+                    first_name: userName,
+                    last_name: userSurname,
+                    height: height,
+                    weight: weight,
+                    age: age,
+                    gender: gender.toLowerCase(),
+                    goal: goal,
+                    activity_level: activityLevel.toLowerCase(),
+                }
+                const response = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateProfile`, profileData, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+                });
+
+                if(response.status === 200){
+                    window.location.href = '/dashboard';
+                } else{
+                    setErrorMessage(response.data.message);
+                }
+            } catch (error) {
+                setErrorMessage(error.response?.data?.message);
+            }
+        }
+        if(updateData && userDataChanged) {
+            updateUserData();
+            setUserDataChanged(false);
+            setUpdateData(false);
+        }
+    }, [token, updateData, userDataChanged])
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                if (response.status === 200 && response.data) {
+                    const userData = response.data[0];
+                    setUserName(userData.first_name);
+                    setUserSurname(userData.last_name);
+                    setHeight(userData.height);
+                    setWeight(userData.weight);
+                    setAge(userData.age);
+                    setGender(userData.gender);
+                    setGoal(userData.goal);
+                    setActivityLevel(userData.activity_level);
+                }
+            } catch (error) {
+                console.error('Error fetching user data:', error);
+            }
+        };
+
+        fetchUserData();
+    }, [token]);
 
     // Change screen
     const initialScreen = sessionStorage.getItem('userView') || 'Dashboard';
@@ -47,12 +116,13 @@ function MainScreen() {
     }, [currentScreen]);
 
     // App data
-    const [pageTitle, changePageTitle] = useState(`Hi, ${userName}`); // Page title
+    const [pageTitle, changePageTitle] = useState(userName !== '' ? `Hi, ${userName}` : 'Dashboard'); // Page title
     const [trainingPlanId, setTrainingPlanId] = useState(0); // Save training plan id to work with
     const [traininDayId, setTraininDayId] = useState(0); // Save training day id to work with
     const [trainingExerciseId, setTrainingExerciseId] = useState(0); // Save exercise id to work with
 
     const [editModeStatus, setEditModeStatus] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
 
     // Change page title
     useEffect(() => {
@@ -114,7 +184,15 @@ function MainScreen() {
 
     // Show settings
     const [isSettingsVisible, setFunctionalBarVisibility] = useState(false);
-    const showSettings = () => setFunctionalBarVisibility(prev => !prev);
+    const showSettings = () => {
+        setFunctionalBarVisibility(prev => {
+            if (prev) {
+                setUpdateData(true);
+            }
+            console.log('updating')
+            return !prev;
+        });
+    };
 
     return (
         <div
@@ -154,7 +232,27 @@ function MainScreen() {
                 }}
             >
                 {/* Settings view */}
-                <Settings token={token} />
+                <Settings 
+                    token={token} 
+                    setUserName={setUserName} 
+                    setUserSurname={setUserSurname} 
+                    setHeight={setHeight} 
+                    setWeight={setWeight} 
+                    setAge={setAge} 
+                    setGender={setGender} 
+                    setGoal={setGoal} 
+                    setActivityLevel={setActivityLevel}
+                    userName={userName} 
+                    userSurname={userSurname} 
+                    height={height} 
+                    weight={weight} 
+                    age={age} 
+                    gender={gender} 
+                    goal={goal} 
+                    activityLevel={activityLevel}
+                    visiblePartOfScreen={visiblePartOfScreen}
+                    setUserDataChanged={setUserDataChanged}
+                    />
             </div>
 
             {/* Functional bar with different views */}
@@ -177,7 +275,7 @@ function MainScreen() {
                     {renderScreen()}
                 </div>
             </FunctionalBar>
-
+            <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
             {/* Navigation */}
             <Navigation
                 style={{
@@ -188,10 +286,6 @@ function MainScreen() {
             />
         </div>
     );
-}
-
-const getUserName = () => {
-    return "Roman";
 }
 
 export default MainScreen;
