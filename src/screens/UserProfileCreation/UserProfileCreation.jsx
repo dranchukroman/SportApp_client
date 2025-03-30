@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { StyledCreateProfile, CreateProfileContainer, StyledSelect } from './UserProfileCreation.styled'
 import Input from '../../components/Inputs/Input';
@@ -6,21 +6,22 @@ import Heading from '../../components/Headings/Heading';
 import Button from '../../components/Buttons/Button';
 import ErrorToast from '../../components/popUps/ErrorToast';
 
-function UserProfileCreation() {
-    const [userName, setUserName] = useState('');
-    const [userSurname, setUserSurname] = useState('');
-    const [height, setHeight] = useState('');
-    const [weight, setWeight] = useState('');
-    const [age, setAge] = useState('');
-    const [gender, setGender] = useState('Male');
-    const [goal, setGoal] = useState('');
-    const [activityLevel, setActivityLevel] = useState('Low');
+function UserProfileCreation({ errorMessage, setErrorMessage }) {
+    const [userData, setUserData] = useState({
+        name: '',
+        surname: '',
+        height: 0,
+        weight: 0,
+        age: 0,
+        gender: 'other',
+        goal: '',
+        activity_level: 'low'
+    })
 
     const [fieldsStatus, setFieldsStatus] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
 
     const checkFields = () => {
-        if (userName !== '' && userSurname !== '' && height !== '' && weight !== '' && age !== '' && gender !== '' && goal !== '' && activityLevel !== '') {
+        if (userData.name !== '' && userData.surname !== '' && userData.height !== '' && userData.weight !== '' && userData.age !== '' && userData.gender !== '' && userData.goal !== '' && userData.activityLevel !== '') {
             setFieldsStatus(true);
         } else {
             setErrorMessage('All fields should be filled');
@@ -29,36 +30,40 @@ function UserProfileCreation() {
 
     useEffect(() => {
         const checkIfProfileExist = async () => {
-            const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-            });
-            if(response.status === 200){
-                window.location.href = '/dashboard';
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+                });
+                if (response.status === 200 && response.data.length > 0) {
+                    window.location.href = '/dashboard';
+                }
+            } catch (error) {
+                console.log('Profile doesn\'t exist');
             }
         }
         checkIfProfileExist();
     })
 
+    const profileData = useMemo(() => ({
+        first_name: userData.name,
+        last_name: userData.surname,
+        height: userData.height,
+        weight: userData.weight,
+        age: userData.age,
+        gender: userData.gender,
+        goal: userData.goal,
+        activity_level: userData.activityLevel,
+    }), [userData]);
     useEffect(() => {
         const createProfile = async () => {
             try {
-                const profileData = {
-                    first_name: userName,
-                    last_name: userSurname,
-                    height: height,
-                    weight: weight,
-                    age: age,
-                    gender: gender.toLowerCase(),
-                    goal: goal,
-                    activity_level: activityLevel.toLowerCase(),
-                }
                 const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/createProfile`, profileData, {
                     headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
                 });
 
-                if(response.status === 201){
+                if (response.status === 201) {
                     window.location.href = '/dashboard';
-                } else{
+                } else {
                     setErrorMessage(response.data.message);
                     setFieldsStatus(false);
                 }
@@ -66,8 +71,8 @@ function UserProfileCreation() {
                 setErrorMessage(error.response?.data?.message);
             }
         }
-        if(fieldsStatus) createProfile();
-    }, [fieldsStatus]);
+        if (fieldsStatus) createProfile();
+    }, [fieldsStatus, profileData, setErrorMessage]);
 
     return (
         <CreateProfileContainer>
@@ -80,8 +85,11 @@ function UserProfileCreation() {
                 </p>
                 <Input
                     placeholder={'Name'}
-                    onChange={(e) => setUserName(e.target.value)}
-                    value={userName}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        name: e.target.value
+                    }))}
+                    value={userData.name}
                     style={{
                         marginBottom: '10px'
                     }}
@@ -89,8 +97,11 @@ function UserProfileCreation() {
 
                 <Input
                     placeholder={'Surname'}
-                    onChange={(e) => setUserSurname(e.target.value)}
-                    value={userSurname}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        surname: e.target.value
+                    }))}
+                    value={userData.surname}
                     style={{
                         marginBottom: '10px'
                     }}
@@ -98,8 +109,11 @@ function UserProfileCreation() {
 
                 <Input
                     placeholder={'Height'}
-                    onChange={(e) => setHeight(e.target.value)}
-                    value={height}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        height: e.target.value
+                    }))}
+                    value={userData.height}
                     style={{
                         marginBottom: '10px'
                     }}
@@ -108,8 +122,11 @@ function UserProfileCreation() {
 
                 <Input
                     placeholder={'Weight'}
-                    onChange={(e) => setWeight(e.target.value)}
-                    value={weight}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        weight: e.target.value
+                    }))}
+                    value={userData.weight}
                     style={{
                         marginBottom: '10px'
                     }}
@@ -118,8 +135,11 @@ function UserProfileCreation() {
 
                 <Input
                     placeholder={'Age'}
-                    onChange={(e) => setAge(e.target.value)}
-                    value={age}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        age: e.target.value
+                    }))}
+                    value={userData.age}
                     style={{
                         marginBottom: '10px'
                     }}
@@ -129,16 +149,19 @@ function UserProfileCreation() {
                     style={{
                         marginBottom: '10px'
                     }}
-                    onChange={(e) => setGender(e.target.value)}
-                    value={gender}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        gender: e.target.value
+                    }))}
+                    value={userData.gender}
                 >
-                    <option value="Male">
+                    <option value="male">
                         Male
                     </option>
-                    <option value="Female">
+                    <option value="female">
                         Female
                     </option>
-                    <option value="Other">
+                    <option value="other">
                         Other
                     </option>
                 </StyledSelect>
@@ -146,24 +169,30 @@ function UserProfileCreation() {
                     style={{
                         marginBottom: '10px'
                     }}
-                    onChange={(e) => setActivityLevel(e.target.value)}
-                    value={activityLevel}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        activity_level: e.target.value
+                    }))}
+                    value={userData.activityLevel}
                 >
-                    <option value="Low">
+                    <option value="low">
                         Low
                     </option>
-                    <option value="Medium">
+                    <option value="medium">
                         Medium
                     </option>
-                    <option value="High">
+                    <option value="high">
                         High
                     </option>
                 </StyledSelect>
 
                 <Input
                     placeholder={'Your goal'}
-                    onChange={(e) => setGoal(e.target.value)}
-                    value={goal}
+                    onChange={(e) => setUserData((prev) => ({
+                        ...prev,
+                        goal: e.target.value
+                    }))}
+                    value={userData.goal}
                     style={{
                         marginBottom: '10px'
                     }}

@@ -8,7 +8,7 @@ import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import Card from "../../../../components/Cards/InfoCard";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDayId, editModeStatus }) {
+function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDayId, editModeStatus, errorMessage, setErrorMessage }) {
     const [trainingDays, setTrainingDays] = useState(null);
 
     const [deleteDayId, setDeleteDayId] = useState(null);
@@ -79,7 +79,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
                 data-elem={day.day_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
                 onClick={() => {
-                    setTraininDayId(day.day_id);
+                    setTrainingDayId(day.day_id);
                     onScreenChange('ExercisesView');
                 }}
             >
@@ -106,7 +106,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
 
                     onClick={(e) => {
                         e.stopPropagation();
-                        setTraininDayId(day.day_id);
+                        setTrainingDayId(day.day_id);
                         onScreenChange('TrainingDaysDetails');
                     }}
                 />
@@ -147,7 +147,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTraininDay
 
                 <Button
                     onClick={() => {
-                        setTraininDayId(0);
+                        setTrainingDayId(0);
                         onScreenChange('TrainingDaysDetails')
                     }}
                     width={'172px'}

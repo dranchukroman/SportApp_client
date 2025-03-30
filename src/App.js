@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyles } from './styles/GlobalStyles';
@@ -7,15 +7,16 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import LoginPage from './screens/LoginPage/LoginPage';
 import MainScreen from './screens/MainScreen/MainScreen';
 import UserProfileCreation from './screens/UserProfileCreation/UserProfileCreation'
+import ErrorToast from './components/popUps/ErrorToast';
 
 const PageWrapper = styled.div`
   min-height: 100vh;
   background-color: ${(props) => props.$bgColor};
 `;
 
-// Clean code and use templates
-
 function App() {
+  const [errorMessage, setErrorMessage] = useState('');
+
   return (
     <ThemeProvider theme={theme}>
       <GlobalStyles />
@@ -29,7 +30,7 @@ function App() {
             path='/dashboard'
             element={
               <PageWithBackground $bgColor='#EEE'>
-                <MainScreen />
+                <MainScreen setErrorMessage={setErrorMessage} />
               </PageWithBackground>
             }
           />
@@ -37,7 +38,7 @@ function App() {
             path='/login'
             element={
               <PageWithBackground $bgColor="#181818">
-                <LoginPage />
+                <LoginPage setErrorMessage={setErrorMessage} />
               </PageWithBackground>
             }
           />
@@ -45,7 +46,7 @@ function App() {
             path='/registration'
             element={
               <PageWithBackground $bgColor="#181818">
-                <LoginPage />
+                <LoginPage setErrorMessage={setErrorMessage} />
               </PageWithBackground>
             }
           />
@@ -53,12 +54,13 @@ function App() {
             path='/createProfile'
             element={
               <PageWithBackground $bgColor="#181818">
-                <UserProfileCreation />
+                <UserProfileCreation setErrorMessage={setErrorMessage} />
               </PageWithBackground>
             }
           />
         </Routes>
       </Router>
+      <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage}/>
     </ThemeProvider>
   );
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { ToastPopUp } from './popUps.styled';
 
-function ErrorToast({ message, showError = false, setErrorMessage }) {
+function ErrorToast({ message, setErrorMessage }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {

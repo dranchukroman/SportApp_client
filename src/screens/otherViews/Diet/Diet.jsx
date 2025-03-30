@@ -3,7 +3,7 @@ import StyledDiet from './Diet.styled'
 import Heading from "../../../components/Headings/Heading";
 import Button from "../../../components/Buttons/Button";
 
-function Diet({children, onScreenChange}){
+function Diet({children, onScreenChange, errorMessage, setErrorMessage}){
     const handleGoToDashboard = () =>{
         onScreenChange('Dashboard');
     }

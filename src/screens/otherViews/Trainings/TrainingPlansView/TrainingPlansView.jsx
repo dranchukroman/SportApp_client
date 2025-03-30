@@ -6,15 +6,13 @@ import theme from "../../../../styles/theme";
 import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
 import Card from '../../../../components/Cards/InfoCard'
-import ErrorToast from "../../../../components/popUps/ErrorToast";
 
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus }) {
+function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus, setErrorMessage }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
-    const [errorMessage, setErrorMessage] = useState('');
 
     useEffect(() => {
         // Fetch training plan data
@@ -34,7 +32,7 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
             }
         }
         fetchTrainingPlans();
-    }, [deletePlanId, token]);
+    }, [deletePlanId, token, setErrorMessage]);
 
     useEffect(() => {
         // Delete plan
@@ -63,7 +61,7 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
         };
 
         if (deletePlanId) deletePlan();
-    }, [deletePlanId, token]);
+    }, [deletePlanId, token, setErrorMessage]);
 
 
 
@@ -174,8 +172,6 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
                     Add new training plan
                 </Button>
             </div>
-
-            <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
         </StyledTraining>
     );
 }

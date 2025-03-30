@@ -7,7 +7,7 @@ import Heading from '../../../components/Headings/Heading';
 import theme from "../../../styles/theme";
 import axios from 'axios';
 
-function Dashboard({ children, token, onScreenChange }) {
+function Dashboard({ children, token, onScreenChange, errorMessage, setErrorMessage }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
     const [trainingPlans, setTrainingPlans] = useState([]);
 

@@ -1,7 +1,7 @@
 import React from "react";
 import axios from "axios";
 
-import { SettingScreen, ButtonsGroup, Button, SettingInput } from "./Settings.styled";
+import { SettingScreen, ButtonsGroup, Button, SettingInput/*, errorMessage, setErrorMessage */} from "./Settings.styled";
 import theme from "../../../styles/theme";
 import DivideLine from "../../../components/Dividers/DivideLine";
 
@@ -9,24 +9,10 @@ import DivideLine from "../../../components/Dividers/DivideLine";
 function Settings(
     {
         token,
-        setUserName,
-        setUserSurname,
-        setHeight,
-        setWeight,
-        setAge,
-        setGender,
-        setGoal,
-        setActivityLevel,
-        userName,
-        userSurname,
-        height,
-        weight,
-        age,
-        gender,
-        goal,
-        activityLevel,
+        userData,
+        setUserData,
         visiblePartOfScreen,
-        setUserDataChanged
+        setIsDataChanged
     }) {
     async function deleteAccount() {
         const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
@@ -65,10 +51,13 @@ function Settings(
                         <SettingInput
                             placeholder={'Name'}
                             onChange={(e) => {
-                                setUserName(e.target.value);
-                                setUserDataChanged(true);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    name: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={userName}
+                            value={userData.name}
 
                         />
                     </Button>
@@ -76,10 +65,13 @@ function Settings(
                         <SettingInput
                             placeholder={'Surname'}
                             onChange={(e) => {
-                                setUserSurname(e.target.value);
-                                setUserDataChanged(true);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    surname: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={userSurname}
+                            value={userData.surname}
 
                         />
                     </Button>
@@ -87,10 +79,13 @@ function Settings(
                         <SettingInput
                             placeholder={'Height'}
                             onChange={(e) => {
-                                setHeight(e.target.value);
-                                setUserDataChanged(true);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    height: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={height}
+                            value={userData.height}
                             type="number"
                         />
                     </Button>
@@ -98,10 +93,13 @@ function Settings(
                         <SettingInput
                             placeholder={'Weight'}
                             onChange={(e) => {
-                                setWeight(e.target.value);
-                                setUserDataChanged(true);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    weight: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={weight}
+                            value={userData.weight}
                             type="number"
                         />
                     </Button>
@@ -109,10 +107,13 @@ function Settings(
                         <SettingInput
                             placeholder={'Age'}
                             onChange={(e) => {
-                                setAge(e.target.value);
-                                setUserDataChanged(true);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    age: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={age}
+                            value={userData.age}
                             type="number"
                         />
                     </Button>
@@ -133,10 +134,13 @@ function Settings(
                         </div>
                         <select
                             onChange={(e) => {
-                                setGender(e.target.value);
-                                setUserDataChanged(true);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    gender: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={gender}
+                            value={userData.gender}
                             style={{
                                 backgroundColor: 'transparent',
                                 border: 'none',
@@ -172,10 +176,14 @@ function Settings(
                         </div>
                         <select
                             onChange={(e) => {
-                                setActivityLevel(e.target.value);
-                                setUserDataChanged(true);
+                                console.log(e);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    activity_level: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={activityLevel}
+                            value={userData.activity_level}
                             style={{
                                 backgroundColor: 'transparent',
                                 border: 'none',
@@ -203,10 +211,13 @@ function Settings(
                         <SettingInput
                             placeholder={'Your goal'}
                             onChange={(e) => {
-                                setGoal(e.target.value);
-                                setUserDataChanged(true);
+                                setUserData((prevState) => ({
+                                    ...prevState,
+                                    goal: e.target.value
+                                }));
+                                setIsDataChanged(true);
                             }}
-                            value={goal}
+                            value={userData.goal}
                         />
                     </Button>
                 </ButtonsGroup>

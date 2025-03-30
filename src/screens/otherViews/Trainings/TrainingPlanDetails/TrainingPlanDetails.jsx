@@ -6,10 +6,9 @@ import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
 import CheckBox from "../../../../components/Inputs/CheckBoxes/CheckBox";
 import TextCheckBox from "../../../../components/Inputs/CheckBoxes/TextCheckBox";
 import axios from "axios";
-import ErrorToast from "../../../../components/popUps/ErrorToast";
 import theme from "../../../../styles/theme";
 
-function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId }) {
+function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId, errorMessage, setErrorMessage }) {
     // Training plan data
     const [planName, setPlanName] = useState('');
     const [planDescription, setPlanDescription] = useState('');
@@ -19,7 +18,6 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
 
     // Service data
     const [fieldsStatus, setFieldsStatus] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
 
     // Check if fields are filled
     function checkFields() {
@@ -73,7 +71,7 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
         }
         if (editModeStatus) fetchTraininPlansData();
 
-    }, [editModeStatus, trainingPlanId, token]);
+    }, [editModeStatus, trainingPlanId, token, setErrorMessage]);
 
     useEffect(() => {
         // Update or add training plan
@@ -119,7 +117,7 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
         }
         if (fieldsStatus) handleTraininPlan();
 
-    }, [fieldsStatus, editModeStatus, isCurrentPlan, onScreenChange, planDescription, planName, planThumbnailImage, plandaysPerWeek, setTrainingPlanId, token, trainingPlanId]);
+    }, [fieldsStatus, editModeStatus, isCurrentPlan, onScreenChange, planDescription, planName, planThumbnailImage, plandaysPerWeek, setTrainingPlanId, token, trainingPlanId, setErrorMessage]);
 
     return (
         <div>
@@ -254,8 +252,6 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
                     {editModeStatus ? 'Save' : 'Next'}
                 </Button>
             </div>
-
-            <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
         </div>
     )
 }

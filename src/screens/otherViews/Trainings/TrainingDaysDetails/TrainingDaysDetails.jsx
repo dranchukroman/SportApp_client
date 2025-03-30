@@ -5,10 +5,9 @@ import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
-import ErrorToast from "../../../../components/popUps/ErrorToast";
 import theme from "../../../../styles/theme";
 
-function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, traininDayId }) {
+function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, traininDayId, errorMessage, setErrorMessage }) {
 
     const [dayName, setDayName] = useState('');
     const [dayDescription, setDayDescription] = useState('');
@@ -16,7 +15,6 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
 
     const [fieldsStatus, setFieldsStatus] = useState(false);
 
-    const [errorMessage, setErrorMessage] = useState(null);
 
     function checkFields() {
         if (dayName !== '' && dayDescription !== '') {
@@ -47,7 +45,7 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
             }
         }
         if (editModeStatus && traininDayId !== 0) fetchTrainingDaysData();
-    }, [editModeStatus, traininDayId, token]);
+    }, [editModeStatus, traininDayId, token, setErrorMessage]);
 
     // Add or update training day
     useEffect(() => {
@@ -84,7 +82,7 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
             }
         }
         if (fieldsStatus) handleTrainingPlan();
-    }, [fieldsStatus, dayName, dayDescription, onScreenChange, token, trainingPlanId, traininDayId]);
+    }, [fieldsStatus, dayName, dayDescription, onScreenChange, token, trainingPlanId, traininDayId, setErrorMessage]);
 
     return (
         <div>
@@ -154,8 +152,6 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                     {editModeStatus ? 'Save' : 'Add day'}
                 </Button>
             </div>
-
-            <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
         </div>
     )
 }

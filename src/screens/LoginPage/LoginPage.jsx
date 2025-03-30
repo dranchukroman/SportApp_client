@@ -1,35 +1,39 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { StyledLoginPage, LoginPageContainer } from './LoginPage.styled'
+import axios from 'axios';
 
 import Heading from '../../components/Headings/Heading';
 import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import GoogleIcon from '../../assets/icons/LoginPage/google';
-import ErrorToast from '../../components/popUps/ErrorToast'
 
-function LoginPage() {
+function LoginPage({ setErrorMessage }) {
+    const navigate = useNavigate();
+
+    // Check if token valid
     const token = localStorage.getItem('authToken') || '';
-    sessionStorage.removeItem('userView');
-
-    useEffect(() => {
-        const checkIfTokenValid = async () => {
+    const checkIfTokenValid = useCallback(async () => {
+        try {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/checkToken`, {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
             })
             if (response.status === 200) {
-                window.location.href = '/dashboard';
+                navigate('/dashboard');
             }
+        } catch (error) {
+            console.log(`Token validation failed: ${error}`);
         }
+    }, [navigate, token]);
+    useEffect(() => {
         if (token !== '') checkIfTokenValid()
-    }, [token]);
+    }, [checkIfTokenValid, token]);
 
-    const [email, setEmail] = useState('test2');
-    const [password, setPassword] = useState('test2');
+    const [email, setEmail] = useState('test1');
+    const [password, setPassword] = useState('test1');
     const [password2, setPassword2] = useState('');
-    const [errorMessage, setErrorMessage] = useState('');
     const [isRegistration, setIsRegistration] = useState(false);
 
     useEffect(() => {
@@ -41,61 +45,34 @@ function LoginPage() {
         }
     }, []);
 
-    const handleLogin = async () => {
-        try {
-            if (email !== '' && password !== '') {
-                const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
+    const saveTokenAndRedirect = (token, path) => {
+        localStorage.setItem('authToken', token);
+        navigate(path);
+    }
 
-                if (response?.data.token) {
-                    localStorage.setItem('authToken', response.data.token);
-                    window.location.href = '/dashboard'
-                } else {
-                    setErrorMessage(response.data.message);
-                }
-            } else {
-                setErrorMessage(`Email and password are required`);
-            }
+    const handleLogin = async () => {
+        if (!email && !password) return setErrorMessage(`Email and password are required`);
+        try {
+            const { data } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
+            data?.token ? saveTokenAndRedirect(data.token, '/dashboard') : setErrorMessage(data.message);
         } catch (error) {
-            console.log(`Error during login: `, error);
-            setErrorMessage(error.response?.data?.message);
+            setErrorMessage(error.response?.data?.message || 'Login failed');
         }
     }
 
     const handleRegistration = async () => {
+        if (!email || !password || !password2) return setErrorMessage('All fields are required');
+        if (password !== password2) return setErrorMessage('Passwords do not match');
+      
         try {
-            if (email !== '' && password !== '') {
-                if (password !== '' && password2 !== '' && password === password2) {
-                    const registerResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
-
-                    if (registerResponse.status === 201) {
-                        try {
-                            const loginResponse = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
-
-                            if (loginResponse?.data.token) {
-                                localStorage.setItem('authToken', loginResponse.data.token);
-                                window.location.href = '/createProfile'
-                            } else {
-                                window.location.href = '/login'
-                                setErrorMessage(loginResponse.data.message);
-                            }
-                        } catch (error) {
-                            window.location.href = '/login'
-                            setErrorMessage(`Try to login again`);
-                        }
-                    } else {
-                        setErrorMessage(registerResponse.data.message);
-                    }
-                } else {
-                    setErrorMessage(`Passwords in both fields should be the same`);
-                }
-            } else {
-                setErrorMessage(`Email and password are required`);
-            }
+          const { status } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
+      
+          if (status === 201) await handleLogin(); 
+          else setErrorMessage('Registration failed');
         } catch (error) {
-            console.log(`Error during registration: `, error);
-            setErrorMessage(error.response?.data?.message);
+          setErrorMessage(error.response?.data?.message || 'Registration failed');
         }
-    };
+      };
 
     const logInByGoogle = async () => {
         console.log(process.env.REACT_APP_SERVER_LINK);
@@ -177,13 +154,8 @@ function LoginPage() {
     return (
         <LoginPageContainer>
             <StyledLoginPage>
-                <Heading>
-                    Sport App
-                </Heading>
-                <p>
-                    Dream big, work hard, stay focused.
-                </p>
-
+                <Heading>Sport App</Heading>
+                <p>Dream big, work hard, stay focused.</p>
                 <Input
                     placeholder='Email'
                     value={email}
@@ -193,9 +165,7 @@ function LoginPage() {
                         margin: '100px 0 10px 0'
                     }}
                 />
-
                 <Input
-                    className='password1'
                     placeholder='Password'
                     value={password}
                     type='password'
@@ -204,10 +174,8 @@ function LoginPage() {
                         marginBottom: '10px'
                     }}
                 />
-
                 {isRegistration && (
                     <Input
-                        className='password2'
                         placeholder='Repeat password'
                         value={password2}
                         type='password'
@@ -217,7 +185,6 @@ function LoginPage() {
                         }}
                     />
                 )}
-
                 <div style={{ marginBottom: '20px' }}>
                     <LoginOrRegistrationButton />
                 </div>
@@ -241,10 +208,7 @@ function LoginPage() {
                         <p style={{ margin: 0 }}>Log in by Google</p>
                     </div>
                 </Button>
-
                 <LoginOrRegistrationLink />
-
-                <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
             </StyledLoginPage>
         </LoginPageContainer>
     );

@@ -3,7 +3,7 @@ import StyledNotFoundPage from './NotFound.styled';
 import Heading from "../../../components/Headings/Heading";
 import Button from "../../../components/Buttons/Button";
 
-function NotFound({children, onScreenChange, token}){
+function NotFound({children, onScreenChange, token, errorMessage, setErrorMessage}){
     const handleGoToDashboard = () =>{
         onScreenChange('Dashboard');
     }

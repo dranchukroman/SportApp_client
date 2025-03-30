@@ -4,9 +4,8 @@ import axios from "axios";
 import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
-import ErrorToast from "../../../../components/popUps/ErrorToast";
 
-function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, trainingExerciseId }) {
+function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, trainingExerciseId, errorMessage, setErrorMessage }) {
     const [exerciseList, setExerciseList] = useState([]);
     const muscleGroupList = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'];
 
@@ -20,7 +19,6 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
     const [seconds, setSeconds] = useState(0);
 
     const [fieldsStatus, setFieldsStatus] = useState(false);
-    const [errorMessage, setErrorMessage] = useState(null);
 
     // Fetch exercises from library based on selected muscle group
     useEffect(() => {
@@ -41,7 +39,7 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
             }
         };
         fetchExercisesFromLibrary();
-    }, [muscleGroup, token, editModeStatus]);
+    }, [muscleGroup, token, editModeStatus, setErrorMessage]);
 
     // Fetch exercise data to edit
     useEffect(() => {
@@ -69,7 +67,7 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
             }
         };
         if (editModeStatus) fetchExerciseData();
-    }, [editModeStatus, trainingExerciseId, token]);
+    }, [editModeStatus, trainingExerciseId, token, setErrorMessage]);
 
     // Generate exercise options for dropdown
     const getList = () => {
@@ -135,7 +133,7 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
             }
         };
         if (fieldsStatus) handleExercise();
-    }, [fieldsStatus, exercise, traininDayId, muscleGroup, series, weight, times, description, minutes, seconds, token, onScreenChange, editModeStatus, trainingExerciseId]);
+    }, [fieldsStatus, exercise, traininDayId, muscleGroup, series, weight, times, description, minutes, seconds, token, onScreenChange, editModeStatus, trainingExerciseId, setErrorMessage]);
 
     return (
         <div>
@@ -182,8 +180,6 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
                 <Button onClick={() => onScreenChange('ExercisesView')} width={'172px'}>Back</Button>
                 <Button onClick={checkFields} width={'172px'}>{editModeStatus ? 'Save' : 'Add'}</Button>
             </div>
-
-            <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
         </div>
     );
 }
