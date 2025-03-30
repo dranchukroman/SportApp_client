@@ -27,10 +27,11 @@ function Navigation({currentScreen, onScreenChange}){
                     <TrainingsdIcon 
                         activeIcon={
                             currentScreen === 'Trainings' || 
-                            currentScreen === 'NewTrainingPlan' ||
-                            currentScreen === 'SetUpTrainingDays' ||
-                            currentScreen === 'SetUpExercises' ||
-                            currentScreen === 'SetUpExercise'
+                            currentScreen === 'TrainingPlanDetails' ||
+                            currentScreen === 'TrainingDaysView' ||
+                            currentScreen === 'TrainingDaysDetails' ||
+                            currentScreen === 'ExerciseDetails' ||
+                            currentScreen === 'ExercisesView'
                         }
                         onClick={() => onScreenChange('Trainings')}
                     />
