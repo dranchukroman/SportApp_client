@@ -66,7 +66,7 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
 
 
     // Get training plan id for edit and change screen
-    function editTrainingDays(planId) {
+    function showTrainingDays(planId) {
         setTrainingPlanId(planId);
         onScreenChange('TrainingDaysView');
     }
@@ -97,7 +97,7 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
                 key={plan.plan_id}
                 data-elem={plan.plan_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
-                onClick={() => editModeStatus ? editTrainingDays(plan.plan_id) : startTraining(plan.plan_id)}
+                onClick={() => showTrainingDays(plan.plan_id)}
             >
                 <Heading
                     fontSize={theme.fontSizes.smallHeader}
@@ -137,10 +137,6 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
                 />
             </Card>
         ));
-    }
-
-    function startTraining(planId) {
-        console.log(`Start training ${planId}`);
     }
 
     return (

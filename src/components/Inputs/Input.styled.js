@@ -5,7 +5,7 @@ export const StyledInput = styled.input`
     // Form
     width: 100%;
     max-width: 336px;
-    height: 45px;
+    height: 41px;
     padding: 0 10px;
 
     // Fonts

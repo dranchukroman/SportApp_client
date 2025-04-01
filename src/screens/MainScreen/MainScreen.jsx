@@ -16,6 +16,7 @@ import TrainingDaysView from '../otherViews/Trainings/TrainingDaysView/TrainingD
 import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
 import ExercisesView from '../otherViews/Trainings/ExercisesView/ExercisesView.jsx';
 import ExerciseDetails from '../otherViews/Trainings/ExerciseDetails/ExerciseDetails.jsx';
+import Exercising from '../otherViews/Trainings/Exercising/Exercising.jsx';
 import Diet from '../otherViews/Diet/Diet';
 import Calculator from '../otherViews/Calculator/Calculator';
 import NotFound from '../otherViews/NotFound/NotFound'
@@ -36,6 +37,17 @@ function MainScreen({ errorMessage, setErrorMessage }) {
     const [traininDayId, setTrainingDayId] = useState(0); // Save training day id to work with
     const [trainingExerciseId, setTrainingExerciseId] = useState(0); // Save exercise id to work with
     const [editModeStatus, setEditModeStatus] = useState(false);
+
+    const [controllButtonsParams, setControllButtonsParams] = useState({
+        leftButtonStatus: false,
+        rightButtonStatus: false,
+        leftButtonMethod: null,
+        rightButtonMethod: null,
+    })
+
+    // Start training
+    const [exrcisingStatus, setExercisingStatus] = useState(false);
+    const [trainingProgress, setTrainingProgress] = useState({});
 
     // Handle user data
     const [userData, setUserData] = useState({
@@ -129,6 +141,7 @@ function MainScreen({ errorMessage, setErrorMessage }) {
         TrainingDaysDetails: 'Set up training days',
         ExercisesView: 'Set up exercises',
         ExerciseDetails: 'Set up exercise',
+        Exercising: 'Training',
         Diet: 'Diet',
         Calculator: 'Calculator'
     }), [userData.name]);
@@ -148,13 +161,15 @@ function MainScreen({ errorMessage, setErrorMessage }) {
             case 'TrainingPlanDetails':
                 return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
             case 'TrainingDaysView':
-                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} errorMessage={errorMessage} setErrorMessage={setErrorMessage} setExercisingStatus={setExercisingStatus}/>
             case 'TrainingDaysDetails':
                 return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
             case 'ExercisesView':
                 return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
             case 'ExerciseDetails':
                 return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+            case 'Exercising':
+                return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={trainingExerciseId} setErrorMessage={setErrorMessage} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={trainingPlanId} traininDayId={traininDayId} />
             case 'Diet':
                 return <Diet token={token} onScreenChange={setCurrentScreen} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
             case 'Calculator':
@@ -196,15 +211,7 @@ function MainScreen({ errorMessage, setErrorMessage }) {
                 </Heading>
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
-            <Settings
-                token={token}
-                setUserData={setUserData}
-                userData={userData}
-                visiblePartOfScreen={visiblePartOfScreen}
-                setIsDataChanged={setIsDataChanged}
-                style={{ flex: 1 }}
-            />
-
+            <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} style={{ flex: 1 }}/>
             {/* Functional bar with different views */}
             <FunctionalBar
                 style={{
@@ -225,7 +232,7 @@ function MainScreen({ errorMessage, setErrorMessage }) {
                     {renderScreen()}
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} />
+            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} controllButtonsParams={controllButtonsParams} setControllButtonsParams={setControllButtonsParams} />
         </MainScreenWrapper>
     );
 }

@@ -7,8 +7,9 @@ import DashboardIcon from "../../assets/icons/Navigation/dashboard";
 import TrainingsdIcon from "../../assets/icons/Navigation/trainings";
 import DietIcon from "../../assets/icons/Navigation/diet";
 import CalculatorIcon from "../../assets/icons/Navigation/calculator";
+// import Button from "../Buttons/Button";
 
-function Navigation({currentScreen, onScreenChange}){
+function Navigation({currentScreen, onScreenChange, /*setControllButtonsParams, controllButtonsParams*/}){
     return (
         <NavigationWrapper>
             <DivideLine 

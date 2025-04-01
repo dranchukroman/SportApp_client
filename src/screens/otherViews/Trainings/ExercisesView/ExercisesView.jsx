@@ -81,7 +81,10 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
             <Card
                 key={exercise.day_exercise_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
-            // onClick={() => setUpExercise(exercise.day_exercise_id)}
+                onClick={() => {
+                    setTrainingExerciseId(exercise.day_exercise_id);
+                    onScreenChange('Exercising');
+                }}
             >
                 <div style={{ color: "white" }}>
                     <Heading
@@ -107,7 +110,9 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
                     style={{
                         position: 'absolute',
                         right: 0,
-                        top: 0
+                        top: 0,
+                        display: editModeStatus ? 'block' : 'none',
+                        cursor: 'pointer'
                     }}
                     onClick={() => {
                         setTrainingExerciseId(exercise.day_exercise_id);
