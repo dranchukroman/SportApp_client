@@ -7,7 +7,7 @@ import Button from "../../../../components/Buttons/Button";
 import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
 import theme from "../../../../styles/theme";
 
-function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, traininDayId, errorMessage, setErrorMessage }) {
+function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, traininDayId, setErrorMessage }) {
 
     const [dayName, setDayName] = useState('');
     const [dayDescription, setDayDescription] = useState('');

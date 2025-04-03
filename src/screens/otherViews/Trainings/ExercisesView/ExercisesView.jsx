@@ -8,7 +8,7 @@ import Card from "../../../../components/Cards/InfoCard";
 import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId, errorMessage, setErrorMessage }) {
+function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId, setErrorMessage }) {
     const [exercises, setExercises] = useState(null);
     const [deleteExercise, setDeleteExercise] = useState(null);
 

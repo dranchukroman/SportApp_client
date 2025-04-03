@@ -8,7 +8,7 @@ import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import GoogleIcon from '../../assets/icons/LoginPage/google';
 
-function LoginPage({ setErrorMessage }) {
+function LoginPage({ setErrorMessage, setModalParams }) {
     const navigate = useNavigate();
 
     // Check if token valid

@@ -8,6 +8,7 @@ import LoginPage from './screens/LoginPage/LoginPage';
 import MainScreen from './screens/MainScreen/MainScreen';
 import UserProfileCreation from './screens/UserProfileCreation/UserProfileCreation'
 import ErrorToast from './components/popUps/ErrorToast';
+import ModalPopUp from './components/popUps/ModalPopUp/ModalPopUp';
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -16,6 +17,26 @@ const PageWrapper = styled.div`
 
 function App() {
   const [errorMessage, setErrorMessage] = useState('');
+  const [modalParams, setModalParams] = useState({
+    mainText: 'Set up PopUp text',
+    btn1Text: 'Set null to delete',
+    btn2Text: 'Set null to delete',
+    btn3Text: 'Set null to delete',
+    btn1Color: null,
+    btn2Color: null,
+    btn3Color: null,
+    btn1Method: null,
+    btn2Method: null,
+    btn3Method: null,
+    isVisible: false,
+  })
+
+  const modalPdarams = {
+    text: 'Would you like to fininsh your training?',
+    btn1Text: 'Save and Finish',
+    btn2Text: 'Discard and Finish',
+    btn3Text: 'Cancel',
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -30,7 +51,7 @@ function App() {
             path='/dashboard'
             element={
               <PageWithBackground $bgColor='#EEE'>
-                <MainScreen setErrorMessage={setErrorMessage} />
+                <MainScreen setErrorMessage={setErrorMessage} setModalParams={setModalParams} />
               </PageWithBackground>
             }
           />
@@ -61,6 +82,7 @@ function App() {
         </Routes>
       </Router>
       <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage}/>
+      <ModalPopUp modalParams={modalParams}/>
     </ThemeProvider>
   );
 }

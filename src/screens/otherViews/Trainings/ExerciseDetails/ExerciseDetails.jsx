@@ -5,7 +5,7 @@ import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 
-function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, trainingExerciseId, errorMessage, setErrorMessage }) {
+function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, trainingExerciseId, setErrorMessage }) {
     const [exerciseList, setExerciseList] = useState([]);
     const muscleGroupList = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'];
 

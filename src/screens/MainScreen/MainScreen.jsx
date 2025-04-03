@@ -22,7 +22,7 @@ import Calculator from '../otherViews/Calculator/Calculator';
 import NotFound from '../otherViews/NotFound/NotFound'
 
 
-function MainScreen({ errorMessage, setErrorMessage }) {
+function MainScreen({ setErrorMessage, setModalParams }) {
     const navigate = useNavigate();
 
     const token = localStorage.getItem('authToken');
@@ -157,25 +157,25 @@ function MainScreen({ errorMessage, setErrorMessage }) {
             case 'Dashboard':
                 return <Dashboard token={token} onScreenChange={setCurrentScreen} />
             case 'Trainings':
-                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} setErrorMessage={setErrorMessage} />
             case 'TrainingPlanDetails':
-                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} setErrorMessage={setErrorMessage} />
             case 'TrainingDaysView':
-                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} errorMessage={errorMessage} setErrorMessage={setErrorMessage} setExercisingStatus={setExercisingStatus}/>
+                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} setErrorMessage={setErrorMessage} setExercisingStatus={setExercisingStatus}/>
             case 'TrainingDaysDetails':
-                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
             case 'ExercisesView':
-                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
             case 'ExerciseDetails':
-                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
             case 'Exercising':
                 return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={trainingExerciseId} setErrorMessage={setErrorMessage} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={trainingPlanId} traininDayId={traininDayId} />
             case 'Diet':
-                return <Diet token={token} onScreenChange={setCurrentScreen} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <Diet token={token} onScreenChange={setCurrentScreen} setErrorMessage={setErrorMessage} />
             case 'Calculator':
-                return <Calculator token={token} onScreenChange={setCurrentScreen} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <Calculator token={token} onScreenChange={setCurrentScreen} setErrorMessage={setErrorMessage} />
             default:
-                return <NotFound token={token} onScreenChange={setCurrentScreen} errorMessage={errorMessage} setErrorMessage={setErrorMessage} />
+                return <NotFound onScreenChange={setCurrentScreen} setErrorMessage={setErrorMessage} />
         }
     }
 

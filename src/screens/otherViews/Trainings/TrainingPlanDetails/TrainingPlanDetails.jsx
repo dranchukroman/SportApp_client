@@ -8,7 +8,7 @@ import TextCheckBox from "../../../../components/Inputs/CheckBoxes/TextCheckBox"
 import axios from "axios";
 import theme from "../../../../styles/theme";
 
-function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId, errorMessage, setErrorMessage }) {
+function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId, setErrorMessage }) {
     // Training plan data
     const [planName, setPlanName] = useState('');
     const [planDescription, setPlanDescription] = useState('');
