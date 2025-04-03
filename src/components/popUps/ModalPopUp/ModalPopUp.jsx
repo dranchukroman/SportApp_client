@@ -7,7 +7,7 @@ import Button from "../../Buttons/Button";
 
 function ModalPopUp({ modalParams }) {
     return (
-        <Overlay style={{display: modalParams?.isVisible ? 'fixed' : "none"}}>
+        <Overlay style={{display: modalParams?.isVisible ? '' : "none"}}>
             <PopUp>
                 <Heading fontSize={theme.fontSizes.mediumHeader}>
                     {modalParams?.mainText}

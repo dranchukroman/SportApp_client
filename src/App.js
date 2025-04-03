@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyles } from './styles/GlobalStyles';
@@ -31,12 +31,10 @@ function App() {
     isVisible: false,
   })
 
-  const modalPdarams = {
-    text: 'Would you like to fininsh your training?',
-    btn1Text: 'Save and Finish',
-    btn2Text: 'Discard and Finish',
-    btn3Text: 'Cancel',
-  }
+  useEffect(() => {
+    console.log('Show popUp');
+    console.log(modalParams)
+  }, [modalParams]);
 
   return (
     <ThemeProvider theme={theme}>

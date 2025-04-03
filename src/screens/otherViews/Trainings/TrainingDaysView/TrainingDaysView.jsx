@@ -11,7 +11,7 @@ import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDayId, editModeStatus, setExercisingStatus }) {
     const [trainingDays, setTrainingDays] = useState(null);
     const [deleteDayId, setDeleteDayId] = useState(null);
-    const [activeDay, setActiveDay] = useState(null); // Відстеження активної кнопки
+    const [activeDay, setActiveDay] = useState(null);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -100,7 +100,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDa
                                         onClick={(e) => {
                                             e.stopPropagation();
                                             setTrainingDayId(day.day_id);
-                                            setExercisingStatus((prev) => true);
+                                            setExercisingStatus(true);
                                             onScreenChange("ExercisesView");
                                         }}
                                         bgColor={theme.colors.darkBackground}

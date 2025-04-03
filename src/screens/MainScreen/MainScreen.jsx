@@ -38,16 +38,30 @@ function MainScreen({ setErrorMessage, setModalParams }) {
     const [trainingExerciseId, setTrainingExerciseId] = useState(0); // Save exercise id to work with
     const [editModeStatus, setEditModeStatus] = useState(false);
 
-    const [controllButtonsParams, setControllButtonsParams] = useState({
-        leftButtonStatus: false,
-        rightButtonStatus: false,
-        leftButtonMethod: null,
-        rightButtonMethod: null,
-    })
+    // const [controllButtonsParams, setControllButtonsParams] = useState({
+    //     leftButtonStatus: false,
+    //     rightButtonStatus: false,
+    //     leftButtonMethod: null,
+    //     rightButtonMethod: null,
+    // })
 
     // Start training
-    const [exrcisingStatus, setExercisingStatus] = useState(false);
+    const [exercisingStatus, setExercisingStatus] = useState(false);
     const [trainingProgress, setTrainingProgress] = useState({});
+
+        // // Start training
+        // const [exercisingStatus, setExercisingStatus] = useState(
+        //     JSON.parse(localStorage.getItem('exercisingStatus')) ?? false
+        // );
+        
+        // const [trainingProgress, setTrainingProgress] = useState(
+        //     JSON.parse(localStorage.getItem('trainingProgress')) ?? {}
+        // );
+        
+        // useEffect(() => {
+        //     localStorage.setItem('exercisingStatus', JSON.stringify(exercisingStatus));
+        //     localStorage.setItem('trainingProgress', JSON.stringify(trainingProgress));
+        // }, [exercisingStatus, trainingProgress]);
 
     // Handle user data
     const [userData, setUserData] = useState({
@@ -232,7 +246,14 @@ function MainScreen({ setErrorMessage, setModalParams }) {
                     {renderScreen()}
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} controllButtonsParams={controllButtonsParams} setControllButtonsParams={setControllButtonsParams} />
+            <Navigation 
+                currentScreen={currentScreen} 
+                onScreenChange={setCurrentScreen} 
+                setModalParams={setModalParams} 
+                exercisingStatus={exercisingStatus}
+                setTrainingProgress={setTrainingProgress}
+                setExercisingStatus={setExercisingStatus}
+            />
         </MainScreenWrapper>
     );
 }
