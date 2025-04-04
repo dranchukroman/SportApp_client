@@ -4,7 +4,7 @@ import theme from "../../styles/theme";
 export const StyledButton = styled.button`
     /* Form */
     width: ${({ width }) => width || '100%'};
-    height: 45px;
+    height: ${({ height }) => height || '45px'};
     border-radius: 7px;
     border: none;
 

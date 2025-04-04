@@ -5,13 +5,13 @@ import Calendar from "../Calendar/Calendar";
 import DivideLine from '../Dividers/DivideLine'
 
 
-function FunctionalBar({style, children}){   
+function FunctionalBar({style, children, trainingDays}){   
     return(
         <StyledFunctionalBar 
             style={style}
         >
             <FunctionalBarWrapper>
-                <Calendar/>
+                <Calendar trainingDays={trainingDays}/>
                 <DivideLine 
                     marginTop={'0'}
                     marginBottom={'10px'}

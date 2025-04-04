@@ -1,11 +1,68 @@
 import styled from "styled-components";
+import theme from "../../styles/theme";
 
-const StyledCalendar = styled.div`
-    height: 82px;
+export const StyledFrame = styled.div`
     width: 100%;
     // border: 1px solid red;
     padding: 9px 0 15px 0;
+`
 
-` 
+export const TilesWrapper = styled.div`
+    width: 100%;
+    height: 45px;
+    display: flex;
+    justify-content: space-between;
+    align-items: middle;
+    margin-top: 7px;
+`
 
-export default StyledCalendar;
+export const ControllButtons = styled.div`
+    width: 25px;
+    height: 45px;
+    display: flex;
+    justify-content: ${(prop) => prop.flexDirection ? `flex-${prop.flexDirection}` : 'center'};
+    align-items: center;
+`
+
+export const TileElement = styled.div`
+    width: 30px;
+    height: 42px;
+    color: ${theme.colors.whiteText};
+
+    border: 2px solid transparent; /* Прозорі бордери */
+    border-radius: 7px; /* Заокруглені кути */
+
+    // Colors
+    background-image: 
+        linear-gradient(
+            ${theme.colors.darkBackground}, 
+            ${theme.colors.darkBackground}
+            ), 
+        ${theme.colors.gradient};
+    background-origin: border-box;
+    background-clip: padding-box, border-box;
+    box-shadow: ${theme.shadows.mainShadows};
+
+    text-align: center;
+`
+
+export const WeekDayParagraph = styled.p`
+    font-size: ${theme.fontSizes.smallParagraph};
+    margin: 3px 0 0 0;
+    line-height: 8.01px;
+`
+
+export const WeekDateParagraph = styled.p`
+    font-size: ${theme.fontSizes.largeParagraph};
+    margin: 8px 0 0 0;
+    line-height: 10.01px;
+`
+
+export const ActiveTileDott = styled.div`
+    width: 4px;
+    height: 4px;
+    margin: 6px auto 0 auto;
+    border-radius: 50%;
+    background-color: ${theme.colors.whiteText};
+    opacity: ${(prop) => prop.active ? 1 : 0};
+`

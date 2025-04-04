@@ -3,18 +3,15 @@ import { StyledButton } from './Button.styled'
 
 function Button({ children = 'Set button text', width, height, bgColor, onClick, style }) {
     return (
-        <div
+        <StyledButton
+            width={width}
+            bgColor={bgColor}
+            onClick={onClick}
             style={style}
             height={height}
         >
-            <StyledButton
-                width={width}
-                bgColor={bgColor}
-                onClick={onClick}
-            >
-                {children}
-            </StyledButton>
-        </div>
+            {children}
+        </StyledButton>
     );
 }
 
