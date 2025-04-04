@@ -1,14 +1,14 @@
 import React from "react";
 import { StyledLine } from "./DivideLine.styled";
 
-function DivideLine({marginTop, marginBottom, width}){
-    return(
-        <StyledLine 
+function DivideLine({ marginTop, marginBottom, width }) {
+    return (
+        <StyledLine
             style={{
-                marginTop: marginTop, 
+                marginTop: marginTop,
                 marginBottom: marginBottom,
                 width: width
-            }}/>
+            }} />
     );
 };
 

@@ -9,10 +9,7 @@ function FunctionalBar({ style, children, trainingPlans }) {
         <StyledFunctionalBar style={style}>
             <FunctionalBarWrapper>
                 <Calendar currentPlan={trainingPlans?.find(plan => plan.is_current_plan === true)} />
-                <DivideLine
-                    marginTop={'0'}
-                    marginBottom={'10px'}
-                />
+                <DivideLine marginTop={'0'} marginBottom={'10px'} />
                 {children}
             </FunctionalBarWrapper>
         </StyledFunctionalBar>

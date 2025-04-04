@@ -2,7 +2,7 @@ import React from "react";
 import { StyledCheckbox, StyledCheckboxWrapper, StyledCheckboxLabel } from './CheckBox.styled';
 
 
-function CheckBox({ onClick, style, checked }){
+function CheckBox({ onClick, style, checked }) {
     return (
         <StyledCheckboxWrapper style={style}>
             <StyledCheckbox
@@ -11,7 +11,7 @@ function CheckBox({ onClick, style, checked }){
             />
             <StyledCheckboxLabel />
         </StyledCheckboxWrapper>
-    );    
+    );
 }
 
 export default CheckBox;

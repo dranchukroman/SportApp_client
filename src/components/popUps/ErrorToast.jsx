@@ -5,13 +5,13 @@ function ErrorToast({ message, setErrorMessage }) {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    if(message) {
-        setShow(true)
+    if (message) {
+      setShow(true)
     };
     const timer = setTimeout(() => {
       setShow(false);
       setErrorMessage('');
-    }, 6000); 
+    }, 6000);
 
     return () => clearTimeout(timer);
   }, [message, setErrorMessage]);

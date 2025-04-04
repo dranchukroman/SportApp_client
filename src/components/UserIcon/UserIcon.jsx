@@ -3,12 +3,12 @@ import { StyledUserIcon } from './UserIcon.styled'
 
 import ProfileIcon from "../../assets/icons/Main/userProfile";
 
-function UserIcon({onClick}){
+function UserIcon({ onClick }) {
     return (
         <StyledUserIcon
             onClick={onClick}
         >
-            <ProfileIcon/>
+            <ProfileIcon />
         </StyledUserIcon>
     )
 }

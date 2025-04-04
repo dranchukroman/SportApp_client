@@ -6,41 +6,45 @@ import Heading from "../../Headings/Heading";
 import Button from "../../Buttons/Button";
 
 function ModalPopUp({ modalParams }) {
+    const renderButtons = () => {
+        const buttons = [];
+
+        Object.entries(modalParams).forEach(([key, value]) => {
+            const match = key.match(/^btn(\d+)Text$/);
+
+            if (match && value) {
+                const index = match[1]; // отримаємо "1", "2", "3" і т.д.
+                const text = value;
+                const color = modalParams[`btn${index}Color`];
+                const method = modalParams[`btn${index}Method`];
+
+                buttons.push(
+                    <Button
+                        key={index}
+                        bgColor={color}
+                        onClick={method}
+                    >
+                        {text}
+                    </Button>
+                );
+            }
+        });
+
+        return buttons;
+    };
+
     return (
-        <Overlay style={{display: modalParams?.isVisible ? '' : "none"}}>
+        <Overlay style={{ display: modalParams?.isVisible ? '' : "none" }}>
             <PopUp>
                 <Heading fontSize={theme.fontSizes.mediumHeader}>
                     {modalParams?.mainText}
                 </Heading>
                 <ButtonsWrapper>
-                    {modalParams?.btn1Text
-                        ? <Button
-                            bgColor={modalParams?.btn1Color}
-                            onClick={modalParams?.btn1Method}
-                        >
-                            {modalParams?.btn1Text}
-                        </Button>
-                        : null}
-                    {modalParams?.btn2Text
-                        ? <Button
-                            bgColor={modalParams?.btn2Color}
-                            onClick={modalParams?.btn2Method}
-                        >
-                            {modalParams?.btn2Text}
-                        </Button>
-                        : null}
-                    {modalParams?.btn3Text
-                        ? <Button
-                            bgColor={modalParams?.btn3Color}
-                            onClick={modalParams?.btn3Method}
-                        >
-                            {modalParams?.btn3Text}
-                        </Button>
-                        : null}
+                    {renderButtons()}
                 </ButtonsWrapper>
             </PopUp>
         </Overlay>
-    )
+    );
 }
 
 export default ModalPopUp;

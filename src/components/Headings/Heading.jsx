@@ -1,9 +1,9 @@
 import React from "react";
 import { StyledHeader } from './Heading.styled'
 
-function Heading({children = 'Set header text', fontSize, fontWeight, color, style, onClick}){
+function Heading({ children = 'Set header text', fontSize, fontWeight, color, style, onClick }) {
     return (
-        <StyledHeader 
+        <StyledHeader
             style={style}
             fontSize={fontSize}
             fontWeight={fontWeight}

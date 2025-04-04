@@ -9,9 +9,7 @@ function Card({ style, children, onClick, paddingTop, paddingBottom }) {
             $paddingTop={paddingTop}
             $paddingBottom={paddingBottom}
         >
-            <div>
-                {children}
-            </div>
+            {children}
         </StyledCard>
     );
 };
