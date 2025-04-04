@@ -23,14 +23,40 @@ import NotFound from '../otherViews/NotFound/NotFound'
 
 
 function MainScreen({ setErrorMessage, setModalParams }) {
-    const navigate = useNavigate();
+    const navigate = useNavigate(); // Create navigation object
 
+    // Check for token
     const token = localStorage.getItem('authToken');
     useEffect(() => {
         if (!token) {
             window.location.href = '/login';
         }
     }, [token]);
+
+    const [trainingPlans, setTrainingPlans] = useState([]); // Save all training plans
+
+    // Get all training plans
+    useEffect(() => {
+        const fetchTrainingPlans = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
+
+                if (response.status === 200 && response?.data?.data.length > 0) {
+                    setTrainingPlans(response.data.data);
+                }
+
+            } catch (error) {
+                console.error('Error fetching data:', error);
+            }
+        };
+
+        fetchTrainingPlans();
+    }, [token]);
+
 
     // Data to controll application
     const [trainingPlanId, setTrainingPlanId] = useState(0); // Save training plan id to work with
@@ -49,19 +75,19 @@ function MainScreen({ setErrorMessage, setModalParams }) {
     const [exercisingStatus, setExercisingStatus] = useState(false);
     const [trainingProgress, setTrainingProgress] = useState({});
 
-        // // Start training
-        // const [exercisingStatus, setExercisingStatus] = useState(
-        //     JSON.parse(localStorage.getItem('exercisingStatus')) ?? false
-        // );
-        
-        // const [trainingProgress, setTrainingProgress] = useState(
-        //     JSON.parse(localStorage.getItem('trainingProgress')) ?? {}
-        // );
-        
-        // useEffect(() => {
-        //     localStorage.setItem('exercisingStatus', JSON.stringify(exercisingStatus));
-        //     localStorage.setItem('trainingProgress', JSON.stringify(trainingProgress));
-        // }, [exercisingStatus, trainingProgress]);
+    // // Start training
+    // const [exercisingStatus, setExercisingStatus] = useState(
+    //     JSON.parse(localStorage.getItem('exercisingStatus')) ?? false
+    // );
+
+    // const [trainingProgress, setTrainingProgress] = useState(
+    //     JSON.parse(localStorage.getItem('trainingProgress')) ?? {}
+    // );
+
+    // useEffect(() => {
+    //     localStorage.setItem('exercisingStatus', JSON.stringify(exercisingStatus));
+    //     localStorage.setItem('trainingProgress', JSON.stringify(trainingProgress));
+    // }, [exercisingStatus, trainingProgress]);
 
     // Handle user data
     const [userData, setUserData] = useState({
@@ -169,13 +195,13 @@ function MainScreen({ setErrorMessage, setModalParams }) {
     const renderScreen = () => {
         switch (currentScreen) {
             case 'Dashboard':
-                return <Dashboard token={token} onScreenChange={setCurrentScreen} />
+                return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} />
             case 'Trainings':
                 return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} setErrorMessage={setErrorMessage} />
             case 'TrainingPlanDetails':
                 return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} setErrorMessage={setErrorMessage} />
             case 'TrainingDaysView':
-                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} setErrorMessage={setErrorMessage} setExercisingStatus={setExercisingStatus}/>
+                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} setErrorMessage={setErrorMessage} setExercisingStatus={setExercisingStatus} />
             case 'TrainingDaysDetails':
                 return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
             case 'ExercisesView':
@@ -225,7 +251,7 @@ function MainScreen({ setErrorMessage, setModalParams }) {
                 </Heading>
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
-            <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} style={{ flex: 1 }}/>
+            <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} style={{ flex: 1 }} />
             {/* Functional bar with different views */}
             <FunctionalBar
                 style={{
@@ -234,6 +260,7 @@ function MainScreen({ setErrorMessage, setModalParams }) {
                     top: isSettingsVisible ? (visiblePartOfScreen - 207) : (userDataHeight + 15),
                     transition: 'top 0.3s ease',
                 }}
+                trainingPlans={trainingPlans}
             >
                 <div
                     className='no-scrollbar'
@@ -246,10 +273,10 @@ function MainScreen({ setErrorMessage, setModalParams }) {
                     {renderScreen()}
                 </div>
             </FunctionalBar>
-            <Navigation 
-                currentScreen={currentScreen} 
-                onScreenChange={setCurrentScreen} 
-                setModalParams={setModalParams} 
+            <Navigation
+                currentScreen={currentScreen}
+                onScreenChange={setCurrentScreen}
+                setModalParams={setModalParams}
                 exercisingStatus={exercisingStatus}
                 setTrainingProgress={setTrainingProgress}
                 setExercisingStatus={setExercisingStatus}

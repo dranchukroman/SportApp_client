@@ -4,15 +4,12 @@ import { StyledFunctionalBar, FunctionalBarWrapper } from './FunctionalBar.style
 import Calendar from "../Calendar/Calendar";
 import DivideLine from '../Dividers/DivideLine'
 
-
-function FunctionalBar({style, children, trainingDays}){   
-    return(
-        <StyledFunctionalBar 
-            style={style}
-        >
+function FunctionalBar({ style, children, trainingPlans }) {
+    return (
+        <StyledFunctionalBar style={style}>
             <FunctionalBarWrapper>
-                <Calendar trainingDays={trainingDays}/>
-                <DivideLine 
+                <Calendar currentPlan={trainingPlans?.find(plan => plan.is_current_plan === true)} />
+                <DivideLine
                     marginTop={'0'}
                     marginBottom={'10px'}
                 />

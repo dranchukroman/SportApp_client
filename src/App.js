@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { ThemeProvider } from 'styled-components';
 import { GlobalStyles } from './styles/GlobalStyles';
@@ -30,11 +30,6 @@ function App() {
     btn3Method: null,
     isVisible: false,
   })
-
-  useEffect(() => {
-    console.log('Show popUp');
-    console.log(modalParams)
-  }, [modalParams]);
 
   return (
     <ThemeProvider theme={theme}>

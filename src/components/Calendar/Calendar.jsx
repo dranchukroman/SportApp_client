@@ -4,8 +4,14 @@ import { addDays, subDays, startOfWeek, format } from 'date-fns';
 import theme from "../../styles/theme";
 import Heading from "../Headings/Heading";
 
-function Calendar({ trainingDays }) {
+function Calendar({ currentPlan }) {
     const [startDate, setStartDate] = useState(startOfWeek(new Date(), { weekStartsOn: 1 })); // Починається з понеділка
+
+    function checkIfActiveDay(currentTrainingDays, tileDay) {
+        if (!currentTrainingDays || !tileDay) return false;
+        const regex = new RegExp(`\\b${tileDay}\\b`, 'i');
+        return regex.test(currentTrainingDays);
+    }
 
     const nextWeek = () => {
         setStartDate(addDays(startDate, 7));
@@ -28,7 +34,7 @@ function Calendar({ trainingDays }) {
                 <TileElement key={i}>
                     <WeekDayParagraph>{format(day, 'EEE')}</WeekDayParagraph>
                     <WeekDateParagraph>{format(day, 'd')}</WeekDateParagraph>
-                    <ActiveTileDott active={trainingDays?.some(day => day === format(day, 'd'))} />
+                    <ActiveTileDott active={checkIfActiveDay(currentPlan?.days_per_week, format(day, 'EEE'))} />
                 </TileElement>
             );
         }
@@ -37,11 +43,7 @@ function Calendar({ trainingDays }) {
 
     return (
         <StyledFrame>
-            <Heading
-                fontSize={theme.fontSizes.mediumHeader}
-            >
-                {getMonthName()}
-            </Heading>
+            <Heading fontSize={theme.fontSizes.mediumHeader}>{getMonthName()}</Heading>
             <TilesWrapper>
                 <ControllButtons flexDirection={'start'} onClick={prevWeek}>
                     <svg width="10" height="15" viewBox="0 0 10 15" fill="none" xmlns="http://www.w3.org/2000/svg">
