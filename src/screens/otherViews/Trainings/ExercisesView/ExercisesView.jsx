@@ -8,7 +8,7 @@ import Card from "../../../../components/Cards/InfoCard";
 import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId, setErrorMessage }) {
+function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId, setErrorMessage, exercisingStatus, setModalParams, saveTrainingProgress, setExercisingStatus, setTrainingProgress }) {
     const [exercises, setExercises] = useState(null);
     const [deleteExercise, setDeleteExercise] = useState(null);
 
@@ -51,12 +51,13 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
                 }
                 setDeleteExercise(null);
             } catch (error) {
+                setErrorMessage(error.message);
                 console.error('Error deleting exercise:', error);
             }
         };
 
         if (deleteExercise) reduceExercises();
-    }, [deleteExercise, token]);
+    }, [deleteExercise, token, setErrorMessage]);
 
     const getExercises = () => {
         if (!exercises || exercises.length <= 0) {
@@ -137,6 +138,47 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
         ));
     };
 
+    const handlePopUp = (triedView) => {
+        if (!exercisingStatus) return onScreenChange(triedView)
+        else {
+            setModalParams((prev) => ({
+                ...prev,
+                mainText: 'Would you like to finish your training?',
+                btn1Text: 'Save and Finish',
+                btn2Text: 'Discard and Finish',
+                btn3Text: 'Cancel',
+                btn1Color: null,
+                btn2Color: null,
+                btn3Color: null,
+                btn1Method: () => {
+                    saveTrainingProgress();
+                    setExercisingStatus(false);
+                    setModalParams((prev) => ({
+                        ...prev,
+                        isVisible: false
+                    }));
+                    onScreenChange(triedView);
+                },
+                btn2Method: () => {
+                    setTrainingProgress({});
+                    setExercisingStatus(false);
+                    setModalParams((prev) => ({
+                        ...prev,
+                        isVisible: false
+                    }));
+                    onScreenChange(triedView);
+                },
+                btn3Method: () => {
+                    setModalParams((prev) => ({
+                        ...prev,
+                        isVisible: false
+                    }));
+                },
+                isVisible: true,
+            }))
+        }
+    }
+
     return (
         <div>
             {getExercises()}
@@ -148,7 +190,7 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
                 }}
             >
                 <Button
-                    onClick={() => onScreenChange('TrainingDaysView')}
+                    onClick={() => handlePopUp('TrainingDaysView')}
                     width={'172px'}
                 >
                     Back

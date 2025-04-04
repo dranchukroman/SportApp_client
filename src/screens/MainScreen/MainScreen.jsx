@@ -179,7 +179,7 @@ function MainScreen({ setErrorMessage, setModalParams }) {
             case 'TrainingDaysDetails':
                 return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
             case 'ExercisesView':
-                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
+                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
             case 'ExerciseDetails':
                 return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
             case 'Exercising':
