@@ -20,6 +20,10 @@ export const StyledCreateProfile = styled.div`
             color: ${theme.colors.gradientBase}; /* Зміна кольору при наведенні */
         }
     }
+    
+    input, select {
+        margin-bottom: 10px;
+    }
 `;
 
 export const CreateProfileContainer = styled.div`

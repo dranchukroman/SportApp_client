@@ -1,12 +1,40 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+
 import axios from 'axios';
 import { StyledCreateProfile, CreateProfileContainer, StyledSelect } from './UserProfileCreation.styled'
 import Input from '../../components/Inputs/Input';
 import Heading from '../../components/Headings/Heading';
 import Button from '../../components/Buttons/Button';
-import ErrorToast from '../../components/popUps/ErrorToast';
+import { toast } from 'sonner';
 
-function UserProfileCreation({ errorMessage, setErrorMessage }) {
+
+function UserProfileCreation({ setErrorMessage }) {
+    const navigate = useNavigate();
+
+    // Check if profile exist
+    useEffect(() => {
+        const checkIfProfileExist = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
+                    headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+                });
+                if (response.status === 200 && response.data.length > 0) {
+                    navigate('/dashboard');
+                }
+            } catch (error) {
+                if (error.response.status === 403) {
+                    localStorage.removeItem('authToken');
+                    navigate('/login');
+                    return;
+                }
+                console.log('Error while checking profile existing: ', error);
+            }
+        }
+        checkIfProfileExist();
+    })
+
+    // User data
     const [userData, setUserData] = useState({
         name: '',
         surname: '',
@@ -18,148 +46,97 @@ function UserProfileCreation({ errorMessage, setErrorMessage }) {
         activity_level: 'low'
     })
 
-    const [fieldsStatus, setFieldsStatus] = useState(false);
 
-    const checkFields = () => {
-        if (userData.name !== '' && userData.surname !== '' && userData.height !== '' && userData.weight !== '' && userData.age !== '' && userData.gender !== '' && userData.goal !== '' && userData.activityLevel !== '') {
-            setFieldsStatus(true);
-        } else {
-            setErrorMessage('All fields should be filled');
+    const handleCreateProfile = async () => {
+        const fieldsValidation = () => {
+            if (
+                userData.name !== '' &&
+                userData.surname !== '' &&
+                userData.height !== 0 &&
+                userData.weight !== 0 &&
+                userData.age !== 0
+            ) return true;
+            return false
+        }
+
+        if (!fieldsValidation()) {
+            toast.error('All fields should be filled');
+            return;
+        }
+
+        const profileData = {
+            first_name: userData.name,
+            last_name: userData.surname,
+            height: userData.height,
+            weight: userData.weight,
+            age: userData.age,
+            gender: userData.gender,
+            goal: userData.goal,
+            activity_level: userData.activityLevel,
+        }
+
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/createProfile`, profileData, {
+                headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
+            });
+
+            if (response.status === 201) {
+                window.location.href = '/dashboard';
+            } else {
+                setErrorMessage(response.data.message);
+            }
+        } catch (error) {
+            setErrorMessage(error.response?.data?.message || 'Something went wrong');
         }
     }
-
-    useEffect(() => {
-        const checkIfProfileExist = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-                });
-                if (response.status === 200 && response.data.length > 0) {
-                    window.location.href = '/dashboard';
-                }
-            } catch (error) {
-                if(error.response.status === 403){
-                    console.log('Token expired');
-                    localStorage.removeItem('authToken');
-                    window.location.href = '/login';
-                    return;
-                }
-                console.log('Profile doesn\'t exist');
-            }
-        }
-        checkIfProfileExist();
-    })
-
-    const profileData = useMemo(() => ({
-        first_name: userData.name,
-        last_name: userData.surname,
-        height: userData.height,
-        weight: userData.weight,
-        age: userData.age,
-        gender: userData.gender,
-        goal: userData.goal,
-        activity_level: userData.activityLevel,
-    }), [userData]);
-    useEffect(() => {
-        const createProfile = async () => {
-            try {
-                const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/createProfile`, profileData, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-                });
-
-                if (response.status === 201) {
-                    window.location.href = '/dashboard';
-                } else {
-                    setErrorMessage(response.data.message);
-                    setFieldsStatus(false);
-                }
-            } catch (error) {
-                setErrorMessage(error.response?.data?.message);
-            }
-        }
-        if (fieldsStatus) createProfile();
-    }, [fieldsStatus, profileData, setErrorMessage]);
 
     return (
         <CreateProfileContainer>
             <StyledCreateProfile>
-                <Heading>
-                    Create profile
-                </Heading>
-                <p>
-                    Fill your data to fully use application
-                </p>
-                <Input
-                    placeholder={'Name'}
+                <Heading>Create profile</Heading>
+                <p>Fill your data to fully use application</p>
+                <Input value={userData.name} placeholder={'Name'}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         name: e.target.value
                     }))}
-                    value={userData.name}
-                    style={{
-                        marginBottom: '10px'
-                    }}
                 />
 
-                <Input
-                    placeholder={'Surname'}
+                <Input value={userData.surname} placeholder={'Surname'}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         surname: e.target.value
                     }))}
-                    value={userData.surname}
-                    style={{
-                        marginBottom: '10px'
-                    }}
                 />
 
-                <Input
+                <Input type="number" value={userData.height}
                     placeholder={'Height'}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         height: e.target.value
                     }))}
-                    value={userData.height}
-                    style={{
-                        marginBottom: '10px'
-                    }}
-                    type="number"
                 />
 
-                <Input
+                <Input type="number" value={userData.weight}
                     placeholder={'Weight'}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         weight: e.target.value
                     }))}
-                    value={userData.weight}
-                    style={{
-                        marginBottom: '10px'
-                    }}
-                    type="number"
                 />
 
-                <Input
+                <Input value={userData.age} type="number"
                     placeholder={'Age'}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         age: e.target.value
                     }))}
-                    value={userData.age}
-                    style={{
-                        marginBottom: '10px'
-                    }}
-                    type="number"
                 />
-                <StyledSelect
-                    style={{
-                        marginBottom: '10px'
-                    }}
+                <StyledSelect value={userData.gender}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         gender: e.target.value
                     }))}
-                    value={userData.gender}
                 >
                     <option value="male">
                         Male
@@ -171,15 +148,11 @@ function UserProfileCreation({ errorMessage, setErrorMessage }) {
                         Other
                     </option>
                 </StyledSelect>
-                <StyledSelect
-                    style={{
-                        marginBottom: '10px'
-                    }}
+                <StyledSelect value={userData.activityLevel}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         activity_level: e.target.value
                     }))}
-                    value={userData.activityLevel}
                 >
                     <option value="low">
                         Low
@@ -192,24 +165,14 @@ function UserProfileCreation({ errorMessage, setErrorMessage }) {
                     </option>
                 </StyledSelect>
 
-                <Input
-                    placeholder={'Your goal'}
+                <Input placeholder={'Your goal'} value={userData.goal}
                     onChange={(e) => setUserData((prev) => ({
                         ...prev,
                         goal: e.target.value
                     }))}
-                    value={userData.goal}
-                    style={{
-                        marginBottom: '10px'
-                    }}
                 />
-                <Button
-                    onClick={checkFields}
-                >
-                    Create
-                </Button>
+                <Button onClick={handleCreateProfile}>Create</Button>
             </StyledCreateProfile>
-            <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage} />
         </CreateProfileContainer>
     )
 }
