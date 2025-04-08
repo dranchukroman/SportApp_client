@@ -38,6 +38,12 @@ function UserProfileCreation({ errorMessage, setErrorMessage }) {
                     window.location.href = '/dashboard';
                 }
             } catch (error) {
+                if(error.response.status === 403){
+                    console.log('Token expired');
+                    localStorage.removeItem('authToken');
+                    window.location.href = '/login';
+                    return;
+                }
                 console.log('Profile doesn\'t exist');
             }
         }
