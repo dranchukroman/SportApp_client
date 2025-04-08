@@ -26,3 +26,18 @@ export const LoginPageContainer = styled.div`
     margin: 0 auto;
     padding-top: 75px;
 `;
+
+export const InButtonWrapper = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    width: 100%;
+`
+
+export const GoogleButtonWrapper = styled.div`
+    position: absolute;
+    left: 29px;
+    display: flex;
+    align-items: center;
+`
