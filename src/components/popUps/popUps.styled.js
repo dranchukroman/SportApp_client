@@ -21,6 +21,7 @@ export const ToastPopUp = styled.div`
   max-width: 300px;
   padding: 5px 30px 5px 30px;
   border-radius: 50px;
+  text-align: center;
   color: ${theme.colors.whiteText};
   position: absolute;
   z-index: 100;

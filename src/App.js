@@ -8,6 +8,7 @@ import LoginPage from './screens/LoginPage/LoginPage';
 import MainScreen from './screens/MainScreen/MainScreen';
 import UserProfileCreation from './screens/UserProfileCreation/UserProfileCreation'
 import ErrorToast from './components/popUps/ErrorToast';
+import { Toaster } from 'sonner';
 import ModalPopUp from './components/popUps/ModalPopUp/ModalPopUp';
 
 const PageWrapper = styled.div`
@@ -74,7 +75,8 @@ function App() {
           />
         </Routes>
       </Router>
-      <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage}/>
+      {/* <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage}/> */}
+      <Toaster richColors position="bottom-center"/>
       <ModalPopUp modalParams={modalParams}/>
     </ThemeProvider>
   );

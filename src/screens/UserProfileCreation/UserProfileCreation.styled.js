@@ -57,3 +57,23 @@ export const StyledSelect = styled.select`
     background-clip: padding-box, border-box;
     box-shadow: ${theme.shadows.mainShadows};
 `;
+
+export const UserDataWrapper = styled.div`
+    display: flex;
+    justify-content: center;
+
+    margin: 0 auto;
+
+    div {
+        // text-align: left;
+    }
+
+    p {
+        padding-bottom: 5px;
+    }
+
+    span {
+        font-weight: ${theme.fontWeights.mediumHeader};
+        font-size: ${theme.fontSizes.smallHeader}
+    }
+`

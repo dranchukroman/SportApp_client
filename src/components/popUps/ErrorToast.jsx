@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { ToastPopUp } from './popUps.styled';
 
 function ErrorToast({ message, setErrorMessage }) {
-  const [show, setShow] = useState(false);
+  const [show, setShow] = useState(true);
 
   useEffect(() => {
     if (message) {
