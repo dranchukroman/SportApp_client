@@ -7,8 +7,9 @@ import CheckBox from "../../../../components/Inputs/CheckBoxes/CheckBox";
 import TextCheckBox from "../../../../components/Inputs/CheckBoxes/TextCheckBox";
 import axios from "axios";
 import theme from "../../../../styles/theme";
+import { toast } from "sonner";
 
-function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId, setErrorMessage }) {
+function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId }) {
     // Training plan data
     const [planName, setPlanName] = useState('');
     const [planDescription, setPlanDescription] = useState('');
@@ -25,7 +26,7 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
             setFieldsStatus(true);
             return;
         }
-        setErrorMessage('All fields shoud be filled');
+        toast.error('All fields shoud be filled');
     }
 
     // Select day on click
@@ -66,12 +67,12 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
                     setPlandaysPerWeek(convertStringToArray(planData.days_per_week));
                 }
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         }
         if (editModeStatus) fetchTraininPlansData();
 
-    }, [editModeStatus, trainingPlanId, token, setErrorMessage]);
+    }, [editModeStatus, trainingPlanId, token]);
 
     useEffect(() => {
         // Update or add training plan
@@ -112,12 +113,12 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
                 } else onScreenChange('Trainings');
 
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         }
         if (fieldsStatus) handleTraininPlan();
 
-    }, [fieldsStatus, editModeStatus, isCurrentPlan, onScreenChange, planDescription, planName, planThumbnailImage, plandaysPerWeek, setTrainingPlanId, token, trainingPlanId, setErrorMessage]);
+    }, [fieldsStatus, editModeStatus, isCurrentPlan, onScreenChange, planDescription, planName, planThumbnailImage, plandaysPerWeek, setTrainingPlanId, token, trainingPlanId]);
 
     return (
         <div>

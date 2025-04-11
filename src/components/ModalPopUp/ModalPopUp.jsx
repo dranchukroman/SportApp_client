@@ -1,9 +1,9 @@
 import React from "react";
 import { Overlay, PopUp, ButtonsWrapper } from './ModalPopUp.styled';
-import theme from "../../../styles/theme";
+import theme from "../../styles/theme";
 
-import Heading from "../../Headings/Heading";
-import Button from "../../Buttons/Button";
+import Heading from "../Headings/Heading";
+import Button from "../Buttons/Button";
 
 function ModalPopUp({ modalParams }) {
     const renderButtons = () => {

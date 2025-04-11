@@ -7,8 +7,9 @@ import Button from "../../../../components/Buttons/Button";
 import Card from "../../../../components/Cards/InfoCard";
 import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
+import { toast } from "sonner";
 
-function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId, setErrorMessage, exercisingStatus, setModalParams, saveTrainingProgress, setExercisingStatus, setTrainingProgress }) {
+function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId, exercisingStatus, setModalParams, saveTrainingProgress, setExercisingStatus, setTrainingProgress }) {
     const [exercises, setExercises] = useState(null);
     const [deleteExercise, setDeleteExercise] = useState(null);
 
@@ -51,13 +52,13 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
                 }
                 setDeleteExercise(null);
             } catch (error) {
-                setErrorMessage(error.message);
+                toast.error(error.message);
                 console.error('Error deleting exercise:', error);
             }
         };
 
         if (deleteExercise) reduceExercises();
-    }, [deleteExercise, token, setErrorMessage]);
+    }, [deleteExercise, token]);
 
     const getExercises = () => {
         if (!exercises || exercises.length <= 0) {
@@ -115,7 +116,8 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
                         display: editModeStatus ? 'block' : 'none',
                         cursor: 'pointer'
                     }}
-                    onClick={() => {
+                    onClick={(e) => {
+                        e.stopPropagation();
                         setTrainingExerciseId(exercise.day_exercise_id);
                         onScreenChange('ExerciseDetails');
                     }}

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "sonner";
 
 import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 
-function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, trainingExerciseId, setErrorMessage }) {
+function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, trainingExerciseId }) {
     const [exerciseList, setExerciseList] = useState([]);
     const muscleGroupList = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'];
 
@@ -35,11 +36,11 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
                     setExercise({ name: firstExercise.name || '', exerciseId: firstExercise.exercise_id || '' });
                 }
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         };
         fetchExercisesFromLibrary();
-    }, [muscleGroup, token, editModeStatus, setErrorMessage]);
+    }, [muscleGroup, token, editModeStatus, ]);
 
     // Fetch exercise data to edit
     useEffect(() => {
@@ -63,11 +64,11 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
                     setSeconds(sec);
                 }
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         };
         if (editModeStatus) fetchExerciseData();
-    }, [editModeStatus, trainingExerciseId, token, setErrorMessage]);
+    }, [editModeStatus, trainingExerciseId, token, ]);
 
     // Generate exercise options for dropdown
     const getList = () => {
@@ -96,7 +97,7 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
         if (exercise.name && muscleGroup) {
             setFieldsStatus(true);
         } else {
-            setErrorMessage('Select muscle group and exercise');
+            toast.error('Select muscle group and exercise');
         }
     };
 
@@ -129,11 +130,11 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
 
                 onScreenChange('ExercisesView');
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         };
         if (fieldsStatus) handleExercise();
-    }, [fieldsStatus, exercise, traininDayId, muscleGroup, series, weight, times, description, minutes, seconds, token, onScreenChange, editModeStatus, trainingExerciseId, setErrorMessage]);
+    }, [fieldsStatus, exercise, traininDayId, muscleGroup, series, weight, times, description, minutes, seconds, token, onScreenChange, editModeStatus, trainingExerciseId, ]);
 
     return (
         <div>

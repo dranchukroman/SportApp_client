@@ -1,7 +1,8 @@
 import React from "react";
 import axios from "axios";
+import { toast } from 'sonner';
 
-import { SettingScreen, ButtonsGroup, Button, SettingInput/*, errorMessage, setErrorMessage */} from "./Settings.styled";
+import { SettingScreen, ButtonsGroup, Button, SettingInput} from "./Settings.styled";
 import theme from "../../../styles/theme";
 import DivideLine from "../../../components/Dividers/DivideLine";
 
@@ -21,18 +22,18 @@ function Settings(
             }
         })
 
-        if (response.status) {
+        if (response.status === 200) {
             localStorage.removeItem('authToken');
             window.location.href = '/login';
             return;
-        }
+        } else toast.error('Error while deleting account')
     }
 
     async function logOut() {
         if (localStorage.getItem('authToken')) {
             localStorage.removeItem('authToken');
-            window.location.href = '/login';
         }
+        window.location.href = '/login';
     }
 
     return (

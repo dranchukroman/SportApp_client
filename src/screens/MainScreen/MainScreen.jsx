@@ -20,9 +20,10 @@ import Exercising from '../otherViews/Trainings/Exercising/Exercising.jsx';
 import Diet from '../otherViews/Diet/Diet';
 import Calculator from '../otherViews/Calculator/Calculator';
 import NotFound from '../otherViews/NotFound/NotFound'
+import { toast } from 'sonner';
 
 
-function MainScreen({ setErrorMessage, setModalParams }) {
+function MainScreen({ setModalParams }) {
     const navigate = useNavigate(); // Create navigation object
 
     // Check for token
@@ -156,10 +157,10 @@ function MainScreen({ setErrorMessage, setModalParams }) {
                 if (response.status === 200) {
                     fetchUserData()
                 } else {
-                    setErrorMessage(response.data?.message);
+                    toast.error(response.data?.message);
                 }
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         };
 
@@ -168,7 +169,7 @@ function MainScreen({ setErrorMessage, setModalParams }) {
             setIsDataChanged(false);
             setUpdateData(false);
         }
-    }, [updateData, isDataChanged, fetchUserData, profileData, token, setErrorMessage]);
+    }, [updateData, isDataChanged, fetchUserData, profileData, token, ]);
 
     // Screen data
     const [pageTitle, changePageTitle] = useState(`Hi, ${userData.name || 'Friend'}`); // Page title
@@ -197,25 +198,25 @@ function MainScreen({ setErrorMessage, setModalParams }) {
             case 'Dashboard':
                 return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} />
             case 'Trainings':
-                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} setErrorMessage={setErrorMessage} />
+                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
             case 'TrainingPlanDetails':
-                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} setErrorMessage={setErrorMessage} />
+                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} />
             case 'TrainingDaysView':
-                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} setErrorMessage={setErrorMessage} setExercisingStatus={setExercisingStatus} />
+                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} setExercisingStatus={setExercisingStatus} />
             case 'TrainingDaysDetails':
-                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
+                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} />
             case 'ExercisesView':
-                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
+                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
             case 'ExerciseDetails':
-                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} setErrorMessage={setErrorMessage} />
+                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} />
             case 'Exercising':
-                return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={trainingExerciseId} setErrorMessage={setErrorMessage} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={trainingPlanId} traininDayId={traininDayId} />
+                return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={trainingPlanId} traininDayId={traininDayId} />
             case 'Diet':
-                return <Diet token={token} onScreenChange={setCurrentScreen} setErrorMessage={setErrorMessage} />
+                return <Diet token={token} onScreenChange={setCurrentScreen} />
             case 'Calculator':
-                return <Calculator token={token} onScreenChange={setCurrentScreen} setErrorMessage={setErrorMessage} />
+                return <Calculator token={token} onScreenChange={setCurrentScreen} />
             default:
-                return <NotFound onScreenChange={setCurrentScreen} setErrorMessage={setErrorMessage} />
+                return <NotFound onScreenChange={setCurrentScreen} />
         }
     }
 

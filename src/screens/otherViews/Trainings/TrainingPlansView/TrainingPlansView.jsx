@@ -9,8 +9,9 @@ import Card from '../../../../components/Cards/InfoCard'
 
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
+import { toast } from "sonner";
 
-function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus, setErrorMessage }) {
+function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
 
@@ -26,13 +27,13 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
 
                 if (response.status === 200 && response?.data?.data) {
                     setTrainingPlans(response.data.data);
-                } else setErrorMessage('Cant get training plans')
+                } else toast.error('Cant get training plans')
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         }
         fetchTrainingPlans();
-    }, [deletePlanId, token, setErrorMessage]);
+    }, [deletePlanId, token]);
 
     useEffect(() => {
         // Delete plan
@@ -56,12 +57,12 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
                 }
                 setDeletePlanId(null);
             } catch (error) {
-                setErrorMessage(error.response?.data?.message)
+                toast.error(error.response?.data?.message)
             }
         };
 
         if (deletePlanId) deletePlan();
-    }, [deletePlanId, token, setErrorMessage]);
+    }, [deletePlanId, token]);
 
 
 

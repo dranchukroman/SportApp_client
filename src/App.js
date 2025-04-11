@@ -7,9 +7,8 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import LoginPage from './screens/LoginPage/LoginPage';
 import MainScreen from './screens/MainScreen/MainScreen';
 import UserProfileCreation from './screens/UserProfileCreation/UserProfileCreation'
-import ErrorToast from './components/popUps/ErrorToast';
 import { Toaster } from 'sonner';
-import ModalPopUp from './components/popUps/ModalPopUp/ModalPopUp';
+import ModalPopUp from './components/ModalPopUp/ModalPopUp';
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -17,7 +16,6 @@ const PageWrapper = styled.div`
 `;
 
 function App() {
-  const [errorMessage, setErrorMessage] = useState('');
   const [modalParams, setModalParams] = useState({
     mainText: 'Set up PopUp text',
     btn1Text: 'Set null to delete',
@@ -45,7 +43,7 @@ function App() {
             path='/dashboard'
             element={
               <PageWithBackground $bgColor='#EEE'>
-                <MainScreen setErrorMessage={setErrorMessage} setModalParams={setModalParams} />
+                <MainScreen setModalParams={setModalParams} />
               </PageWithBackground>
             }
           />
@@ -53,7 +51,7 @@ function App() {
             path='/login'
             element={
               <PageWithBackground $bgColor="#181818">
-                <LoginPage setErrorMessage={setErrorMessage} />
+                <LoginPage />
               </PageWithBackground>
             }
           />
@@ -61,7 +59,7 @@ function App() {
             path='/registration'
             element={
               <PageWithBackground $bgColor="#181818">
-                <LoginPage setErrorMessage={setErrorMessage} />
+                <LoginPage />
               </PageWithBackground>
             }
           />
@@ -69,13 +67,12 @@ function App() {
             path='/createProfile'
             element={
               <PageWithBackground $bgColor="#181818">
-                <UserProfileCreation setErrorMessage={setErrorMessage} />
+                <UserProfileCreation />
               </PageWithBackground>
             }
           />
         </Routes>
       </Router>
-      {/* <ErrorToast message={errorMessage} setErrorMessage={setErrorMessage}/> */}
       <Toaster richColors position="bottom-center"/>
       <ModalPopUp modalParams={modalParams}/>
     </ThemeProvider>

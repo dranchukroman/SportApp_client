@@ -6,8 +6,9 @@ import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
 import theme from "../../../../styles/theme";
+import { toast } from "sonner";
 
-function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, traininDayId, setErrorMessage }) {
+function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, traininDayId }) {
 
     const [dayName, setDayName] = useState('');
     const [dayDescription, setDayDescription] = useState('');
@@ -21,7 +22,7 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
             setFieldsStatus(true);
             return;
         }
-        setErrorMessage('All fields shoud be filled');
+        toast.error('All fields shoud be filled');
     }
 
     useEffect(() => {
@@ -41,11 +42,11 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                     setDayDescription(response.data.trainingDaysData.data.description);
                 }
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         }
         if (editModeStatus && traininDayId !== 0) fetchTrainingDaysData();
-    }, [editModeStatus, traininDayId, token, setErrorMessage]);
+    }, [editModeStatus, traininDayId, token]);
 
     // Add or update training day
     useEffect(() => {
@@ -78,11 +79,11 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                 )
                 onScreenChange('TrainingDaysView');
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         }
         if (fieldsStatus) handleTrainingPlan();
-    }, [fieldsStatus, dayName, dayDescription, onScreenChange, token, trainingPlanId, traininDayId, setErrorMessage]);
+    }, [fieldsStatus, dayName, dayDescription, onScreenChange, token, trainingPlanId, traininDayId]);
 
     return (
         <div>

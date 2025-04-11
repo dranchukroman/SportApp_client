@@ -7,8 +7,9 @@ import Heading from '../../components/Headings/Heading';
 import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import GoogleIcon from '../../assets/icons/LoginPage/google';
+import { toast } from 'sonner';
 
-function LoginPage({ setErrorMessage }) {
+function LoginPage() {
     // Location tools
     const navigate = useNavigate();
     const location = useLocation();
@@ -49,27 +50,27 @@ function LoginPage({ setErrorMessage }) {
 
     // Login function
     const handleLogin = async () => {
-        if (!email && !password) return setErrorMessage(`Email and password are required`);
+        if (!email && !password) return toast.error(`Email and password are required`);
         try {
             const { data } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
-            data?.token ? saveTokenAndRedirect(data.token, '/dashboard') : setErrorMessage(data.message);
+            data?.token ? saveTokenAndRedirect(data.token, '/dashboard') : toast.error(data.message);
         } catch (error) {
-            setErrorMessage(error.response?.data?.message || 'Login failed');
+            toast.error(error.response?.data?.message || 'Login failed');
         }
     }
 
     // Registration function
     const handleRegistration = async () => {
-        if (!email || !password || !password2) return setErrorMessage('All fields are required');
-        if (password !== password2) return setErrorMessage('Passwords do not match');
+        if (!email || !password || !password2) return toast.error('All fields are required');
+        if (password !== password2) return toast.error('Passwords do not match');
 
         try {
             const { status } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
 
             if (status === 201) await handleLogin();
-            else setErrorMessage('Registration failed');
+            else toast.error('Registration failed');
         } catch (error) {
-            setErrorMessage(error.response?.data?.message || 'Registration failed');
+            toast.error(error.response?.data?.message || 'Registration failed');
         }
     };
 

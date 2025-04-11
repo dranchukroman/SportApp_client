@@ -20,8 +20,9 @@ import HistoryIcon from '../../../../assets/icons/Trainings/HistoryIcon';
 import DivideLine from "../../../../components/Dividers/DivideLine";
 import Button from "../../../../components/Buttons/Button";
 import CrossIcon from "../../../../assets/icons/CrossIcon";
+import { toast } from "sonner";
 
-function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress, setErrorMessage, trainingPlanId, traininDayId }) {
+function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress }) {
     // Current exercise
     const [exerciseData, setExerciseData] = useState({
         exerciseName: 'No data to show',
@@ -67,11 +68,11 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                 })
                 )
             } catch (error) {
-                setErrorMessage(error.response?.data?.message);
+                toast.error(error.response?.data?.message);
             }
         }
         fetchExerciseData();
-    }, [token, setErrorMessage, trainingExerciseId]);
+    }, [token, trainingExerciseId]);
 
     const addRecordToHistory = () => {
         const now = new Date();

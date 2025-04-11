@@ -3,7 +3,7 @@ import StyledCalculator from './Calculator.styled'
 import Heading from "../../../components/Headings/Heading";
 import Button from "../../../components/Buttons/Button";
 
-function Calculator({children, onScreenChange, setErrorMessage}){
+function Calculator({children, onScreenChange}){
     const handleGoToDashboard = () =>{
         onScreenChange('Dashboard');
     }
