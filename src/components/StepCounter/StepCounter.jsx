@@ -9,14 +9,14 @@ function StepCounter({ stepCount = 1, width, headersArray = [], activeStep = 1 }
         for (var i = 0; i < stepCount; i++) {
             const countIndex = i + 1;
             const active = activeStep === countIndex;
-            const previous = activeStep != countIndex && countIndex < activeStep
+            const previous = activeStep !== countIndex && countIndex < activeStep
             steps.push(
                 <RingContainer>
                     <StepRing active={active} previous={previous}>
                         <Heading>{countIndex}</Heading>
                     </StepRing>
                 </RingContainer>)
-            if (countIndex != stepCount) {
+            if (countIndex !== stepCount) {
                 steps.push(<StepLine />)
             }
         }
