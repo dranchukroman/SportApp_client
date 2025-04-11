@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import theme from "../../styles/theme";
-import Heading from "../Headings/Heading";
 
 export const StepCounterWrapper = styled.div`
     width: ${({width}) => width || '100%'};

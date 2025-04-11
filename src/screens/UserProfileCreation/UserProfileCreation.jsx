@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import axios from 'axios';
-import { StyledCreateProfile, CreateProfileContainer, StyledSelect, FormContainer, UserDataWrapper } from './UserProfileCreation.styled'
+import { StyledCreateProfile, CreateProfileContainer, StyledSelect, UserDataWrapper } from './UserProfileCreation.styled'
 import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import StepCounter from '../../components/StepCounter/StepCounter';
@@ -32,7 +32,7 @@ function UserProfileCreation() {
             }
         }
         checkIfProfileExist();
-    }, [])
+    }, [navigate])
 
     // User data
     const [userData, setUserData] = useState({
@@ -95,12 +95,10 @@ function UserProfileCreation() {
 
     const renderStep = () => {
         switch (step) {
-            case 1:
-                return <Step1 userData={userData} setUserData={setUserData} />
-            case 2:
-                return <Step2 userData={userData} setUserData={setUserData} />
-            case 3:
-                return <Step3 userData={userData} setUserData={setUserData} />
+            case 1: return <Step1 userData={userData} setUserData={setUserData} />
+            case 2: return <Step2 userData={userData} setUserData={setUserData} />
+            case 3: return <Step3 userData={userData} setUserData={setUserData} />
+            default: return <Step1 userData={userData} setUserData={setUserData} />
         }
     }
 
@@ -122,6 +120,7 @@ function UserProfileCreation() {
                     userData.activity_level === ''
                 ) return toast.error('All fields should be filled2');
                 break;
+            default: return toast.error('Something went wrong');
         }
         setStep(step + 1);
     }
