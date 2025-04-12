@@ -1,5 +1,5 @@
 // External components
-import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { toast } from 'sonner';
@@ -18,6 +18,7 @@ import Settings from '../otherViews/Settings/Settings';
 // Other functions
 import renderScreen from './renderScreen.js';
 import getPageTitles from './getPageTitles.js';
+import useFunctionalBarHeight from './useFunctionalBarHeight.js';
 
 function MainScreen({ setModalParams }) {
     const navigate = useNavigate(); // Create navigation object
@@ -144,49 +145,41 @@ function MainScreen({ setModalParams }) {
     }, [token]);
 
     const [currentScreen, setCurrentScreen] = useState('Dashboard'); // Current screen
-
-    // Change page title
     const pageTitles = useMemo(() => getPageTitles(userData.name), [userData.name]); // Get page titles
     const [pageTitle, changePageTitle] = useState(pageTitles["Dashboard"]); // Page title
-    useEffect(() => changePageTitle(pageTitles[currentScreen]), [currentScreen, pageTitles]);
+    useEffect(() => changePageTitle(pageTitles[currentScreen]), [currentScreen, pageTitles]); // Change page title
 
-    // Change height of functional bar
-    const userInformationHeight = useRef(null);
-    const [userDataHeight, setUserDataHeight] = useState(0)
-    useEffect(() => {
-        if (userInformationHeight.current) {
-            setUserDataHeight(userInformationHeight.current.offsetHeight);
-        }
-    }, [userInformationHeight]);
-    const visiblePartOfScreen = window.innerHeight; // Visible part of screen height
-    const functionalBarHeight = (visiblePartOfScreen - userDataHeight - 85); // Height of functional bar
-    const scrollablePartHeight = (functionalBarHeight - 160); // Height of scrollable part in functional bar
-    // Show settings
-    const [isSettingsVisible, setFunctionalBarVisibility] = useState(false);
+    // Custom hook to change height of functional bar
+    const { userInformationHeight, functionalBarHeight, scrollablePartHeight, userDataHeight, visiblePartOfScreen } = useFunctionalBarHeight();
+
+    // Show/hide settings
+    const [settingsVisibility, setSettingsVisibility] = useState(false);
     const showSettings = () => {
-        setFunctionalBarVisibility(prev => {
+        setSettingsVisibility(prev => {
             if (prev) {
                 setUpdateData(true);
             }
             return !prev;
         });
     };
+
     return (
         <MainScreenWrapper>
             <InfoBarWrapper ref={userInformationHeight}>
                 <PageTitle>{pageTitle}</PageTitle>
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
-            {isSettingsVisible && (
-                <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} style={{ flex: 1 }} />
+            {settingsVisibility && (
+                <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} />
             )}
             <FunctionalBar
                 style={{
                     height: `${functionalBarHeight}px`,
                     position: 'absolute',
-                    top: isSettingsVisible ? (visiblePartOfScreen - 207) : (userDataHeight + 15),
+                    top: settingsVisibility ? (visiblePartOfScreen - 207) : (userDataHeight + 15),
                     transition: 'top 0.3s ease',
                 }}
+                
                 trainingPlans={trainingPlans}
             >
                 <div
