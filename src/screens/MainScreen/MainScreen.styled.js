@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import { StyledHeader } from '../../components/Headings/Heading.styled'
 import theme from '../../styles/theme'
+import FunctionalBar from '../../components/FunctionalBar/FunctionalBar'
 
 export const MainScreenWrapper = styled.div`
     display: flex;
@@ -17,7 +18,7 @@ export const InfoBarWrapper = styled.div`
     align-items: flex-end;
 `
 
-export const PageTitle = styled(StyledHeader)`
+export const ScreenTitle = styled(StyledHeader)`
     color: ${theme.colors.darkBackground};
     font-size: ${theme.fontSizes.largeHeader};
 `

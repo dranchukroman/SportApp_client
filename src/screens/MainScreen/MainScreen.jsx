@@ -5,7 +5,7 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 // Themes and style
-import { MainScreenWrapper, InfoBarWrapper, PageTitle } from './MainScreen.styled.js';
+import { MainScreenWrapper, InfoBarWrapper, ScreenTitle } from './MainScreen.styled.js';
 
 // Global components
 import FunctionalBar from '../../components/FunctionalBar/FunctionalBar';
@@ -166,7 +166,7 @@ function MainScreen({ setModalParams }) {
     return (
         <MainScreenWrapper>
             <InfoBarWrapper ref={userInformationHeight}>
-                <PageTitle>{pageTitle}</PageTitle>
+                <ScreenTitle>{pageTitle}</ScreenTitle>
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
             {settingsVisibility && (
@@ -206,8 +206,7 @@ function MainScreen({ setModalParams }) {
                     })}
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus}
-            />
+            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus}/>
         </MainScreenWrapper>
     );
 }
