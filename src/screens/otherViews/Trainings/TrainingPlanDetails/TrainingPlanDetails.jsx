@@ -9,7 +9,7 @@ import axios from "axios";
 import theme from "../../../../styles/theme";
 import { toast } from "sonner";
 
-function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editModeStatus, trainingPlanId }) {
+function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, editModeStatus, trainingPlanId }) {
     // Training plan data
     const [planName, setPlanName] = useState('');
     const [planDescription, setPlanDescription] = useState('');
@@ -108,7 +108,10 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
 
                 // Redirect to correct screen depends on editModeStatus
                 if (!editModeStatus) {
-                    setTrainingPlanId(response.data.planId);
+                    setControllTrainings((prev) => ({
+                        ...prev,
+                        trainingPlanId: response.data.planId
+                    }))
                     onScreenChange('TrainingDaysView');
                 } else onScreenChange('Trainings');
 
@@ -118,7 +121,7 @@ function TrainingPlanDetails({ token, setTrainingPlanId, onScreenChange, editMod
         }
         if (fieldsStatus) handleTraininPlan();
 
-    }, [fieldsStatus, editModeStatus, isCurrentPlan, onScreenChange, planDescription, planName, planThumbnailImage, plandaysPerWeek, setTrainingPlanId, token, trainingPlanId]);
+    }, [fieldsStatus, editModeStatus, isCurrentPlan, onScreenChange, planDescription, planName, planThumbnailImage, plandaysPerWeek, setControllTrainings, token, trainingPlanId]);
 
     return (
         <div>

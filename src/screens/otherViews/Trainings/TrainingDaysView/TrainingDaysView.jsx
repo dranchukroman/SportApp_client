@@ -8,7 +8,7 @@ import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import Card from "../../../../components/Cards/InfoCard";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 
-function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDayId, editModeStatus, setExercisingStatus }) {
+function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTrainings, editModeStatus, setExercisingStatus }) {
     const [trainingDays, setTrainingDays] = useState(null);
     const [deleteDayId, setDeleteDayId] = useState(null);
     const [activeDay, setActiveDay] = useState(null);
@@ -50,7 +50,10 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDa
                         style={{ marginBottom: "14px", position: "relative" }}
                         onClick={() => {
                             if (editModeStatus) {
-                                setTrainingDayId(day.day_id);
+                                setControllTrainings((prev) => ({
+                                    ...prev,
+                                    trainingDayId: day.day_id
+                                }));
                                 onScreenChange("ExercisesView");
                             } else {
                                 setActiveDay((prev) => (prev === day.day_id ? null : day.day_id));
@@ -66,7 +69,10 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDa
                             style={{ position: "absolute", right: 0, top: 0, display: editModeStatus ? "block" : "none" }}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                setTrainingDayId(day.day_id);
+                                setControllTrainings((prev) => ({
+                                    ...prev,
+                                    trainingDayId: day.day_id
+                                }));
                                 onScreenChange("TrainingDaysDetails");
                             }}
                         />
@@ -99,7 +105,10 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDa
                                         width={"280px"}
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            setTrainingDayId(day.day_id);
+                                            setControllTrainings((prev) => ({
+                                                ...prev,
+                                                trainingDayId: day.day_id
+                                            }));
                                             setExercisingStatus(true);
                                             onScreenChange("ExercisesView");
                                         }}
@@ -124,7 +133,10 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setTrainingDa
                 </Button>
                 <Button
                     onClick={() => {
-                        setTrainingDayId(0);
+                        setControllTrainings((prev) => ({
+                            ...prev,
+                            trainingDayId: 0
+                        }));
                         onScreenChange("TrainingDaysDetails");
                     }}
                     width={"172px"}

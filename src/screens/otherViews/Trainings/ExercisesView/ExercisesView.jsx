@@ -9,7 +9,7 @@ import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { toast } from "sonner";
 
-function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setTrainingExerciseId, exercisingStatus, setModalParams, saveTrainingProgress, setExercisingStatus, setTrainingProgress }) {
+function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, setControllTrainings, exercisingStatus, setModalParams, saveTrainingProgress, setExercisingStatus, setTrainingProgress }) {
     const [exercises, setExercises] = useState(null);
     const [deleteExercise, setDeleteExercise] = useState(null);
 
@@ -84,8 +84,15 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
                 key={exercise.day_exercise_id}
                 style={{ marginBottom: '14px', position: 'relative' }}
                 onClick={() => {
-                    setTrainingExerciseId(exercise.day_exercise_id);
-                    onScreenChange('Exercising');
+                    if(editModeStatus){
+                        toast.warning('Save editing before starting training')
+                    } else {
+                        setControllTrainings((prev) => ({
+                            ...prev,
+                            trainingExerciseId: exercise.day_exercise_id
+                        }))
+                        onScreenChange('Exercising');
+                    }
                 }}
             >
                 <div style={{ color: "white" }}>
@@ -118,7 +125,10 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
                     }}
                     onClick={(e) => {
                         e.stopPropagation();
-                        setTrainingExerciseId(exercise.day_exercise_id);
+                        setControllTrainings((prev) => ({
+                            ...prev,
+                            trainingExerciseId: exercise.day_exercise_id
+                        }))
                         onScreenChange('ExerciseDetails');
                     }}
                 />
@@ -200,7 +210,10 @@ function ExercisesView({ token, onScreenChange, traininDayId, editModeStatus, se
 
                 <Button
                     onClick={() => {
-                        setTrainingExerciseId(0);
+                        setControllTrainings((prev) => ({
+                            ...prev,
+                            trainingExerciseId: 0
+                        }))
                         onScreenChange('ExerciseDetails');
                     }}
                     width={'172px'}

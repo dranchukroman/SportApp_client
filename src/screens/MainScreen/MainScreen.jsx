@@ -1,15 +1,27 @@
+// External components
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MainScreenWrapper, InfoBarWrapper } from './MainScreen.styled.js'
 import axios from 'axios';
-import theme from '../../styles/theme'
+import { toast } from 'sonner';
 
+// Themes and style
+import theme from '../../styles/theme';
+import { MainScreenWrapper, InfoBarWrapper } from './MainScreen.styled.js';
+
+// Global components
 import Heading from '../../components/Headings/Heading';
 import FunctionalBar from '../../components/FunctionalBar/FunctionalBar';
-import Navigation from '../../components/Navigation/Navigation'
+import Navigation from '../../components/Navigation/Navigation';
 import UserIcon from '../../components/UserIcon/UserIcon';
+
+// Maing pages/views
 import Settings from '../otherViews/Settings/Settings';
 import Dashboard from '../otherViews/Dashboard/Dashboard';
+import Diet from '../otherViews/Diet/Diet';
+import Calculator from '../otherViews/Calculator/Calculator';
+import NotFound from '../otherViews/NotFound/NotFound';
+
+// Trainings
 import TrainingPlansView from '../otherViews/Trainings/TrainingPlansView/TrainingPlansView.jsx';
 import TrainingPlanDetails from '../otherViews/Trainings/TrainingPlanDetails/TrainingPlanDetails.jsx';
 import TrainingDaysView from '../otherViews/Trainings/TrainingDaysView/TrainingDaysView.jsx';
@@ -17,22 +29,26 @@ import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/Tra
 import ExercisesView from '../otherViews/Trainings/ExercisesView/ExercisesView.jsx';
 import ExerciseDetails from '../otherViews/Trainings/ExerciseDetails/ExerciseDetails.jsx';
 import Exercising from '../otherViews/Trainings/Exercising/Exercising.jsx';
-import Diet from '../otherViews/Diet/Diet';
-import Calculator from '../otherViews/Calculator/Calculator';
-import NotFound from '../otherViews/NotFound/NotFound'
-import { toast } from 'sonner';
 
 
 function MainScreen({ setModalParams }) {
     const navigate = useNavigate(); // Create navigation object
-
-    // Check for token
     const token = localStorage.getItem('authToken');
+
+    // Check if token exist and valid
     useEffect(() => {
-        if (!token) {
-            window.location.href = '/login';
+        !token && navigate('/login');
+        
+        const tokenValidation = async () => {
+            try {
+                const res = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/checkToken`, {headers: { Authorization: `Bearer ${token}`}});
+                res.status !== 200 && navigate('/login');
+            } catch (error) {
+                navigate('/login');
+            }
         }
-    }, [token]);
+        tokenValidation()
+    }, [token, navigate]);
 
     const [trainingPlans, setTrainingPlans] = useState([]); // Save all training plans
 
@@ -49,46 +65,25 @@ function MainScreen({ setModalParams }) {
                 if (response.status === 200 && response?.data?.data.length > 0) {
                     setTrainingPlans(response.data.data);
                 }
-
             } catch (error) {
                 console.error('Error fetching data:', error);
+                toast.error('Can\'t get training plans');
             }
         };
-
         fetchTrainingPlans();
     }, [token]);
 
 
     // Data to controll application
-    const [trainingPlanId, setTrainingPlanId] = useState(0); // Save training plan id to work with
-    const [traininDayId, setTrainingDayId] = useState(0); // Save training day id to work with
-    const [trainingExerciseId, setTrainingExerciseId] = useState(0); // Save exercise id to work with
+    const [controllTrainings, setControllTrainings] = useState({
+        trainingPlanId: 0,
+        trainingDayId: 0,
+        trainingExerciseId: 0
+    })
+
     const [editModeStatus, setEditModeStatus] = useState(false);
-
-    // const [controllButtonsParams, setControllButtonsParams] = useState({
-    //     leftButtonStatus: false,
-    //     rightButtonStatus: false,
-    //     leftButtonMethod: null,
-    //     rightButtonMethod: null,
-    // })
-
-    // Start training
     const [exercisingStatus, setExercisingStatus] = useState(false);
     const [trainingProgress, setTrainingProgress] = useState({});
-
-    // // Start training
-    // const [exercisingStatus, setExercisingStatus] = useState(
-    //     JSON.parse(localStorage.getItem('exercisingStatus')) ?? false
-    // );
-
-    // const [trainingProgress, setTrainingProgress] = useState(
-    //     JSON.parse(localStorage.getItem('trainingProgress')) ?? {}
-    // );
-
-    // useEffect(() => {
-    //     localStorage.setItem('exercisingStatus', JSON.stringify(exercisingStatus));
-    //     localStorage.setItem('trainingProgress', JSON.stringify(trainingProgress));
-    // }, [exercisingStatus, trainingProgress]);
 
     // Handle user data
     const [userData, setUserData] = useState({
@@ -148,28 +143,23 @@ function MainScreen({ setModalParams }) {
 
     // Update user data
     useEffect(() => {
-        const updateUserData = async () => {
-            try {
-                const response = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateProfile`, profileData(),
-                    { headers: { Authorization: `Bearer ${token}` } }
-                );
-
-                if (response.status === 200) {
-                    fetchUserData()
-                } else {
-                    toast.error(response.data?.message);
-                }
-            } catch (error) {
-                toast.error(error.response?.data?.message);
-            }
-        };
-
         if (updateData && isDataChanged) {
-            updateUserData();
-            setIsDataChanged(false);
-            setUpdateData(false);
+            const update = async () => {
+                try {
+                    const res = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateProfile`, profileData(),
+                        { headers: { Authorization: `Bearer ${token}` } }
+                    );
+                    res.status === 200 ? fetchUserData() : toast.error(res.data?.message);
+                } catch (error) {
+                    toast.error(error.res?.data?.message);
+                } finally {
+                    setIsDataChanged(false);
+                    setUpdateData(false);
+                }
+            }
+            update();
         }
-    }, [updateData, isDataChanged, fetchUserData, profileData, token, ]);
+    }, [updateData, isDataChanged, fetchUserData, profileData, token]);
 
     // Screen data
     const [pageTitle, changePageTitle] = useState(`Hi, ${userData.name || 'Friend'}`); // Page title
@@ -198,19 +188,19 @@ function MainScreen({ setModalParams }) {
             case 'Dashboard':
                 return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} />
             case 'Trainings':
-                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
+                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
             case 'TrainingPlanDetails':
-                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setTrainingPlanId={setTrainingPlanId} editModeStatus={editModeStatus} trainingPlanId={trainingPlanId} />
+                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} trainingPlanId={controllTrainings.trainingPlanId} />
             case 'TrainingDaysView':
-                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} editModeStatus={editModeStatus} setTrainingPlanId={setTrainingPlanId} setTrainingDayId={setTrainingDayId} setExercisingStatus={setExercisingStatus} />
+                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} editModeStatus={editModeStatus} setControllTrainings={setControllTrainings} setExercisingStatus={setExercisingStatus} />
             case 'TrainingDaysDetails':
-                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={trainingPlanId} traininDayId={traininDayId} editModeStatus={editModeStatus} />
+                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} traininDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
             case 'ExercisesView':
-                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} setTrainingExerciseId={setTrainingExerciseId} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
+                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={controllTrainings.trainingDayId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
             case 'ExerciseDetails':
-                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={traininDayId} trainingExerciseId={trainingExerciseId} editModeStatus={editModeStatus} />
+                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
             case 'Exercising':
-                return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={trainingPlanId} traininDayId={traininDayId} />
+                return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={controllTrainings.trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={controllTrainings.trainingPlanId} traininDayId={controllTrainings.trainingDayId} />
             case 'Diet':
                 return <Diet token={token} onScreenChange={setCurrentScreen} />
             case 'Calculator':
@@ -252,7 +242,9 @@ function MainScreen({ setModalParams }) {
                 </Heading>
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
-            <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} style={{ flex: 1 }} />
+            {isSettingsVisible && (
+                <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} style={{ flex: 1 }} />
+            )}
             {/* Functional bar with different views */}
             <FunctionalBar
                 style={{

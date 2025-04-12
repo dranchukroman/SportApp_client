@@ -11,7 +11,7 @@ import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { toast } from "sonner";
 
-function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditModeStatus, editModeStatus }) {
+function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
 
@@ -68,7 +68,10 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
 
     // Get training plan id for edit and change screen
     function showTrainingDays(planId) {
-        setTrainingPlanId(planId);
+        setControllTrainings((prev) => ({
+            ...prev,
+            trainingPlanId: planId
+        }));
         onScreenChange('TrainingDaysView');
     }
 
@@ -118,7 +121,10 @@ function TrainingPlansView({ token, onScreenChange, setTrainingPlanId, setEditMo
 
                     onClick={(e) => {
                         e.stopPropagation();
-                        setTrainingPlanId(plan.plan_id);
+                        setControllTrainings((prev) => ({
+                            ...prev,
+                            trainingPlanId: plan.plan_id
+                        }));
                         onScreenChange('TrainingPlanDetails');
                     }}
                 />

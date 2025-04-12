@@ -64,10 +64,10 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
                     setSeconds(sec);
                 }
             } catch (error) {
-                toast.error(error.response?.data?.message);
+                toast.error(error.response?.data?.message + 'here');
             }
         };
-        if (editModeStatus) fetchExerciseData();
+        if (editModeStatus && trainingExerciseId !== 0) fetchExerciseData();
     }, [editModeStatus, trainingExerciseId, token, ]);
 
     // Generate exercise options for dropdown
