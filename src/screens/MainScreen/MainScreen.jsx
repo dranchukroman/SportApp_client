@@ -5,43 +5,30 @@ import axios from 'axios';
 import { toast } from 'sonner';
 
 // Themes and style
-import theme from '../../styles/theme';
-import { MainScreenWrapper, InfoBarWrapper } from './MainScreen.styled.js';
+import { MainScreenWrapper, InfoBarWrapper, PageTitle } from './MainScreen.styled.js';
 
 // Global components
-import Heading from '../../components/Headings/Heading';
 import FunctionalBar from '../../components/FunctionalBar/FunctionalBar';
 import Navigation from '../../components/Navigation/Navigation';
 import UserIcon from '../../components/UserIcon/UserIcon';
 
-// Maing pages/views
+// Main pages/views
 import Settings from '../otherViews/Settings/Settings';
-import Dashboard from '../otherViews/Dashboard/Dashboard';
-import Diet from '../otherViews/Diet/Diet';
-import Calculator from '../otherViews/Calculator/Calculator';
-import NotFound from '../otherViews/NotFound/NotFound';
 
-// Trainings
-import TrainingPlansView from '../otherViews/Trainings/TrainingPlansView/TrainingPlansView.jsx';
-import TrainingPlanDetails from '../otherViews/Trainings/TrainingPlanDetails/TrainingPlanDetails.jsx';
-import TrainingDaysView from '../otherViews/Trainings/TrainingDaysView/TrainingDaysView.jsx';
-import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
-import ExercisesView from '../otherViews/Trainings/ExercisesView/ExercisesView.jsx';
-import ExerciseDetails from '../otherViews/Trainings/ExerciseDetails/ExerciseDetails.jsx';
-import Exercising from '../otherViews/Trainings/Exercising/Exercising.jsx';
-
+// Other functions
+import renderScreen from './renderScreen.js';
+import getPageTitles from './getPageTitles.js';
 
 function MainScreen({ setModalParams }) {
     const navigate = useNavigate(); // Create navigation object
-    const token = localStorage.getItem('authToken');
+    const token = localStorage.getItem('authToken'); // Get token
 
     // Check if token exist and valid
     useEffect(() => {
         !token && navigate('/login');
-        
         const tokenValidation = async () => {
             try {
-                const res = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/checkToken`, {headers: { Authorization: `Bearer ${token}`}});
+                const res = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/checkToken`, { headers: { Authorization: `Bearer ${token}` } });
                 res.status !== 200 && navigate('/login');
             } catch (error) {
                 navigate('/login');
@@ -50,42 +37,6 @@ function MainScreen({ setModalParams }) {
         tokenValidation()
     }, [token, navigate]);
 
-    const [trainingPlans, setTrainingPlans] = useState([]); // Save all training plans
-
-    // Get all training plans
-    useEffect(() => {
-        const fetchTrainingPlans = async () => {
-            try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                });
-
-                if (response.status === 200 && response?.data?.data.length > 0) {
-                    setTrainingPlans(response.data.data);
-                }
-            } catch (error) {
-                console.error('Error fetching data:', error);
-                toast.error('Can\'t get training plans');
-            }
-        };
-        fetchTrainingPlans();
-    }, [token]);
-
-
-    // Data to controll application
-    const [controllTrainings, setControllTrainings] = useState({
-        trainingPlanId: 0,
-        trainingDayId: 0,
-        trainingExerciseId: 0
-    })
-
-    const [editModeStatus, setEditModeStatus] = useState(false);
-    const [exercisingStatus, setExercisingStatus] = useState(false);
-    const [trainingProgress, setTrainingProgress] = useState({});
-
-    // Handle user data
     const [userData, setUserData] = useState({
         name: '',
         surname: '',
@@ -95,23 +46,26 @@ function MainScreen({ setModalParams }) {
         gender: 'other',
         goal: '',
         activity_level: 'low'
-    })
-    const [isDataChanged, setIsDataChanged] = useState(false);
-    const [updateData, setUpdateData] = useState(false);
+    }); // Save user data
 
-    const profileData = useCallback(() => ({
-        first_name: userData.name,
-        last_name: userData.surname,
-        height: userData.height,
-        weight: userData.weight,
-        age: userData.age,
-        gender: userData.gender,
-        goal: userData.goal,
-        activity_level: userData.activity_level,
-    }), [userData]);
+    const [trainingPlans, setTrainingPlans] = useState([]); // Save all training plans
 
-    // Fetch data from user profile
-    const fetchUserData = useCallback(async () => {
+    const [controllTrainings, setControllTrainings] = useState({
+        trainingPlanId: 0,
+        trainingDayId: 0,
+        trainingExerciseId: 0
+    }); // Data to manipulate trainings
+
+    const [editModeStatus, setEditModeStatus] = useState(false); // Edit trainings
+
+    const [exercisingStatus, setExercisingStatus] = useState(false); // Exercising status (Do user started training?)
+    const [trainingProgress, setTrainingProgress] = useState({}); // Save progress from training
+
+    const [isDataChanged, setIsDataChanged] = useState(false); // Have data been changed in settings?
+    const [updateData, setUpdateData] = useState(false); // Trigger to update data
+
+    // Function to get user profile data
+    const getUserData = useCallback(async () => {
         try {
             const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
                 headers: { Authorization: `Bearer ${token}` }
@@ -133,23 +87,34 @@ function MainScreen({ setModalParams }) {
             }
         } catch (error) {
             console.error('Error fetching user data:', error);
-            navigate('/createProfile')
+            navigate('/createProfile') // There is no profile redirect to create profile
         }
     }, [token, navigate]);
 
+    // Fetch user profile data
     useEffect(() => {
-        fetchUserData();
-    }, [fetchUserData]);
+        getUserData();
+    }, [getUserData]);
 
-    // Update user data
+    // Update user profile data
     useEffect(() => {
         if (updateData && isDataChanged) {
             const update = async () => {
                 try {
-                    const res = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateProfile`, profileData(),
+                    const profileData = {
+                        first_name: userData.name,
+                        last_name: userData.surname,
+                        height: userData.height,
+                        weight: userData.weight,
+                        age: userData.age,
+                        gender: userData.gender,
+                        goal: userData.goal,
+                        activity_level: userData.activity_level,
+                    }
+                    const res = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateProfile`, profileData,
                         { headers: { Authorization: `Bearer ${token}` } }
                     );
-                    res.status === 200 ? fetchUserData() : toast.error(res.data?.message);
+                    res.status === 200 ? getUserData() : toast.error(res.data?.message);
                 } catch (error) {
                     toast.error(error.res?.data?.message);
                 } finally {
@@ -159,56 +124,31 @@ function MainScreen({ setModalParams }) {
             }
             update();
         }
-    }, [updateData, isDataChanged, fetchUserData, profileData, token]);
+    }, [updateData, isDataChanged, getUserData, token, userData]);
 
-    // Screen data
-    const [pageTitle, changePageTitle] = useState(`Hi, ${userData.name || 'Friend'}`); // Page title
-    // Available page titles
-    const pageTitles = useMemo(() => ({
-        Dashboard: `Hi, ${userData.name || 'Friend'}`,
-        Trainings: 'Trainings',
-        TrainingPlanDetails: 'New training plan',
-        TrainingDaysView: 'Set up training days',
-        TrainingDaysDetails: 'Set up training days',
-        ExercisesView: 'Set up exercises',
-        ExerciseDetails: 'Set up exercise',
-        Exercising: 'Training',
-        Diet: 'Diet',
-        Calculator: 'Calculator'
-    }), [userData.name]);
-    // Change screen
-    const [currentScreen, setCurrentScreen] = useState('Dashboard');
-    // Change page title
+    // Get all training plans
     useEffect(() => {
-        changePageTitle(pageTitles[currentScreen])
-    }, [currentScreen, pageTitles]);
-    // Render new screen
-    const renderScreen = () => {
-        switch (currentScreen) {
-            case 'Dashboard':
-                return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} />
-            case 'Trainings':
-                return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
-            case 'TrainingPlanDetails':
-                return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} trainingPlanId={controllTrainings.trainingPlanId} />
-            case 'TrainingDaysView':
-                return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} editModeStatus={editModeStatus} setControllTrainings={setControllTrainings} setExercisingStatus={setExercisingStatus} />
-            case 'TrainingDaysDetails':
-                return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} traininDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
-            case 'ExercisesView':
-                return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={controllTrainings.trainingDayId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
-            case 'ExerciseDetails':
-                return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
-            case 'Exercising':
-                return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={controllTrainings.trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={controllTrainings.trainingPlanId} traininDayId={controllTrainings.trainingDayId} />
-            case 'Diet':
-                return <Diet token={token} onScreenChange={setCurrentScreen} />
-            case 'Calculator':
-                return <Calculator token={token} onScreenChange={setCurrentScreen} />
-            default:
-                return <NotFound onScreenChange={setCurrentScreen} />
-        }
-    }
+        const fetchTrainingPlans = async () => {
+            try {
+                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+
+                if (response.status === 200 && response?.data?.data.length > 0) setTrainingPlans(response.data.data);
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                toast.error('Can\'t get training plans');
+            }
+        };
+        fetchTrainingPlans();
+    }, [token]);
+
+    const [currentScreen, setCurrentScreen] = useState('Dashboard'); // Current screen
+
+    // Change page title
+    const pageTitles = useMemo(() => getPageTitles(userData.name), [userData.name]); // Get page titles
+    const [pageTitle, changePageTitle] = useState(pageTitles["Dashboard"]); // Page title
+    useEffect(() => changePageTitle(pageTitles[currentScreen]), [currentScreen, pageTitles]);
 
     // Change height of functional bar
     const userInformationHeight = useRef(null);
@@ -234,18 +174,12 @@ function MainScreen({ setModalParams }) {
     return (
         <MainScreenWrapper>
             <InfoBarWrapper ref={userInformationHeight}>
-                <Heading
-                    color={theme.colors.darkBackground}
-                    fontSize={theme.fontSizes.largeHeader}
-                >
-                    {pageTitle}
-                </Heading>
+                <PageTitle>{pageTitle}</PageTitle>
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
             {isSettingsVisible && (
                 <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} style={{ flex: 1 }} />
             )}
-            {/* Functional bar with different views */}
             <FunctionalBar
                 style={{
                     height: `${functionalBarHeight}px`,
@@ -256,23 +190,30 @@ function MainScreen({ setModalParams }) {
                 trainingPlans={trainingPlans}
             >
                 <div
-                    className='no-scrollbar'
                     style={{
                         height: `${scrollablePartHeight}px`,
                         overflowY: 'scroll',
                         overflowX: 'hidden',
                     }}
                 >
-                    {renderScreen()}
+                    {renderScreen({
+                        token,
+                        setModalParams,
+                        trainingPlans,
+                        currentScreen,
+                        setCurrentScreen,
+                        controllTrainings,
+                        setControllTrainings,
+                        editModeStatus,
+                        setEditModeStatus,
+                        exercisingStatus,
+                        setExercisingStatus,
+                        trainingProgress,
+                        setTrainingProgress,
+                    })}
                 </div>
             </FunctionalBar>
-            <Navigation
-                currentScreen={currentScreen}
-                onScreenChange={setCurrentScreen}
-                setModalParams={setModalParams}
-                exercisingStatus={exercisingStatus}
-                setTrainingProgress={setTrainingProgress}
-                setExercisingStatus={setExercisingStatus}
+            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus}
             />
         </MainScreenWrapper>
     );

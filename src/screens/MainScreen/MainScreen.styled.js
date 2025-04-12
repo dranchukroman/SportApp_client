@@ -1,4 +1,6 @@
 import styled from 'styled-components'
+import { StyledHeader } from '../../components/Headings/Heading.styled'
+import theme from '../../styles/theme'
 
 export const MainScreenWrapper = styled.div`
     display: flex;
@@ -13,4 +15,9 @@ export const InfoBarWrapper = styled.div`
     margin: 10px auto;
     justify-content: space-between;
     align-items: flex-end;
+`
+
+export const PageTitle = styled(StyledHeader)`
+    color: ${theme.colors.darkBackground};
+    font-size: ${theme.fontSizes.largeHeader};
 `
