@@ -9,6 +9,7 @@ import MainScreen from './screens/MainScreen/MainScreen';
 import UserProfileCreation from './screens/UserProfileCreation/UserProfileCreation'
 import { Toaster } from 'sonner';
 import ModalPopUp from './components/ModalPopUp/ModalPopUp';
+import LoaderPage from './components/Loaders/LoaderPage/LoaderPage';
 
 const PageWrapper = styled.div`
   min-height: 100vh;
@@ -29,6 +30,7 @@ function App() {
     btn3Method: null,
     isVisible: false,
   })
+  const [pageLoading,] = useState(false);
 
   return (
     <ThemeProvider theme={theme}>
@@ -75,6 +77,7 @@ function App() {
       </Router>
       <Toaster richColors position="bottom-center"/>
       <ModalPopUp modalParams={modalParams}/>
+      <LoaderPage isActive={pageLoading}/>
     </ThemeProvider>
   );
 }
