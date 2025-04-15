@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import StyledTraining from './TrainingPlansView.styled'
+import { StyledTraining, Paragraph } from './TrainingPlansView.styled'
 import theme from "../../../../styles/theme";
 
 import Heading from "../../../../components/Headings/Heading";
@@ -15,46 +15,32 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
 
+    // Get training plans data
     useEffect(() => {
-        // Fetch training plan data
-        const fetchTrainingPlans = async () => {
+        const getTrainingPlans = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
+                    headers: { Authorization: `Bearer ${token}` },
                 });
 
-                if (response.status === 200 && response?.data?.data) {
-                    setTrainingPlans(response.data.data);
-                } else toast.error('Cant get training plans')
+                if (response.status === 200 && response?.data?.data) setTrainingPlans(response.data.data);
+                else toast.error('Cant get training plans')
             } catch (error) {
                 toast.error(error.response?.data?.message);
             }
         }
-        fetchTrainingPlans();
+        getTrainingPlans();
     }, [deletePlanId, token]);
 
+    // Delete plan
     useEffect(() => {
-        // Delete plan
         const deletePlan = async () => {
             try {
-                console.log('Deleting training plan with ID:', deletePlanId);
-                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`,
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        },
-                        data: {
-                            trainingPlanId: deletePlanId
-                        }
-                    }
-                );
-                console.log('Delete response:', response);
-
-                if (response.status === 200) {
-                    setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
-                }
+                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                    data: { trainingPlanId: deletePlanId }
+                });
+                if (response.status === 200) setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
                 setDeletePlanId(null);
             } catch (error) {
                 toast.error(error.response?.data?.message)
@@ -63,8 +49,6 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
 
         if (deletePlanId) deletePlan();
     }, [deletePlanId, token]);
-
-
 
     // Get training plan id for edit and change screen
     function showTrainingDays(planId) {
@@ -75,50 +59,23 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
         onScreenChange('TrainingDaysView');
     }
 
-
-
-    const showTrainingPlans = () => {
+    // Fetch training plans
+    const fetchTrainingPlans = () => {
         if (!trainingPlans || trainingPlans.length === 0) {
             return (
-                <div>
-                    <div
-                        style={{
-                            padding: '30px 0 10px 0'
-                        }}
-                    >
-                        <Heading
-                            fontSize={theme.fontSizes.mediumHeader}
-                        >
-                            No training plans yet
-                        </Heading>
-                    </div>
-                </div>
+                <Heading fontSize={theme.fontSizes.mediumHeader} style={{ padding: '30px 0 10px 0' }}>
+                    No training plans yet
+                </Heading>
             );
         }
         // Map training plans
         return trainingPlans.map(plan => (
-            <Card
-                key={plan.plan_id}
-                data-elem={plan.plan_id}
-                style={{ marginBottom: '14px', position: 'relative' }}
+            <Card key={plan.plan_id} style={{ marginBottom: '14px', position: 'relative' }}
                 onClick={() => showTrainingDays(plan.plan_id)}
             >
-                <Heading
-                    fontSize={theme.fontSizes.smallHeader}
-                    color={theme.colors.whiteText}
-                >
-                    {plan.name}
-                </Heading>
-                <EditIcon
-                    style={{
-                        position: 'absolute',
-                        right: 0,
-                        top: 0,
-                        zIndex: '100',
-                        cursor: 'pointer',
-                        display: editModeStatus ? 'block' : 'none'
-                    }}
-
+                <Heading fontSize={theme.fontSizes.smallHeader} color={theme.colors.whiteText}>{plan.name}</Heading>
+                <Paragraph>{plan.description || null}</Paragraph>
+                <EditIcon editModeStatus={editModeStatus} CardStyles
                     onClick={(e) => {
                         e.stopPropagation();
                         setControllTrainings((prev) => ({
@@ -128,15 +85,7 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
                         onScreenChange('TrainingPlanDetails');
                     }}
                 />
-                <DeleteIcon
-                    style={{
-                        position: 'absolute',
-                        left: 7,
-                        top: 4,
-                        zIndex: '100',                        
-                        display: editModeStatus ? 'block' : 'none',
-                        cursor: 'pointer',
-                    }}
+                <DeleteIcon editModeStatus={editModeStatus} CardStyles
                     onClick={(e) => {
                         e.stopPropagation();
                         setDeletePlanId(plan.plan_id);
@@ -148,7 +97,7 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
 
     return (
         <StyledTraining>
-            {showTrainingPlans()}
+            {fetchTrainingPlans()}
 
             <div
                 style={{

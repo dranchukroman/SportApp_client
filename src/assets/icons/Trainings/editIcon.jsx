@@ -1,10 +1,23 @@
 import React from "react";
 
 // If icon is active change color
-function EditIcon ({activeIcon, onClick, style}){
+function EditIcon ({activeIcon, onClick, style, CardStyles, editModeStatus}){
     return (
         <div 
-        style={style}
+            style={!CardStyles 
+                ? style
+                : {
+                    ...style,
+                    position: 'absolute',
+                    right: 0,
+                    top: 0,
+                    zIndex: '100',
+                    cursor: 'pointer',
+                    opacity: editModeStatus ? '1' : '0',
+                    pointerEvents: editModeStatus ? 'auto' : 'none',
+                    transition: '0.3s opacity ease'
+                }
+            }
         >
             <svg width="45" height="45" viewBox="0 0 45 45" fill='none' xmlns="http://www.w3.org/2000/svg" onClick={onClick}>
                 <path d="M12.7058 14.9409H10.9706C10.0501 14.9409 9.16736 15.3066 8.51651 15.9574C7.86565 16.6083 7.5 17.491 7.5 18.4115V34.029C7.5 34.9495 7.86565 35.8322 8.51651 36.4831C9.16736 37.134 10.0501 37.4996 10.9706 37.4996H26.5881C27.5086 37.4996 28.3913 37.134 29.0422 36.4831C29.693 35.8322 30.0587 34.9495 30.0587 34.029V32.2937" stroke={activeIcon ? '#181818' : '#EEE'} stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />

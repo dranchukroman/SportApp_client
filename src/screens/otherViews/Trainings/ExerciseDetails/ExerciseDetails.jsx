@@ -5,21 +5,25 @@ import { toast } from "sonner";
 import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
+import { ExerciseDetailsWrapper, DivideTimerDots, TimerWrapper } from './ExerciseDetails.styled';
+import SelectList from '../../../../components/SelectList/SelectList';
+import { parseRestTime } from "../../../../utils/stringHelpers";
 
-function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, trainingExerciseId }) {
+function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus, trainingExerciseId }) {
     const [exerciseList, setExerciseList] = useState([]);
     const muscleGroupList = ['Chest', 'Back', 'Legs', 'Shoulders', 'Arms', 'Core'];
 
-    const [exercise, setExercise] = useState({ name: '', exerciseId: '' });
-    const [muscleGroup, setMuscleGroup] = useState('Chest');
-    const [series, setSeries] = useState('');
-    const [weight, setWeight] = useState('');
-    const [times, setTimes] = useState('');
-    const [description, setDescription] = useState('');
-    const [minutes, setMinutes] = useState(0);
-    const [seconds, setSeconds] = useState(0);
-
-    const [fieldsStatus, setFieldsStatus] = useState(false);
+    const [exerciseData, setExerciseData] = useState({
+        exerciseId: '',
+        name: '',
+        muscleGroup: 'Chest',
+        series: '',
+        weight: '',
+        times: '',
+        description: '',
+        minutes: 0,
+        seconds: 0,
+    })
 
     // Fetch exercises from library based on selected muscle group
     useEffect(() => {
@@ -27,20 +31,29 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/getAllExercises`, {
                     headers: { Authorization: `Bearer ${token}` },
-                    params: { muscle_group: muscleGroup }
+                    params: { muscle_group: exerciseData.muscleGroup }
                 });
 
                 if (response.status === 200) {
                     setExerciseList(response.data.data);
                     const firstExercise = response.data.data[0] || {};
-                    setExercise({ name: firstExercise.name || '', exerciseId: firstExercise.exercise_id || '' });
+                    setExerciseData((prev) => {
+                        if (prev.name === '' && prev.exerciseId !== firstExercise.exercise_id) {
+                            return {
+                                ...prev,
+                                name: firstExercise.name,
+                                exerciseId: firstExercise.exercise_id,
+                            };
+                        }
+                        return prev;
+                    });
                 }
             } catch (error) {
                 toast.error(error.response?.data?.message);
             }
         };
         fetchExercisesFromLibrary();
-    }, [muscleGroup, token, editModeStatus, ]);
+    }, [token, editModeStatus, exerciseData.muscleGroup]);
 
     // Fetch exercise data to edit
     useEffect(() => {
@@ -53,135 +66,101 @@ function ExerciseDetails({ token, onScreenChange, traininDayId, editModeStatus, 
 
                 if (response.status === 200 && response.data.data) {
                     const exerciseData = response.data.data;
-                    setExercise({ exerciseId: exerciseData.exercise_id, name: exerciseData.name });
-                    setMuscleGroup(exerciseData.muscle_group);
-                    setSeries(exerciseData.sets);
-                    setWeight(exerciseData.weight);
-                    setTimes(exerciseData.reps);
-                    setDescription(exerciseData.description);
-                    const [min, sec] = exerciseData.rest_time.split(':');
-                    setMinutes(min);
-                    setSeconds(sec);
+                    const {min, sec} = parseRestTime(exerciseData.rest_time);
+                    setExerciseData((prev) => ({
+                        ...prev,
+                        exerciseId: exerciseData.exercise_id,
+                        name: exerciseData.name,
+                        muscleGroup: exerciseData.muscle_group,
+                        series: exerciseData.sets,
+                        weight: exerciseData.weight,
+                        times: exerciseData.reps,
+                        description: exerciseData.description,
+                        minutes: min,
+                        seconds: sec,
+                    }));
                 }
             } catch (error) {
                 toast.error(error.response?.data?.message + 'here');
             }
         };
         if (editModeStatus && trainingExerciseId !== 0) fetchExerciseData();
-    }, [editModeStatus, trainingExerciseId, token, ]);
+    }, [editModeStatus, trainingExerciseId, token,]);
 
-    // Generate exercise options for dropdown
-    const getList = () => {
-        if (exerciseList.length === 0) {
-            return <option value="">No exercise to display</option>;
-        }
-        return exerciseList.map(exercise => (
-            <option key={exercise.exercise_id} data-exercise-id={exercise.exercise_id} value={exercise.name}>{exercise.name}</option>
-        ));
-    };
-
-    // Generate muscle group options for dropdown
-    const getMuscleGroup = () => {
-        if (muscleGroupList.length === 0) {
-            return <option value="">No muscle group to display</option>;
-        }
-        return muscleGroupList.map(group => (
-            <option key={group} value={group}>{group}</option>
-        ));
-    };
-
-    // Check if required fields are filled
-    const checkFields = () => {
-        console.log(exercise.name)
-        console.log(muscleGroup)
-        if (exercise.name && muscleGroup) {
-            setFieldsStatus(true);
-        } else {
-            toast.error('Select muscle group and exercise');
-        }
+    const updateExerciseField = (key, value) => {
+        setExerciseData((prev) => ({ ...prev, [key]: value }));
     };
 
     // Handle adding or updating exercise based on editModeStatus
-    useEffect(() => {
-        const handleExercise = async () => {
-            try {
-                const exerciseData = {
-                    day_id: traininDayId,
-                    exercise_id: exercise.exerciseId,
-                    muscle_group: muscleGroup,
-                    sets: series,
-                    weight: weight,
-                    reps: times,
-                    description: description,
-                    rest_time: `${minutes}:${seconds}`
-                };
-                if (editModeStatus) exerciseData.day_exercise_id = trainingExerciseId;
+    const handleExercise = async () => {
+        if (exerciseData.name === '' || exerciseData.muscleGroup === '') return toast.error('Select muscle group and exercise');
+        try {
+            const editing = editModeStatus && trainingExerciseId !== 0;
+            const exerciseToSave = {
+                day_id: trainingDayId,
+                exercise_id: exerciseData.exerciseId,
+                muscle_group: exerciseData.muscleGroup,
+                sets: exerciseData.series,
+                weight: exerciseData.weight,
+                reps: exerciseData.times,
+                description: exerciseData.description,
+                rest_time: `${exerciseData.minutes}:${exerciseData.seconds}`
+            };
 
-                const url = editModeStatus && trainingExerciseId !== 0
-                    ? `${process.env.REACT_APP_SERVER_LINK}/api/updateDayExercise`
-                    : `${process.env.REACT_APP_SERVER_LINK}/api/addDayExercise`;
-
-                await axios({
-                    method: editModeStatus && trainingExerciseId !== 0 ? 'put' : 'post',
-                    url: url,
-                    data: exerciseData,
-                    headers: { Authorization: `Bearer ${token}` }
-                });
-
-                onScreenChange('ExercisesView');
-            } catch (error) {
-                toast.error(error.response?.data?.message);
-            }
-        };
-        if (fieldsStatus) handleExercise();
-    }, [fieldsStatus, exercise, traininDayId, muscleGroup, series, weight, times, description, minutes, seconds, token, onScreenChange, editModeStatus, trainingExerciseId, ]);
+            const endpoint = editing ? 'updateDayExercise' : 'addDayExercise';
+            const method = editing ? axios.put : axios.post;
+            const dataToSend = editing ? { ...exerciseToSave, day_exercise_id: trainingExerciseId } : exerciseToSave
+            await method(`${process.env.REACT_APP_SERVER_LINK}/api/${endpoint}`, dataToSend, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            onScreenChange('ExercisesView');
+        } catch (error) {
+            toast.error(error.response?.data?.message);
+        }
+    };
 
     return (
-        <div>
+        <ExerciseDetailsWrapper>
             <Heading>Muscle group</Heading>
-            <select id="muscleGroupDropdown" value={muscleGroup} onChange={(e) => setMuscleGroup(e.target.value)}>
-                {getMuscleGroup()}
-            </select>
+            <SelectList value={exerciseData.muscleGroup} onChange={(e) => updateExerciseField('muscleGroup', e.target.value)}>
+                {muscleGroupList.map(group => (
+                    <option key={group} value={group}>{group}</option>
+                ))}
+            </SelectList>
 
             <Heading>Exercise</Heading>
-            <select
-                id="exerciseDropdown"
-                value={exercise.name}
+            <SelectList value={exerciseData.name}
                 onChange={(e) => {
-                    const selectedOption = e.target.options[e.target.selectedIndex];
-                    setExercise({ name: e.target.value, exerciseId: selectedOption.getAttribute('data-exercise-id') });
+                    updateExerciseField('name', e.target.value);
+                    updateExerciseField('exerciseId', e.target.value);
                 }}
             >
-                {getList()}
-            </select>
+                {exerciseList.length === 0
+                    ? <option value="">No exercise to display</option>
+                    : exerciseList.map(exercise => (
+                        <option key={exercise.exercise_id} data-exercise-id={exercise.exercise_id} value={exercise.name}>
+                            {exercise.name}
+                        </option>
+                    ))
+                }
+            </SelectList>
 
             <Heading>Exercise details</Heading>
-            <Input placeholder={'Series'} value={series} onChange={(e) => setSeries(e.target.value)} />
-            <Input placeholder={'Weight'} value={weight} onChange={(e) => setWeight(e.target.value)} />
-            <Input placeholder={'Times'} value={times} onChange={(e) => setTimes(e.target.value)} />
-            <Input placeholder={'Description'} value={description} onChange={(e) => setDescription(e.target.value)} />
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <Input
-                    placeholder={0}
-                    style={{ width: '145px', height: '70px' }}
-                    type={'number'}
-                    value={minutes}
-                    onChange={(e) => setMinutes(e.target.value)}
-                />
-                <Heading>:</Heading>
-                <Input
-                    placeholder={0}
-                    style={{ width: '145px', height: '70px' }}
-                    type={'number'}
-                    value={seconds}
-                    onChange={(e) => setSeconds(e.target.value)}
-                />
-            </div>
+            <Input placeholder={'Series'} value={exerciseData.series} onChange={(e) => updateExerciseField('series', e.target.value)}/>
+            <Input placeholder={'Weight'} value={exerciseData.weight} onChange={(e) => updateExerciseField('weight', e.target.value)}/>
+            <Input placeholder={'Times'} value={exerciseData.times} onChange={(e) => updateExerciseField('times', e.target.value)}/>
+            <Input placeholder={'Description'} value={exerciseData.description} onChange={(e) => updateExerciseField('description', e.target.value)}/>
+            <TimerWrapper>
+                <Input className={'timer-input'} placeholder={0} type={'number'} value={exerciseData.minutes} onChange={(e) => updateExerciseField('minutes', e.target.value)}/>
+                <DivideTimerDots>:</DivideTimerDots>
+                <Input className={'timer-input'} placeholder={0} type={'number'} value={exerciseData.seconds} onChange={(e) => updateExerciseField('seconds', e.target.value)}/>
+            </TimerWrapper>
+
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: '10px' }}>
                 <Button onClick={() => onScreenChange('ExercisesView')} width={'172px'}>Back</Button>
-                <Button onClick={checkFields} width={'172px'}>{editModeStatus ? 'Save' : 'Add'}</Button>
+                <Button onClick={handleExercise} width={'172px'}>{editModeStatus ? 'Save' : 'Add'}</Button>
             </div>
-        </div>
+        </ExerciseDetailsWrapper >
     );
 }
 

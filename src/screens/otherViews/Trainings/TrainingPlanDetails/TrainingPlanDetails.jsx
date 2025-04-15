@@ -1,240 +1,146 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+
 import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
-import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
 import CheckBox from "../../../../components/Inputs/CheckBoxes/CheckBox";
 import TextCheckBox from "../../../../components/Inputs/CheckBoxes/TextCheckBox";
-import axios from "axios";
+import {
+  TrainingDetailsWrapper,
+  IsCurrentPlanWrapper,
+  Paragraph,
+  TrainingDaysWrapper
+} from "./TrainingPlanDetails";
 import theme from "../../../../styles/theme";
-import { toast } from "sonner";
+import convertStringToArray from "../../../../utils/stringHelpers";
+
 
 function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, editModeStatus, trainingPlanId }) {
-    // Training plan data
-    const [planName, setPlanName] = useState('');
-    const [planDescription, setPlanDescription] = useState('');
-    const [plandaysPerWeek, setPlandaysPerWeek] = useState([]);
-    const [planThumbnailImage, setPlanThumbnailImage] = useState(null);
-    const [isCurrentPlan, setIsCurrentPlan] = useState(false);
+    const [planData, setPlanData] = useState({
+        name: '',
+        description: '',
+        days_per_week: [],
+        thumbnail_image: null,
+        is_current_plan: false,
+    }) // Training plan data
 
-    // Service data
-    const [fieldsStatus, setFieldsStatus] = useState(false);
+    const trainingDaysList = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']; // Listed week days
 
-    // Check if fields are filled
-    function checkFields() {
-        if (planName !== '' && planDescription !== '' && plandaysPerWeek.length > 0) {
-            setFieldsStatus(true);
-            return;
-        }
-        toast.error('All fields shoud be filled');
-    }
+    // Select day by click
+    const handleDayClick = useCallback((day) => {
+        setPlanData((prev) => ({
+            ...prev,
+            days_per_week: prev.days_per_week.includes(day)
+                ? prev.days_per_week.filter((d) => d !== day)
+                : [...prev.days_per_week, day],
+        }));
+    }, [])
 
-    // Select day on click
-    function handleDayClick(day) {
-        setPlandaysPerWeek((prevDays) => {
-            if (prevDays.includes(day)) {
-                return prevDays.filter(d => d !== day);
-            } else {
-                return [...prevDays, day];
-            }
-        });
-    }
-
-    function handleImage() {
-        console.log('Choose image')
-    }
-
-    // Get training plans data
+    // Get training plans data to edit
     useEffect(() => {
-        // Get training plan data to edit
-        const fetchTraininPlansData = async () => {
+        const fetchTrainingPlansData = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlan`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                    params: {
-                        trainingPlanId: trainingPlanId
-                    }
+                    headers: { Authorization: `Bearer ${token}` },
+                    params: { trainingPlanId: trainingPlanId }
                 })
-
                 if (response.status === 200 && response?.data?.data) {
                     const planData = response.data.data;
-                    setPlanName(planData.name);
-                    setPlanDescription(planData.description);
-                    setIsCurrentPlan(planData.is_current_plan);
-                    setPlanThumbnailImage(planData.thumbnail_image);
-                    setPlandaysPerWeek(convertStringToArray(planData.days_per_week));
+                    setPlanData((prev) => ({
+                        ...prev,
+                        name: planData.name,
+                        description: planData.description,
+                        days_per_week: convertStringToArray(planData.days_per_week),
+                        thumbnail_image: planData.thumbnail_image,
+                        is_current_plan: planData.is_current_plan,
+                    }))
                 }
             } catch (error) {
                 toast.error(error.response?.data?.message);
             }
         }
-        if (editModeStatus) fetchTraininPlansData();
-
+        if (editModeStatus) fetchTrainingPlansData();
     }, [editModeStatus, trainingPlanId, token]);
 
-    useEffect(() => {
-        // Update or add training plan
-        const handleTraininPlan = async () => {
-            try {
-                const planData = {
-                    name: planName,
-                    description: planDescription,
-                    days_per_week: plandaysPerWeek,
-                    thumbnail_image: planThumbnailImage,
-                    is_current_plan: isCurrentPlan,
-                }
-                if (editModeStatus) planData.trainingPlanId = trainingPlanId; // If it's updating add trainingPlanId
+    // Update or add training plan
+    const handleTrainingPlan = async () => {
+        if (planData.name === '' || planData.description === '' || planData.days_per_week.length === 0)
+            return toast.error('All fields should be filled');
+        try {
+            // Send api request depend on editModeStatus
+            const endpoint = editModeStatus
+                ? `${process.env.REACT_APP_SERVER_LINK}/api/updateTrainingPlan`
+                : `${process.env.REACT_APP_SERVER_LINK}/api/addTrainingPlan`;
 
-                // Send api request depend on editModeStatus
-                const response = !editModeStatus
-                    ? await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addTrainingPlan`,
-                        planData,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    )
-                    : await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateTrainingPlan`,
-                        planData,
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
+            const dataToSend = editModeStatus
+                ? { ...planData, trainingPlanId }
+                : planData;
 
-                // Redirect to correct screen depends on editModeStatus
-                if (!editModeStatus) {
-                    setControllTrainings((prev) => ({
-                        ...prev,
-                        trainingPlanId: response.data.planId
-                    }))
-                    onScreenChange('TrainingDaysView');
-                } else onScreenChange('Trainings');
+            const method = editModeStatus ? axios.put : axios.post;
 
-            } catch (error) {
-                toast.error(error.response?.data?.message);
-            }
+            const response = await method(endpoint, dataToSend, {
+                headers: { Authorization: `Bearer ${token}` },
+            });
+
+            // Redirect to correct screen depends on editModeStatus
+            if (!editModeStatus) {
+                setControllTrainings((prev) => ({
+                    ...prev,
+                    trainingPlanId: response.data.planId
+                }))
+                onScreenChange('TrainingDaysView');
+            } else onScreenChange('Trainings');
+
+        } catch (error) {
+            toast.error(error.response?.data?.message || "Something went wrong");
         }
-        if (fieldsStatus) handleTraininPlan();
-
-    }, [fieldsStatus, editModeStatus, isCurrentPlan, onScreenChange, planDescription, planName, planThumbnailImage, plandaysPerWeek, setControllTrainings, token, trainingPlanId]);
+    }
 
     return (
-        <div>
-            <Heading
-                fontSize={theme.fontSizes.mediumHeader}
-                fontWeight={theme.fontWeights.mediumHeader}
-            >
+        <TrainingDetailsWrapper>
+            <Heading fontSize={theme.fontSizes.mediumHeader}>
                 Training plan details
             </Heading>
-            <Input
-                placeholder={'Plan name'}
-                onChange={(e) => setPlanName(e.target.value)}
-                value={planName}
+            <Input placeholder={'Plan name'} value={planData.name}
+                onChange={(e) => setPlanData((prev) => ({
+                    ...prev,
+                    name: e.target.value
+                }))}
             />
-            <Input
-                placeholder={'Description'}
-                onChange={(e) => setPlanDescription(e.target.value)}
-                value={planDescription}
+            <Input placeholder={'Description'} value={planData.description}
+                onChange={(e) => setPlanData((prev) => ({
+                    ...prev,
+                    description: e.target.value
+                }))}
             />
-            <Heading
-                fontSize={theme.fontSizes.mediumHeader}
-                fontWeight={theme.fontWeights.mediumHeader}
-            >
+            <Heading fontSize={theme.fontSizes.mediumHeader}>
                 Training days
             </Heading>
-
-            <div
-                style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-
-                }}
-            >
-                {['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((day) => (
+            <TrainingDaysWrapper>
+                {trainingDaysList.map((day) => (
                     <TextCheckBox
                         key={day}
-                        isActive={plandaysPerWeek.includes(day)}
+                        isActive={planData.days_per_week.includes(day)}
                         onClick={() => handleDayClick(day)}
                     >
-                        <div>{day}</div>
+                        {day}
                     </TextCheckBox>
                 ))}
-            </div>
-
-            <Heading
-                fontSize={theme.fontSizes.mediumHeader}
-                fontWeight={theme.fontWeights.mediumHeader}
-            >
-                Add background image
-            </Heading>
-            <Button
-                style={{
-                    marginTop: '10px'
-                }}
-                onClick={handleImage}
-            >
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }}
-                >
-                    <div
-                        style={{
-                            padding: '0 16px 0 42px'
-                        }}
-                    >
-                        Choose
-                    </div>
-                    <ChooseImageIcon />
-                </div>
-            </Button>
-            <Heading
-                fontSize={theme.fontSizes.mediumHeader}
-                fontWeight={theme.fontWeights.mediumHeader}
-                style={{
-                    marginTop: '10px'
-                }}
-            >
+            </TrainingDaysWrapper>
+            <Heading fontSize={theme.fontSizes.mediumHeader}>
                 Current training plan
             </Heading>
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    marginTop: '23px'
-                }}
-            >
-                <div>
-                    <p
-                        style={{
-                            color: theme.colors.whiteText,
-                            margin: '8px 0 0 0',
-                            fontSize: theme.fontSizes.largeParagraph,
-                            width: '188px'
-                        }}
-                    >
-                        You will see your training plan on dashboard
-                    </p>
-                </div>
-                <div
-                    style={{
-                        height: '20px'
-                    }}
-                >
-                    <CheckBox
-                        checked={isCurrentPlan}
-                        onClick={() => setIsCurrentPlan((prew) => !prew)}
-                    />
-                </div>
-            </div>
+            <IsCurrentPlanWrapper>
+                <Paragraph>You will see your training plan on dashboard</Paragraph>
+                <CheckBox style={{ height: '20px' }} checked={planData.is_current_plan}
+                    onClick={() => setPlanData((prev) => ({
+                        ...prev,
+                        is_current_plan: !prev.is_current_plan
+                    }))}
+                />
+            </IsCurrentPlanWrapper>
 
             <div
                 style={{
@@ -250,21 +156,14 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
                     Back
                 </Button>
                 <Button
-                    onClick={checkFields}
+                    onClick={handleTrainingPlan}
                     width={'172px'}
                 >
                     {editModeStatus ? 'Save' : 'Next'}
                 </Button>
             </div>
-        </div>
+        </TrainingDetailsWrapper>
     )
 }
 
 export default TrainingPlanDetails;
-
-function convertStringToArray(str) {
-    // Replace curly braces with square brackets
-    const jsonArrayStr = str.replace(/{/g, '[').replace(/}/g, ']');
-    // Parse the string into an array
-    return JSON.parse(jsonArrayStr);
-}

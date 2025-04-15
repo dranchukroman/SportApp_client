@@ -1,137 +1,74 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 
+import { toast } from "sonner";
+
 import Heading from "../../../../components/Headings/Heading";
 import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
-import ChooseImageIcon from "../../../../assets/icons/ChooseImageIcon";
-import theme from "../../../../styles/theme";
-import { toast } from "sonner";
 
-function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, traininDayId }) {
-
-    const [dayName, setDayName] = useState('');
-    const [dayDescription, setDayDescription] = useState('');
-    // const [dayThumbnailImage, setDayThumbnailImage] = useState(null);
-
-    const [fieldsStatus, setFieldsStatus] = useState(false);
+import { TrainingDaysWrapper } from "./TrainingDaysDetails.styled";
 
 
-    function checkFields() {
-        if (dayName !== '' && dayDescription !== '') {
-            setFieldsStatus(true);
-            return;
-        }
-        toast.error('All fields shoud be filled');
-    }
+function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, trainingDayId }) {
+    const [trainingDayData, setTrainingDayData] = useState({
+        dayName: '',
+        dayDescription: '',
+    })
 
+    // Get training day data
     useEffect(() => {
         const fetchTrainingDaysData = async () => {
             try {
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingDay`, {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    },
-                    params: {
-                        trainingDayId: traininDayId
-                    }
+                    headers: { Authorization: `Bearer ${token}` },
+                    params: { trainingDayId: trainingDayId  }
                 })
-
                 if (response.status === 200 && response?.data?.trainingDaysData) {
-                    setDayName(response.data.trainingDaysData.data.name);
-                    setDayDescription(response.data.trainingDaysData.data.description);
+                    setTrainingDayData((prev) => ({
+                        ...prev,
+                        dayName: response.data.trainingDaysData.data.name,
+                        dayDescription: response.data.trainingDaysData.data.description
+                    }))
                 }
             } catch (error) {
-                toast.error(error.response?.data?.message);
+                toast.error(error.response?.data?.message || 'Something went wrong');
             }
         }
-        if (editModeStatus && traininDayId !== 0) fetchTrainingDaysData();
-    }, [editModeStatus, traininDayId, token]);
+        if (editModeStatus && trainingDayId !== 0) fetchTrainingDaysData();
+    }, [editModeStatus, trainingDayId, token]);
 
     // Add or update training day
-    useEffect(() => {
-        const handleTrainingPlan = async () => {
-            try {
-                if (traininDayId === 0) {
-                    await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addTrainingDay`,
-                        {
-                            trainingPlanId,
-                            dayName,
-                            dayDescription,
-                        },
-                        {
-                            headers: {
-                                Authorization: `Bearer ${token}`
-                            }
-                        }
-                    )
-                } else await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateTrainingDays`,
-                    {
-                        day_id: traininDayId,
-                        dayName,
-                        dayDescription,
-                    },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${token}`
-                        }
-                    }
-                )
-                onScreenChange('TrainingDaysView');
-            } catch (error) {
-                toast.error(error.response?.data?.message);
-            }
+    const handleTrainingPlan = async () => {
+        if (trainingDayData.dayName === '' || trainingDayData.dayDescription === '') return toast.error('All fields shoud be filled');
+        try {
+            const isNewDay = trainingDayId === 0;
+            const endpoint = isNewDay ? 'addTrainingDay' : 'updateTrainingDays';
+            const method = isNewDay ? axios.post : axios.put;
+            
+            const dataToSend = isNewDay
+                ? { trainingPlanId, ...trainingDayData }
+                : { day_id: trainingDayId, ...trainingDayData };
+
+            await method(`${process.env.REACT_APP_SERVER_LINK}/api/${endpoint}`, dataToSend, {
+                headers: { Authorization: `Bearer ${token}` }
+            })
+            onScreenChange('TrainingDaysView');
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Something went wrong');
         }
-        if (fieldsStatus) handleTrainingPlan();
-    }, [fieldsStatus, dayName, dayDescription, onScreenChange, token, trainingPlanId, traininDayId]);
+    }
 
     return (
-        <div>
-            <Heading
-                fontSize={theme.fontSizes.mediumHeader}
-                fontWeight={theme.fontWeights.mediumHeader}
-            >
-                Training plan details
-            </Heading>
-            <Input
-                placeholder={'Title'}
-                onChange={(e) => setDayName(e.target.value)}
-                value={dayName}
+        <TrainingDaysWrapper>
+            <Heading>Training day details</Heading>
+            <Input placeholder={'Day name'} value={trainingDayData.dayName}
+                onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayName: e.target.value }))}
             />
-            <Input
-                placeholder={'Description'}
-                onChange={(e) => setDayDescription(e.target.value)}
-                value={dayDescription}
+            <Input placeholder={'Description'} value={trainingDayData.dayDescription}
+                onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayDescription: e.target.value }))}
             />
 
-            <Heading
-                fontSize={theme.fontSizes.mediumHeader}
-                fontWeight={theme.fontWeights.mediumHeader}
-            >
-                Add image
-            </Heading>
-            <Button
-                style={{
-                    marginTop: '10px'
-                }}
-            >
-                <div
-                    style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center"
-                    }}
-                >
-                    <div
-                        style={{
-                            padding: '0 16px 0 42px'
-                        }}
-                    >
-                        Choose
-                    </div>
-                    <ChooseImageIcon />
-                </div>
-            </Button>
             <div
                 style={{
                     display: "flex",
@@ -147,13 +84,13 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                 </Button>
 
                 <Button
-                    onClick={checkFields}
+                    onClick={handleTrainingPlan}
                     width={'172px'}
                 >
                     {editModeStatus ? 'Save' : 'Add day'}
                 </Button>
             </div>
-        </div>
+        </TrainingDaysWrapper>
     )
 }
 

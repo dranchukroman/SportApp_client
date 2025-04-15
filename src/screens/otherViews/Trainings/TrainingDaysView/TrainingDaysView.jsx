@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
+
 import theme from "../../../../styles/theme";
 import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
-import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import Card from "../../../../components/Cards/InfoCard";
+
+import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
+
+import { Paragraph, TrainingDaysViewWrapper } from "./TrainingDaysView.styled";
+
 
 function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTrainings, editModeStatus, setExercisingStatus }) {
     const [trainingDays, setTrainingDays] = useState(null);
@@ -19,10 +24,8 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
                 headers: { Authorization: `Bearer ${token}` },
                 params: { trainingPlanId }
             });
-
-            if (response?.data?.trainingDaysData?.data.length > 0) {
-                setTrainingDays(response.data.trainingDaysData.data);
-            }
+            if (response?.data?.trainingDaysData?.data.length > 0)
+                return setTrainingDays(response.data.trainingDaysData.data);
         };
         fetchData();
     }, [token, trainingPlanId]);
@@ -42,12 +45,11 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
     }, [deleteDayId, token]);
 
     return (
-        <div>
+        <TrainingDaysViewWrapper>
             {trainingDays && trainingDays.length > 0 ? (
                 trainingDays.map((day) => (
-                    <Card
+                    <Card style={{ marginBottom: "14px", position: "relative" }}
                         key={day.day_id}
-                        style={{ marginBottom: "14px", position: "relative" }}
                         onClick={() => {
                             if (editModeStatus) {
                                 setControllTrainings((prev) => ({
@@ -60,13 +62,9 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
                             }
                         }}
                     >
-                        <div style={{ color: "white" }}>
-                            <Heading fontSize={theme.fontSizes.smallHeader}>{day.name}</Heading>
-                            <p style={{ marginBottom: "0" }}>{day.description}</p>
-                        </div>
-
-                        <EditIcon
-                            style={{ position: "absolute", right: 0, top: 0, display: editModeStatus ? "block" : "none" }}
+                        <Heading color={theme.colors.whiteText} fontSize={theme.fontSizes.smallHeader}>{day.name}</Heading>
+                        <Paragraph>{day.description}</Paragraph>
+                        <EditIcon editModeStatus={editModeStatus} CardStyles
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setControllTrainings((prev) => ({
@@ -76,15 +74,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
                                 onScreenChange("TrainingDaysDetails");
                             }}
                         />
-                        <DeleteIcon
-                            style={{
-                                position: "absolute",
-                                left: 7,
-                                top: 4,
-                                zIndex: "100",
-                                display: editModeStatus ? "block" : "none",
-                                cursor: "pointer",
-                            }}
+                        <DeleteIcon editModeStatus={editModeStatus} CardStyles
                             onClick={(e) => {
                                 e.stopPropagation();
                                 setDeleteDayId(day.day_id);
@@ -95,9 +85,9 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
                         <AnimatePresence mode='wait'>
                             {activeDay === day.day_id && (
                                 <motion.div
-                                    initial={{ height: 0, opacity: 0 }}
-                                    animate={{ height: "auto", opacity: 1 }}
-                                    exit={{ height: 0, opacity: 0 }}
+                                    initial={{ height: 0, opacity: 0, paddingTop: 0 }}
+                                    animate={{ height: "auto", opacity: 1, paddingTop: '10px' }}
+                                    exit={{ height: 0, opacity: 0, paddingTop: 0 }}
                                     transition={{ duration: 0.3, ease: "easeInOut" }}
                                     style={{ overflow: "hidden" }}
                                 >
@@ -122,9 +112,9 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
                     </Card>
                 ))
             ) : (
-                <div style={{ padding: "30px 0 10px 0" }}>
-                    <Heading fontSize={theme.fontSizes.mediumHeader}>No training days yet</Heading>
-                </div>
+                <Heading style={{ padding: "30px 0 10px 0" }} fontSize={theme.fontSizes.mediumHeader}>
+                    No training days yet
+                </Heading>
             )}
 
             <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
@@ -144,7 +134,7 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
                     Add day
                 </Button>
             </div>
-        </div>
+        </TrainingDaysViewWrapper>
     );
 }
 

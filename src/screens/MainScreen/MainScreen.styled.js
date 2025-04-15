@@ -1,7 +1,6 @@
 import styled from 'styled-components'
 import { StyledHeader } from '../../components/Headings/Heading.styled'
 import theme from '../../styles/theme'
-import FunctionalBar from '../../components/FunctionalBar/FunctionalBar'
 
 export const MainScreenWrapper = styled.div`
     display: flex;

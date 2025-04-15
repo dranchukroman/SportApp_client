@@ -33,19 +33,19 @@ const renderScreen = ({
         case 'Dashboard':
             return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} />
         case 'Trainings':
-            return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} />
+            return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus}/>
         case 'TrainingPlanDetails':
             return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} trainingPlanId={controllTrainings.trainingPlanId} />
         case 'TrainingDaysView':
             return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} editModeStatus={editModeStatus} setControllTrainings={setControllTrainings} setExercisingStatus={setExercisingStatus} />
         case 'TrainingDaysDetails':
-            return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} traininDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
+            return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
         case 'ExercisesView':
-            return <ExercisesView token={token} onScreenChange={setCurrentScreen} traininDayId={controllTrainings.trainingDayId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
+            return <ExercisesView token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
         case 'ExerciseDetails':
-            return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} traininDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
+            return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
         case 'Exercising':
-            return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={controllTrainings.trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={controllTrainings.trainingPlanId} traininDayId={controllTrainings.trainingDayId} />
+            return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={controllTrainings.trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} />
         case 'Diet':
             return <Diet token={token} onScreenChange={setCurrentScreen} />
         case 'Calculator':

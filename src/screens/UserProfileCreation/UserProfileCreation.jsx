@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
 import axios from 'axios';
-import { StyledCreateProfile, CreateProfileContainer, StyledSelect, UserDataWrapper } from './UserProfileCreation.styled'
+import { toast } from 'sonner';
+
+import { StyledCreateProfile, CreateProfileContainer, UserDataWrapper } from './UserProfileCreation.styled';
 import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import StepCounter from '../../components/StepCounter/StepCounter';
-import { toast } from 'sonner';
+import SelectList from '../../components/SelectList/SelectList';
+
 
 
 function UserProfileCreation() {
@@ -23,7 +25,7 @@ function UserProfileCreation() {
                     navigate('/dashboard');
                 }
             } catch (error) {
-                if (error.response.status === 403) {
+                if (error?.response?.status === 403) {
                     localStorage.removeItem('authToken');
                     navigate('/login');
                     return;
@@ -195,7 +197,9 @@ function Step1({ userData, setUserData }) {
                     age: e.target.value
                 }))}
             />
-            <StyledSelect value={userData.gender}
+            <SelectList 
+            
+                value={userData.gender}
                 onChange={(e) => setUserData((prev) => ({
                     ...prev,
                     gender: e.target.value
@@ -211,14 +215,14 @@ function Step1({ userData, setUserData }) {
                 <option value="other">
                     Other
                 </option>
-            </StyledSelect>
+            </SelectList>
         </div>
     );
 }
 function Step2({ userData, setUserData }) {
     return (
         <div>
-            <StyledSelect value={userData.activityLevel}
+            <SelectList value={userData.activityLevel}
                 onChange={(e) => setUserData((prev) => ({
                     ...prev,
                     activity_level: e.target.value
@@ -234,7 +238,7 @@ function Step2({ userData, setUserData }) {
                 <option value="high">
                     High
                 </option>
-            </StyledSelect>
+            </SelectList>
 
             <Input placeholder={'Your goal'} value={userData.goal}
                 onChange={(e) => setUserData((prev) => ({

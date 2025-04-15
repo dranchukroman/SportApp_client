@@ -1,19 +1,15 @@
-import React, { useState } from "react";
+import React from "react";
+import { StyledSelect } from "./SelectList.styled";
 
-function SelectList({ noDataText }) {
-
-    const getMuscleGroup = () => {
-        if (muscleGroupList.length === 0) return <option value="">{noDataText}</option>;
-        
-        return muscleGroupList.map(group => (
-            <option key={group} value={group}>{group}</option>
-        ));
-    };
-    
+function SelectList({ children, onChange, style, value }) {  
     return (
-        <select value={muscleGroup} onChange={(e) => setMuscleGroup(e.target.value)}>
-            {getMuscleGroup()}
-        </select>
+        <StyledSelect 
+            value={value} 
+            onChange={onChange}
+            style={style}
+        >
+            {children}
+        </StyledSelect>
     )
 }
 

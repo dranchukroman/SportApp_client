@@ -34,4 +34,14 @@ export const StyledInput = styled.input`
         // background-image: linear-gradient(${theme.colors.darkBackground}, ${theme.colors.darkBackground}), 
         // ${theme.colors.gradient};
     }
+    &::-webkit-inner-spin-button,
+    &::-webkit-outer-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Для Firefox */
+    &[type="number"] {
+        -moz-appearance: textfield;
+    }
 `;

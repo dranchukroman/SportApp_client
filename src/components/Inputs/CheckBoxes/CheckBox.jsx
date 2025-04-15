@@ -4,10 +4,11 @@ import { StyledCheckbox, StyledCheckboxWrapper, StyledCheckboxLabel } from './Ch
 
 function CheckBox({ onClick, style, checked }) {
     return (
-        <StyledCheckboxWrapper style={style}>
+        <StyledCheckboxWrapper 
+            style={style}
+            onClick={onClick}>
             <StyledCheckbox
                 checked={checked}
-                onClick={onClick}
             />
             <StyledCheckboxLabel />
         </StyledCheckboxWrapper>
