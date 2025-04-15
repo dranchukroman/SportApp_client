@@ -13,6 +13,9 @@ function Calendar({ currentPlan }) {
         return regex.test(currentTrainingDays);
     }
 
+    const today = new Date();
+
+
     const nextWeek = () => {
         setStartDate(addDays(startDate, 7));
     };
@@ -29,9 +32,11 @@ function Calendar({ currentPlan }) {
         const days = [];
         for (let i = 0; i < 7; i++) {
             const day = addDays(startDate, i);
+            const isToday = day.toDateString() === today.toDateString();
+
 
             days.push(
-                <TileElement key={i}>
+                <TileElement key={i} isToday={isToday}>
                     <WeekDayParagraph>{format(day, 'EEE')}</WeekDayParagraph>
                     <WeekDateParagraph>{format(day, 'd')}</WeekDateParagraph>
                     <ActiveTileDott active={checkIfActiveDay(currentPlan?.days_per_week, format(day, 'EEE'))} />

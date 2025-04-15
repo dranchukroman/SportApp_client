@@ -1,4 +1,4 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import theme from "../../styles/theme";
 
 export const StyledFrame = styled.div`
@@ -25,22 +25,30 @@ export const ControllButtons = styled.div`
 `
 
 export const TileElement = styled.div`
-    width: 30px;
-    height: 42px;
+    width: ${({ isToday }) => !isToday ? '30px' : '34px'};
+    height: ${({ isToday }) => !isToday ? '42px' : '46px'};
     color: ${theme.colors.whiteText};
+    border-radius: 7px;
 
-    border: 2px solid transparent; /* Прозорі бордери */
-    border-radius: 7px; /* Заокруглені кути */
+    ${({ isToday }) =>
+        !isToday
+            ? css`
+                  border: 2px solid transparent;
 
-    // Colors
-    background-image: 
-        linear-gradient(
-            ${theme.colors.darkBackground}, 
-            ${theme.colors.darkBackground}
-            ), 
-        ${theme.colors.gradient};
-    background-origin: border-box;
-    background-clip: padding-box, border-box;
+                  background-image: linear-gradient(
+                          ${theme.colors.darkBackground},
+                          ${theme.colors.darkBackground}
+                      ),
+                      ${theme.colors.gradient};
+                  background-origin: border-box;
+                  background-clip: padding-box, border-box;
+              `
+            : css`
+                  background-color: ${theme.colors.gradientBase};
+                  background-image: ${theme.colors.gradient};
+              `}
+
+
     box-shadow: ${theme.shadows.mainShadows};
 
     text-align: center;
