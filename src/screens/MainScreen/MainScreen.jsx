@@ -64,6 +64,7 @@ function MainScreen({ setModalParams }) {
 
     const [isDataChanged, setIsDataChanged] = useState(false); // Have data been changed in settings?
     const [updateData, setUpdateData] = useState(false); // Trigger to update data
+    const [isLoading, setLoader] = useState(false)
 
     // Function to get user profile data
     const getUserData = useCallback(async () => {
@@ -179,8 +180,8 @@ function MainScreen({ setModalParams }) {
                     top: settingsVisibility ? (visiblePartOfScreen - 207) : (userDataHeight + 15),
                     transition: 'top 0.3s ease',
                 }}
-                
                 trainingPlans={trainingPlans}
+                isLoading={isLoading}
             >
                 <div
                     style={{
@@ -203,6 +204,7 @@ function MainScreen({ setModalParams }) {
                         setExercisingStatus,
                         trainingProgress,
                         setTrainingProgress,
+                        setLoader,
                     })}
                 </div>
             </FunctionalBar>

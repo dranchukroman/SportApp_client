@@ -1,11 +1,11 @@
 import React from "react";
-import { Loader } from "../SingleLoader/SingleLoader.styled";
+import SingleLoader from "../SingleLoader/SingleLoader";
 import { LoaderWrapper } from "./FunctionalBarLoader.styled";
 
-function FunctionalBarLoader({}){
+function FunctionalBarLoader(){
     return (
         <LoaderWrapper>
-            <Loader/>
+            <SingleLoader/>
         </LoaderWrapper>
     )
 }

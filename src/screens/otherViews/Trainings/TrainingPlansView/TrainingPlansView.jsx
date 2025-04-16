@@ -11,26 +11,36 @@ import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { toast } from "sonner";
 
+import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
+
 function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
+
+    const [loading, setLoading] = useState(true);
+    const [showView, setShowView] = useState(0);
 
     // Get training plans data
     useEffect(() => {
         const getTrainingPlans = async () => {
             try {
+                setLoading(true);
+                setShowView(0);
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
                 if (response.status === 200 && response?.data?.data) setTrainingPlans(response.data.data);
-                else toast.error('Cant get training plans')
+                else toast.error('Cant get training plans');
             } catch (error) {
                 toast.error(error.response?.data?.message);
+            } finally {
+                setLoading(false);
+                setTimeout(() => setShowView(1), 100);
             }
         }
         getTrainingPlans();
-    }, [deletePlanId, token]);
+    }, [deletePlanId, token, setLoading]);
 
     // Delete plan
     useEffect(() => {
@@ -97,33 +107,39 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
 
     return (
         <StyledTraining>
-            {fetchTrainingPlans()}
+            {
+                loading ? <FunctionalBarLoader/> :
+            
+            <div style={{opacity: showView, transition: 'opacity ease 0.3s'}}>
+                {fetchTrainingPlans()}
 
-            <div
-                style={{
-                    display: trainingPlans?.length <= 0 ? 'block' : "flex",
-                    justifyContent: "space-between",
-                    marginTop: '10px'
-                }}
-            >
-                <Button
-                    style={{ display: trainingPlans?.length <= 0 ? 'none' : 'block' }}
-                    onClick={() => setEditModeStatus((prev) => !prev)}
-                    width={'172px'}
-                >
-                    {editModeStatus ? 'Save editing' : 'Edit mode'}
-                </Button>
-
-                <Button
-                    onClick={() => {
-                        setEditModeStatus(false)
-                        onScreenChange('TrainingPlanDetails')
+                <div
+                    style={{
+                        display: trainingPlans?.length <= 0 ? 'block' : "flex",
+                        justifyContent: "space-between",
+                        marginTop: '10px'
                     }}
-                    width={trainingPlans?.length <= 0 ? '' : '172px'}
                 >
-                    Add new training plan
-                </Button>
+                    <Button
+                        style={{ display: trainingPlans?.length <= 0 ? 'none' : 'block' }}
+                        onClick={() => setEditModeStatus((prev) => !prev)}
+                        width={'172px'}
+                    >
+                        {editModeStatus ? 'Save editing' : 'Edit mode'}
+                    </Button>
+
+                    <Button
+                        onClick={() => {
+                            setEditModeStatus(false)
+                            onScreenChange('TrainingPlanDetails')
+                        }}
+                        width={trainingPlans?.length <= 0 ? '' : '172px'}
+                    >
+                        Add new training plan
+                    </Button>
+                </div>
             </div>
+            }
         </StyledTraining>
     );
 }

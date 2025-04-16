@@ -28,12 +28,13 @@ const renderScreen = ({
     setModalParams,
     setTrainingProgress,
     trainingProgress,
+    setLoader,    
   }) => {
     switch (currentScreen) {
         case 'Dashboard':
             return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} />
         case 'Trainings':
-            return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus}/>
+            return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} setLoader={setLoader}/>
         case 'TrainingPlanDetails':
             return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} trainingPlanId={controllTrainings.trainingPlanId} />
         case 'TrainingDaysView':

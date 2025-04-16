@@ -12,4 +12,3 @@ export const Paragraph = styled.p`
     color: ${theme.colors.whiteText};
     font-size: ${theme.fontSizes.largeParagraph};
 `
-
