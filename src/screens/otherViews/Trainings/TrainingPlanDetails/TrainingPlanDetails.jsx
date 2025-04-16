@@ -8,13 +8,15 @@ import Button from "../../../../components/Buttons/Button";
 import CheckBox from "../../../../components/Inputs/CheckBoxes/CheckBox";
 import TextCheckBox from "../../../../components/Inputs/CheckBoxes/TextCheckBox";
 import {
-  TrainingDetailsWrapper,
-  IsCurrentPlanWrapper,
-  Paragraph,
-  TrainingDaysWrapper
+    TrainingDetailsWrapper,
+    IsCurrentPlanWrapper,
+    Paragraph,
+    TrainingDaysWrapper
 } from "./TrainingPlanDetails";
 import theme from "../../../../styles/theme";
 import convertStringToArray from "../../../../utils/stringHelpers";
+import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
+import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 
 
 function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, editModeStatus, trainingPlanId }) {
@@ -27,6 +29,9 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
     }) // Training plan data
 
     const trainingDaysList = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']; // Listed week days
+
+    const [loading, setLoading] = useState(editModeStatus);
+    const [afterLoad, setAfterLoad] = useState(0);
 
     // Select day by click
     const handleDayClick = useCallback((day) => {
@@ -42,6 +47,8 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
     useEffect(() => {
         const fetchTrainingPlansData = async () => {
             try {
+                setLoading(true);
+                setAfterLoad(0);
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlan`, {
                     headers: { Authorization: `Bearer ${token}` },
                     params: { trainingPlanId: trainingPlanId }
@@ -59,9 +66,16 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
                 }
             } catch (error) {
                 toast.error(error.response?.data?.message);
+            } finally {
+                setLoading(false);
+                setTimeout(() => setAfterLoad(1), 100);
             }
         }
         if (editModeStatus) fetchTrainingPlansData();
+        else {
+            setLoading(false);
+            setAfterLoad(1);
+        }
     }, [editModeStatus, trainingPlanId, token]);
 
     // Update or add training plan
@@ -100,68 +114,72 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
 
     return (
         <TrainingDetailsWrapper>
-            <Heading fontSize={theme.fontSizes.mediumHeader}>
-                Training plan details
-            </Heading>
-            <Input placeholder={'Plan name'} value={planData.name}
-                onChange={(e) => setPlanData((prev) => ({
-                    ...prev,
-                    name: e.target.value
-                }))}
-            />
-            <Input placeholder={'Description'} value={planData.description}
-                onChange={(e) => setPlanData((prev) => ({
-                    ...prev,
-                    description: e.target.value
-                }))}
-            />
-            <Heading fontSize={theme.fontSizes.mediumHeader}>
-                Training days
-            </Heading>
-            <TrainingDaysWrapper>
-                {trainingDaysList.map((day) => (
-                    <TextCheckBox
-                        key={day}
-                        isActive={planData.days_per_week.includes(day)}
-                        onClick={() => handleDayClick(day)}
-                    >
-                        {day}
-                    </TextCheckBox>
-                ))}
-            </TrainingDaysWrapper>
-            <Heading fontSize={theme.fontSizes.mediumHeader}>
-                Current training plan
-            </Heading>
-            <IsCurrentPlanWrapper>
-                <Paragraph>You will see your training plan on dashboard</Paragraph>
-                <CheckBox style={{ height: '20px' }} checked={planData.is_current_plan}
-                    onClick={() => setPlanData((prev) => ({
-                        ...prev,
-                        is_current_plan: !prev.is_current_plan
-                    }))}
-                />
-            </IsCurrentPlanWrapper>
+            {loading ? <FunctionalBarLoader /> :
+                <LoadWrapper opacity={afterLoad}>
+                    <Heading fontSize={theme.fontSizes.mediumHeader}>
+                        Training plan details
+                    </Heading>
+                    <Input placeholder={'Plan name'} value={planData.name}
+                        onChange={(e) => setPlanData((prev) => ({
+                            ...prev,
+                            name: e.target.value
+                        }))}
+                    />
+                    <Input placeholder={'Description'} value={planData.description}
+                        onChange={(e) => setPlanData((prev) => ({
+                            ...prev,
+                            description: e.target.value
+                        }))}
+                    />
+                    <Heading fontSize={theme.fontSizes.mediumHeader}>
+                        Training days
+                    </Heading>
+                    <TrainingDaysWrapper>
+                        {trainingDaysList.map((day) => (
+                            <TextCheckBox
+                                key={day}
+                                isActive={planData.days_per_week.includes(day)}
+                                onClick={() => handleDayClick(day)}
+                            >
+                                {day}
+                            </TextCheckBox>
+                        ))}
+                    </TrainingDaysWrapper>
+                    <Heading fontSize={theme.fontSizes.mediumHeader}>
+                        Current training plan
+                    </Heading>
+                    <IsCurrentPlanWrapper>
+                        <Paragraph>You will see your training plan on dashboard</Paragraph>
+                        <CheckBox style={{ height: '20px' }} checked={planData.is_current_plan}
+                            onClick={() => setPlanData((prev) => ({
+                                ...prev,
+                                is_current_plan: !prev.is_current_plan
+                            }))}
+                        />
+                    </IsCurrentPlanWrapper>
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: '10px'
-                }}
-            >
-                <Button
-                    onClick={() => onScreenChange('Trainings')}
-                    width={'172px'}
-                >
-                    Back
-                </Button>
-                <Button
-                    onClick={handleTrainingPlan}
-                    width={'172px'}
-                >
-                    {editModeStatus ? 'Save' : 'Next'}
-                </Button>
-            </div>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: '10px'
+                        }}
+                    >
+                        <Button
+                            onClick={() => onScreenChange('Trainings')}
+                            width={'172px'}
+                        >
+                            Back
+                        </Button>
+                        <Button
+                            onClick={handleTrainingPlan}
+                            width={'172px'}
+                        >
+                            {editModeStatus ? 'Save' : 'Next'}
+                        </Button>
+                    </div>
+                </LoadWrapper>
+            }
         </TrainingDetailsWrapper>
     )
 }

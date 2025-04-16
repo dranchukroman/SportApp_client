@@ -10,22 +10,22 @@ import Card from '../../../../components/Cards/InfoCard'
 import EditIcon from '../../../../assets/icons/Trainings/editIcon';
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { toast } from "sonner";
-
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
+import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 
 function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
     const [deletePlanId, setDeletePlanId] = useState(null);
 
-    const [loading, setLoading] = useState(true);
-    const [showView, setShowView] = useState(0);
+    const [loading, setLoading] = useState(false);
+    const [afterLoad, setAfterLoad] = useState(0);
 
     // Get training plans data
     useEffect(() => {
         const getTrainingPlans = async () => {
             try {
                 setLoading(true);
-                setShowView(0);
+                setAfterLoad(0);
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
@@ -36,11 +36,11 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
                 toast.error(error.response?.data?.message);
             } finally {
                 setLoading(false);
-                setTimeout(() => setShowView(1), 100);
+                setTimeout(() => setAfterLoad(1), 100);
             }
         }
         getTrainingPlans();
-    }, [deletePlanId, token, setLoading]);
+    }, [deletePlanId, token]);
 
     // Delete plan
     useEffect(() => {
@@ -107,38 +107,36 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
 
     return (
         <StyledTraining>
-            {
-                loading ? <FunctionalBarLoader/> :
-            
-            <div style={{opacity: showView, transition: 'opacity ease 0.3s'}}>
-                {fetchTrainingPlans()}
+            {loading ? <FunctionalBarLoader /> :
+                <LoadWrapper opacity={afterLoad}>
+                    {fetchTrainingPlans()}
 
-                <div
-                    style={{
-                        display: trainingPlans?.length <= 0 ? 'block' : "flex",
-                        justifyContent: "space-between",
-                        marginTop: '10px'
-                    }}
-                >
-                    <Button
-                        style={{ display: trainingPlans?.length <= 0 ? 'none' : 'block' }}
-                        onClick={() => setEditModeStatus((prev) => !prev)}
-                        width={'172px'}
-                    >
-                        {editModeStatus ? 'Save editing' : 'Edit mode'}
-                    </Button>
-
-                    <Button
-                        onClick={() => {
-                            setEditModeStatus(false)
-                            onScreenChange('TrainingPlanDetails')
+                    <div
+                        style={{
+                            display: trainingPlans?.length <= 0 ? 'block' : "flex",
+                            justifyContent: "space-between",
+                            marginTop: '10px'
                         }}
-                        width={trainingPlans?.length <= 0 ? '' : '172px'}
                     >
-                        Add new training plan
-                    </Button>
-                </div>
-            </div>
+                        <Button
+                            style={{ display: trainingPlans?.length <= 0 ? 'none' : 'block' }}
+                            onClick={() => setEditModeStatus((prev) => !prev)}
+                            width={'172px'}
+                        >
+                            {editModeStatus ? 'Save editing' : 'Edit mode'}
+                        </Button>
+
+                        <Button
+                            onClick={() => {
+                                setEditModeStatus(false)
+                                onScreenChange('TrainingPlanDetails')
+                            }}
+                            width={trainingPlans?.length <= 0 ? '' : '172px'}
+                        >
+                            Add new training plan
+                        </Button>
+                    </div>
+                </LoadWrapper>
             }
         </StyledTraining>
     );

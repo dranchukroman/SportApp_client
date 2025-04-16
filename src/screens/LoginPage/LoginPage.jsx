@@ -8,6 +8,7 @@ import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import GoogleIcon from '../../assets/icons/LoginPage/google';
 import { toast } from 'sonner';
+import { LoadWrapper } from '../../components/Loaders/SingleLoader/SingleLoader.styled';
 
 function LoginPage() {
     // Location tools
@@ -42,6 +43,10 @@ function LoginPage() {
     const [email, setEmail] = useState('test1');
     const [password, setPassword] = useState('test1');
     const [password2, setPassword2] = useState('');
+
+    const [afterLoad, setAfterLoad] = useState(0);
+
+    useEffect(() => setAfterLoad(1), [])
 
     const saveTokenAndRedirect = (token, path) => {
         localStorage.setItem('authToken', token);
@@ -81,6 +86,7 @@ function LoginPage() {
 
     return (
         <LoginPageContainer>
+            <LoadWrapper opacity={afterLoad}>
             <StyledLoginPage>
                 <Heading>Sport App</Heading>
                 <p>Dream big, work hard, stay focused.</p>
@@ -107,6 +113,7 @@ function LoginPage() {
                     <p>{isLoginPage ? "Don't have an account yet? Click here" : "Do you already have an account? Click here"}</p>
                 </a>
             </StyledLoginPage>
+            </LoadWrapper>
         </LoginPageContainer>
     );
 }

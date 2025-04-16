@@ -23,9 +23,11 @@ import Button from "../../../../components/Buttons/Button";
 import CrossIcon from "../../../../assets/icons/CrossIcon";
 import { toast } from "sonner";
 import { parseRestTime } from "../../../../utils/stringHelpers";
+import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
+import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 
 
-function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress}) {
+function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress }) {
     // Current exercise
     const [exerciseData, setExerciseData] = useState({
         exerciseName: 'No data to show',
@@ -50,16 +52,21 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
     })
     const [activeDelButton, setActiveDelButton] = useState(false);
 
+    const [loading, setLoading] = useState(false);
+    const [afterLoad, setAfterLoad] = useState(0);
+
     // Fetch exercise data
     useEffect(() => {
         const fetchExerciseData = async () => {
             try {
+                setLoading(true);
+                setAfterLoad(0);
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/exercise`, {
                     headers: { Authorization: `Bearer ${token}` },
                     params: { exerciseId: trainingExerciseId }
                 });
                 const exerciseData = response.data.data;
-                const {minutes, seconds} = parseRestTime(exerciseData.rest_time);
+                const { minutes, seconds } = parseRestTime(exerciseData.rest_time);
                 setExerciseData((prev) => ({
                     ...prev,
                     exerciseName: exerciseData.name,
@@ -72,6 +79,9 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
             } catch (error) {
                 toast.error(error.response?.data?.message || 'Something went wrong');
                 console.error('Error fetching exercise data: ', error)
+            } finally {
+                setLoading(false);
+                setTimeout(() => setAfterLoad(1), 100);
             }
         }
         fetchExerciseData();
@@ -112,100 +122,103 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
 
     return (
         <ExerciseFrame>
-            <FlexItems>
-                <ExerciseInfoFrame>
-                    <ExerciseName>
-                        {exerciseData.exerciseName}
-                    </ExerciseName>
-                    <ExerciseParagraf>
-                        Sets - {exerciseData.sets}
-                    </ExerciseParagraf>
-                    <ExerciseParagraf>
-                        Reps - {exerciseData.times}
-                    </ExerciseParagraf>
-                    <ExerciseParagraf>
-                        Weight - {exerciseData.weight}
-                    </ExerciseParagraf>
-                    <ExerciseParagraf>
-                        Rest time - {exerciseData.restTime}
-                    </ExerciseParagraf>
-                    <ExerciseParagraf>
-                        Note - {exerciseData.description}
-                    </ExerciseParagraf>
-                </ExerciseInfoFrame>
-                <HistoryIcon />
-            </FlexItems>
-            <DivideLine />
-            <ControllPanel>
-                <FlexItems>
-                    <Input style={{ width: '99px' }} placeholder="Reps" value={recordInfo.reps} onChange={e => setRecordInfo(prev => ({ ...prev, reps: e.target.value }))} />
-                    <Input style={{ width: '99px' }} placeholder="Weight" value={recordInfo.weight} onChange={e => setRecordInfo(prev => ({ ...prev, weight: e.target.value }))} />
-                    <Button width={'70px'} onClick={() => addRecordToHistory()}>Add</Button>
-                </FlexItems>
-                <FlexItems>
-                    <Input style={{ width: '233px' }} placeholder="Note" value={recordInfo.note} onChange={e => setRecordInfo(prev => ({ ...prev, note: e.target.value }))} />
-                    <Button style={{ marginLeft: '10px' }} width={'70px'}>Rest</Button>
-                </FlexItems>
-            </ControllPanel>
-            <ExerciseHistory textPosition={exerciseHistory.length > 0 ? 'center' : 'center'}>
-                {exerciseHistory.length === 0
-                    ? <HistoryRecord>No added series yet</HistoryRecord>
+            {loading ? <FunctionalBarLoader /> :
+                <LoadWrapper opacity={afterLoad}>
+                    <FlexItems>
+                        <ExerciseInfoFrame>
+                            <ExerciseName>
+                                {exerciseData.exerciseName}
+                            </ExerciseName>
+                            <ExerciseParagraf>
+                                Sets - {exerciseData.sets}
+                            </ExerciseParagraf>
+                            <ExerciseParagraf>
+                                Reps - {exerciseData.times}
+                            </ExerciseParagraf>
+                            <ExerciseParagraf>
+                                Weight - {exerciseData.weight}
+                            </ExerciseParagraf>
+                            <ExerciseParagraf>
+                                Rest time - {exerciseData.restTime}
+                            </ExerciseParagraf>
+                            <ExerciseParagraf>
+                                Note - {exerciseData.description}
+                            </ExerciseParagraf>
+                        </ExerciseInfoFrame>
+                        <HistoryIcon />
+                    </FlexItems>
+                    <DivideLine />
+                    <ControllPanel>
+                        <FlexItems>
+                            <Input style={{ width: '99px' }} placeholder="Reps" value={recordInfo.reps} onChange={e => setRecordInfo(prev => ({ ...prev, reps: e.target.value }))} />
+                            <Input style={{ width: '99px' }} placeholder="Weight" value={recordInfo.weight} onChange={e => setRecordInfo(prev => ({ ...prev, weight: e.target.value }))} />
+                            <Button width={'70px'} onClick={() => addRecordToHistory()}>Add</Button>
+                        </FlexItems>
+                        <FlexItems>
+                            <Input style={{ width: '233px' }} placeholder="Note" value={recordInfo.note} onChange={e => setRecordInfo(prev => ({ ...prev, note: e.target.value }))} />
+                            <Button style={{ marginLeft: '10px' }} width={'70px'}>Rest</Button>
+                        </FlexItems>
+                    </ControllPanel>
+                    <ExerciseHistory textPosition={exerciseHistory.length > 0 ? 'center' : 'center'}>
+                        {exerciseHistory.length === 0
+                            ? <HistoryRecord>No added series yet</HistoryRecord>
 
-                    : exerciseHistory.map((record, index) => (
-                        <HistoryRecord style={{ display: 'flex', justifyContent: 'space-between' }}
-                            key={`${record.date}-${record.time}-${index}`}
-                            onClick={() => setActiveDelButton((prev) => (prev === index ? null : index))}
-                        >
-                            <RecordInfo>
-                                <div>
-                                    {index + 1} {record.weight} kg x {record.reps} reps
-                                </div>
-                                <div style={{ opacity: 0.7, fontSize: theme.fontSizes.mediumParagraph }}>
-                                    {record.note}
-                                </div>
-                            </RecordInfo>
-                            <RecordDate>
-                                <div style={{ marginRight: '7px' }}>
-                                    <div>
-                                        {record.time}
-                                    </div>
-                                    <div style={{ opacity: 0.7, fontSize: theme.fontSizes.mediumParagraph }}>
-                                        {record.date}
-                                    </div>
-                                </div>
-                                <AnimatePresence mode="wait">
-                                    {activeDelButton === index && (
-                                        <motion.div
-                                            initial={{ width: 0, opacity: 0 }}
-                                            animate={{ width: '30px', opacity: 1 }}
-                                            exit={{ width: 0, opacity: 0 }}
-                                            transition={{ duration: 0.3, ease: "easeInOut" }}
-                                            style={{ overflow: "hidden" }}
-                                        >
-                                            <CrossIcon
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    setExerciseHistory(prev => prev.filter((_, i) => i !== index));
-                                                    setActiveDelButton(null);
-                                                }}
-                                            />
-                                        </motion.div>
-                                    )}
-                                </AnimatePresence>
-                            </RecordDate>
-                        </HistoryRecord>
-                    ))
-                }
-            </ExerciseHistory>
+                            : exerciseHistory.map((record, index) => (
+                                <HistoryRecord style={{ display: 'flex', justifyContent: 'space-between' }}
+                                    key={`${record.date}-${record.time}-${index}`}
+                                    onClick={() => setActiveDelButton((prev) => (prev === index ? null : index))}
+                                >
+                                    <RecordInfo>
+                                        <div>
+                                            {index + 1} {record.weight} kg x {record.reps} reps
+                                        </div>
+                                        <div style={{ opacity: 0.7, fontSize: theme.fontSizes.mediumParagraph }}>
+                                            {record.note}
+                                        </div>
+                                    </RecordInfo>
+                                    <RecordDate>
+                                        <div style={{ marginRight: '7px' }}>
+                                            <div>
+                                                {record.time}
+                                            </div>
+                                            <div style={{ opacity: 0.7, fontSize: theme.fontSizes.mediumParagraph }}>
+                                                {record.date}
+                                            </div>
+                                        </div>
+                                        <AnimatePresence mode="wait">
+                                            {activeDelButton === index && (
+                                                <motion.div
+                                                    initial={{ width: 0, opacity: 0 }}
+                                                    animate={{ width: '30px', opacity: 1 }}
+                                                    exit={{ width: 0, opacity: 0 }}
+                                                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                                                    style={{ overflow: "hidden" }}
+                                                >
+                                                    <CrossIcon
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setExerciseHistory(prev => prev.filter((_, i) => i !== index));
+                                                            setActiveDelButton(null);
+                                                        }}
+                                                    />
+                                                </motion.div>
+                                            )}
+                                        </AnimatePresence>
+                                    </RecordDate>
+                                </HistoryRecord>
+                            ))
+                        }
+                    </ExerciseHistory>
 
-            {/* Temporary buttons */}
-            <Button
-                onClick={handleDoneButton}
-                width={'330px'}
-                style={{ marginTop: '20px' }}
-            >
-                Done
-            </Button>
+                    {/* Temporary buttons */}
+                    <Button
+                        onClick={handleDoneButton}
+                        width={'330px'}
+                        style={{ marginTop: '20px' }}
+                    >
+                        Done
+                    </Button>
+                </LoadWrapper>}
         </ExerciseFrame>
     )
 }

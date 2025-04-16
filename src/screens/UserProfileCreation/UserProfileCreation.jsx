@@ -8,8 +8,7 @@ import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
 import StepCounter from '../../components/StepCounter/StepCounter';
 import SelectList from '../../components/SelectList/SelectList';
-
-
+import { LoadWrapper } from '../../components/Loaders/SingleLoader/SingleLoader.styled';
 
 function UserProfileCreation() {
     const navigate = useNavigate();
@@ -104,7 +103,7 @@ function UserProfileCreation() {
         }
     }
 
-    const changeStep = (step) => {
+    const changeStepValidation = (step) => {
         switch (step) {
             case 1:
                 if (
@@ -114,42 +113,82 @@ function UserProfileCreation() {
                     userData.weight === '' ||
                     userData.age === '' ||
                     userData.gender === ''
-                ) return toast.error('All fields should be filled1');
+                ) {
+                    toast.error('All fields should be filled1');
+                    return false;
+                }
                 break;
             case 2:
                 if (
                     userData.goal === '' ||
                     userData.activity_level === ''
-                ) return toast.error('All fields should be filled2');
+                ) {
+                    toast.error('All fields should be filled2');
+                    return false;
+                }
                 break;
-            default: return toast.error('Something went wrong');
+            default:
+                toast.error('Something went wrong');
+                return false;
         }
-        setStep(step + 1);
+        return true;
     }
+    
+
+    const animateStepChange = () => {
+        setAfterLoad(0); // Почати анімацію зникнення
+        setTimeout(() => {
+            setStep(prev => prev + 1); // Змінити крок після анімації
+            setAfterLoad(1); // Показати з анімацією
+        }, 300); // Затримка має відповідати transition з CSS (0.3s = 300ms)
+    }
+
+    const animateStepBack = () => {
+        setAfterLoad(0); // Почати анімацію зникнення
+        setTimeout(() => {
+            setStep(prev => prev - 1); // Змінити крок після анімації
+            setAfterLoad(1); // Показати з анімацією
+        }, 300); // Затримка має відповідати transition з CSS (0.3s = 300ms)
+    }
+
+
+    const [afterLoad, setAfterLoad] = useState(0);
+
+    useEffect(() => {
+        setAfterLoad(1)
+    }, [step]);
 
     return (
         <div>
             <StepCounter stepCount={maxStep} width={'360px'} activeStep={step} headersArray={stepHeaders} />
             <CreateProfileContainer>
-                <StyledCreateProfile>
-                    {renderStep()}
+                <LoadWrapper opacity={afterLoad}>
+                    <StyledCreateProfile>
+                        {renderStep()}
 
-                    <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-                        <Button
-                            onClick={() => setStep(step - 1)} width={"172px"}
-                            style={{ display: step === 1 ? 'none' : 'block' }}
-                        >
-                            Back
-                        </Button>
-                        <Button onClick={() => {
-                            step === maxStep ? handleCreateProfile() : changeStep(step);
-                        }}
-                            width={step === 1 ? '100%' : '172px'}
-                        >
-                            {step === maxStep ? 'Create' : 'Next'}
-                        </Button>
-                    </div>
-                </StyledCreateProfile>
+                        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
+                            <Button
+                                onClick={() => animateStepBack()} width={"172px"}
+                                style={{ display: step === 1 ? 'none' : 'block' }}
+                            >
+                                Back
+                            </Button>
+                            <Button
+                                onClick={() => {
+                                    if (step === maxStep) {
+                                        handleCreateProfile();
+                                    } else {
+                                        const isValid = changeStepValidation(step);
+                                        if (isValid) animateStepChange();
+                                    }
+                                }}
+                                width={step === 1 ? '100%' : '172px'}
+                            >
+                                {step === maxStep ? 'Create' : 'Next'}
+                            </Button>
+                        </div>
+                    </StyledCreateProfile>
+                </LoadWrapper>
             </CreateProfileContainer>
         </div>
     )
@@ -197,8 +236,8 @@ function Step1({ userData, setUserData }) {
                     age: e.target.value
                 }))}
             />
-            <SelectList 
-            
+            <SelectList
+
                 value={userData.gender}
                 onChange={(e) => setUserData((prev) => ({
                     ...prev,

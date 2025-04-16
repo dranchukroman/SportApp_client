@@ -8,6 +8,8 @@ import Input from "../../../../components/Inputs/Input";
 import Button from "../../../../components/Buttons/Button";
 
 import { TrainingDaysWrapper } from "./TrainingDaysDetails.styled";
+import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
+import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 
 
 function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, trainingDayId }) {
@@ -16,13 +18,18 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
         dayDescription: '',
     })
 
+    const [loading, setLoading] = useState(false);
+    const [afterLoad, setAfterLoad] = useState(0);
+
     // Get training day data
     useEffect(() => {
         const fetchTrainingDaysData = async () => {
             try {
+                setLoading(true);
+                setAfterLoad(0);
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingDay`, {
                     headers: { Authorization: `Bearer ${token}` },
-                    params: { trainingDayId: trainingDayId  }
+                    params: { trainingDayId: trainingDayId }
                 })
                 if (response.status === 200 && response?.data?.trainingDaysData) {
                     setTrainingDayData((prev) => ({
@@ -33,9 +40,16 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                 }
             } catch (error) {
                 toast.error(error.response?.data?.message || 'Something went wrong');
+            } finally {
+                setLoading(false);
+                setTimeout(() => setAfterLoad(1), 100);
             }
         }
         if (editModeStatus && trainingDayId !== 0) fetchTrainingDaysData();
+        else {
+            setLoading(false);
+            setAfterLoad(1);
+        }
     }, [editModeStatus, trainingDayId, token]);
 
     // Add or update training day
@@ -45,7 +59,7 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
             const isNewDay = trainingDayId === 0;
             const endpoint = isNewDay ? 'addTrainingDay' : 'updateTrainingDays';
             const method = isNewDay ? axios.post : axios.put;
-            
+
             const dataToSend = isNewDay
                 ? { trainingPlanId, ...trainingDayData }
                 : { day_id: trainingDayId, ...trainingDayData };
@@ -61,35 +75,38 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
 
     return (
         <TrainingDaysWrapper>
-            <Heading>Training day details</Heading>
-            <Input placeholder={'Day name'} value={trainingDayData.dayName}
-                onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayName: e.target.value }))}
-            />
-            <Input placeholder={'Description'} value={trainingDayData.dayDescription}
-                onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayDescription: e.target.value }))}
-            />
+            {loading ? <FunctionalBarLoader /> :
+                <LoadWrapper opacity={afterLoad}>
+                    <Heading>Training day details</Heading>
+                    <Input placeholder={'Day name'} value={trainingDayData.dayName}
+                        onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayName: e.target.value }))}
+                    />
+                    <Input placeholder={'Description'} value={trainingDayData.dayDescription}
+                        onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayDescription: e.target.value }))}
+                    />
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: '10px'
-                }}
-            >
-                <Button
-                    onClick={() => onScreenChange('TrainingDaysView')}
-                    width={'172px'}
-                >
-                    Back
-                </Button>
+                    <div
+                        style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: '10px'
+                        }}
+                    >
+                        <Button
+                            onClick={() => onScreenChange('TrainingDaysView')}
+                            width={'172px'}
+                        >
+                            Back
+                        </Button>
 
-                <Button
-                    onClick={handleTrainingPlan}
-                    width={'172px'}
-                >
-                    {editModeStatus ? 'Save' : 'Add day'}
-                </Button>
-            </div>
+                        <Button
+                            onClick={handleTrainingPlan}
+                            width={'172px'}
+                        >
+                            {editModeStatus ? 'Save' : 'Add day'}
+                        </Button>
+                    </div>
+                </LoadWrapper>}
         </TrainingDaysWrapper>
     )
 }

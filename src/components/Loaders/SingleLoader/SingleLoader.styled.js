@@ -18,3 +18,8 @@ export const Loader = styled.div`
 
   @keyframes l3 {to{transform: rotate(1turn)}}
 `
+
+export const LoadWrapper = styled.div`
+  opacity: ${(props) => props.opacity ?? 1};
+  transition: opacity 0.3s ease;
+`

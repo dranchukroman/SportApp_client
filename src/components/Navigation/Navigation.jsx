@@ -58,7 +58,7 @@ function Navigation({
     }
 
     const saveTrainingProgress = () => {
-        console.log('Save data')
+        console.log('Save data, Navigation!')
     }
 
     return (
@@ -79,7 +79,8 @@ function Navigation({
                             currentScreen === 'TrainingDaysView' ||
                             currentScreen === 'TrainingDaysDetails' ||
                             currentScreen === 'ExerciseDetails' ||
-                            currentScreen === 'ExercisesView'
+                            currentScreen === 'ExercisesView' ||
+                            currentScreen === 'Exercising'
                         }
                         onClick={() => tryToRedirect('Trainings')}
                     />

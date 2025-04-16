@@ -10,16 +10,23 @@ import Button from "../../../../components/Buttons/Button";
 import Card from "../../../../components/Cards/InfoCard";
 import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
+import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
+import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 
 
-function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, setControllTrainings, exercisingStatus, setModalParams, saveTrainingProgress, setExercisingStatus, setTrainingProgress }) {
+function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, setControllTrainings, exercisingStatus, setModalParams, setExercisingStatus, setTrainingProgress }) {
     const [exercises, setExercises] = useState([]);
     const [deleteExercise, setDeleteExercise] = useState(null);
+
+    const [loading, setLoading] = useState(false);
+    const [afterLoad, setAfterLoad] = useState(0);
 
     // Get exercises from DB
     useEffect(() => {
         const fetchData = async () => {
             try {
+                setLoading(true);
+                setAfterLoad(0);
                 const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/getDayExercise`, {
                     headers: { Authorization: `Bearer ${token}` },
                     params: { day_id: trainingDayId }
@@ -28,6 +35,9 @@ function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, s
             } catch (error) {
                 toast.error('Something went wrong during getting exercises')
                 console.error('Error fetching exercises:', error);
+            } finally {
+                setLoading(false);
+                setTimeout(() => setAfterLoad(1), 100);
             }
         };
         fetchData();
@@ -98,107 +108,121 @@ function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, s
         }
     }
 
+    const saveTrainingProgress = () => {
+        console.log('Training should be saved');
+        onScreenChange('Dashboard');
+        setModalParams((prev) => ({
+            ...prev,
+            isVisible: false
+        }));
+    }
+
     return (
         <ExerciseViewWrapper>
-            {exercises && exercises.length > 0 ? (
-                exercises.map(exercise => (
-                    <Card
+            {loading ? <FunctionalBarLoader /> :
+                <LoadWrapper opacity={afterLoad}>
+                    {exercises && exercises.length > 0 ? (
+                        exercises.map(exercise => (
+                            <Card
+                                style={{
+                                    marginBottom: '14px',
+                                    position: 'relative',
+                                    padding: `20px 0`,
+                                    textAlign: 'left'
+                                }}
+                                key={exercise.day_exercise_id}
+                                onClick={() => {
+                                    if (editModeStatus) {
+                                        toast.warning('Save editing before starting training')
+                                    } else {
+                                        setControllTrainings((prev) => ({
+                                            ...prev,
+                                            trainingExerciseId: exercise.day_exercise_id
+                                        }))
+                                        onScreenChange('Exercising');
+                                    }
+                                }}
+                            >
+                                <ExerciseDataWrapper>
+                                    <ExerciseHeader fontSize={theme.fontSizes.smallHeader}>
+                                        {exercise.exercise_name}
+                                    </ExerciseHeader>
+                                    {exercise.reps && <ExerciseParagraph>
+                                        Reps - {exercise.reps}
+                                    </ExerciseParagraph>}
+                                    {exercise.weight && <ExerciseParagraph>
+                                        Weight - {exercise.weight}
+                                    </ExerciseParagraph>}
+                                    {exercise.sets && <ExerciseParagraph>
+                                        Sets - {exercise.sets}
+                                    </ExerciseParagraph>}
+                                    {exercise.rest_time && <ExerciseParagraph>
+                                        Rest - {exercise.rest_time}
+                                    </ExerciseParagraph>}
+                                    {exercise.description && <ExerciseParagraph>
+                                        Description - {exercise.description}
+                                    </ExerciseParagraph>}
+                                </ExerciseDataWrapper>
+                                <EditIcon editModeStatus={editModeStatus} CardStyles
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setControllTrainings((prev) => ({
+                                            ...prev,
+                                            trainingExerciseId: exercise.day_exercise_id
+                                        }))
+                                        onScreenChange('ExerciseDetails');
+                                    }}
+                                />
+                                <DeleteIcon editModeStatus={editModeStatus} CardStyles
+                                    style={{
+                                        right: 7,
+                                        left: 'unset',
+                                        bottom: 4,
+                                        top: 'unset'
+                                    }}
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        setDeleteExercise(exercise.day_exercise_id);
+                                    }}
+                                />
+                            </Card>
+                        ))
+                    ) : (
+                        <Heading style={{ padding: "30px 0 10px 0" }} fontSize={theme.fontSizes.mediumHeader}>
+                            No exercises yet
+                        </Heading>
+                    )}
+
+                    <div
                         style={{
-                            marginBottom: '14px',
-                            position: 'relative',
-                            padding: `20px 0`,
-                            textAlign: 'left'
-                        }}
-                        key={exercise.day_exercise_id}
-                        onClick={() => {
-                            if (editModeStatus) {
-                                toast.warning('Save editing before starting training')
-                            } else {
-                                setControllTrainings((prev) => ({
-                                    ...prev,
-                                    trainingExerciseId: exercise.day_exercise_id
-                                }))
-                                onScreenChange('Exercising');
-                            }
+                            display: "flex",
+                            justifyContent: "space-between",
+                            marginTop: '10px'
                         }}
                     >
-                        <ExerciseDataWrapper>
-                            <ExerciseHeader fontSize={theme.fontSizes.smallHeader}>
-                                {exercise.exercise_name}
-                            </ExerciseHeader>
-                            {exercise.reps && <ExerciseParagraph>
-                                Reps - {exercise.reps}
-                            </ExerciseParagraph>}
-                            {exercise.weight && <ExerciseParagraph>
-                                Weight - {exercise.weight}
-                            </ExerciseParagraph>}
-                            {exercise.sets && <ExerciseParagraph>
-                                Sets - {exercise.sets}
-                            </ExerciseParagraph>}
-                            {exercise.rest_time && <ExerciseParagraph>
-                                Rest - {exercise.rest_time}
-                            </ExerciseParagraph>}
-                            {exercise.description && <ExerciseParagraph>
-                                Description - {exercise.description}
-                            </ExerciseParagraph>}
-                        </ExerciseDataWrapper>
-                        <EditIcon editModeStatus={editModeStatus} CardStyles
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setControllTrainings((prev) => ({
-                                    ...prev,
-                                    trainingExerciseId: exercise.day_exercise_id
-                                }))
-                                onScreenChange('ExerciseDetails');
-                            }}
-                        />
-                        <DeleteIcon editModeStatus={editModeStatus} CardStyles
-                            style={{
-                                right: 7,
-                                left: 'unset',
-                                bottom: 4,
-                                top: 'unset'
-                            }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setDeleteExercise(exercise.day_exercise_id);
-                            }}
-                        />
-                    </Card>
-                ))
-            ) : (
-                <Heading style={{ padding: "30px 0 10px 0" }} fontSize={theme.fontSizes.mediumHeader}>
-                    No exercises yet
-                </Heading>
-            )}
+                        <Button
+                            onClick={() => handlePopUp('TrainingDaysView')}
+                            width={'172px'}
+                        >
+                            Back
+                        </Button>
 
-            <div
-                style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    marginTop: '10px'
-                }}
-            >
-                <Button
-                    onClick={() => handlePopUp('TrainingDaysView')}
-                    width={'172px'}
-                >
-                    Back
-                </Button>
-
-                <Button
-                    onClick={() => {
-                        setControllTrainings((prev) => ({
-                            ...prev,
-                            trainingExerciseId: 0
-                        }))
-                        onScreenChange('ExerciseDetails');
-                    }}
-                    width={'172px'}
-                >
-                    Add exercise
-                </Button>
-            </div>
+                        <Button
+                            onClick={() => {
+                                if(editModeStatus){
+                                    setControllTrainings((prev) => ({
+                                        ...prev,
+                                        trainingExerciseId: 0
+                                    }))
+                                    onScreenChange('ExerciseDetails');
+                                } else saveTrainingProgress();
+                            }}
+                            width={'172px'}
+                        >
+                            {editModeStatus ? 'Add exercise' : 'Finish'}
+                        </Button>
+                    </div>
+                </LoadWrapper>}
         </ExerciseViewWrapper>
     );
 }

@@ -1,8 +1,8 @@
 import styled from "styled-components";
 
 export const LoaderPageWrapper = styled.div`
-    width: 100vw;
-    height: 100vh;
+    width: 100%;
+    height: 100%;
     position: fixed;
     z-index: 100;
     display: flex;
