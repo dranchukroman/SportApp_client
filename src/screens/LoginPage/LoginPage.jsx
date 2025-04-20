@@ -47,10 +47,13 @@ function LoginPage() {
         verificationCode: ''
     })
 
-    const [resendTimer, setResendTimer] = useState(10);
+    const [resendTimer, setResendTimer] = useState(59);
     const [afterLoad, setAfterLoad] = useState(0);
 
-    useEffect(() => setAfterLoad(1), [afterLoad]); // Animation to show items after load
+    useEffect(() => {
+        let timeout = setTimeout(() => setAfterLoad(1), 10);
+        return () => clearTimeout(timeout);
+    }, [isVerification]); // Animation to show items after load
 
     const saveTokenAndRedirect = (token, path) => {
         localStorage.setItem('authToken', token);
@@ -97,20 +100,22 @@ function LoginPage() {
         } catch (error) {
             toast.error(error.response?.data?.message || 'Code verification failed');
         }
-        console.log('Code verification');
     }
 
     // Send verification code
     const sendCode = async () => {
         if (!loginData.email || !loginData.password || !loginData.password2) return toast.error('All fields are required');
         if (loginData.password !== loginData.password2) return toast.error('Passwords do not match');
-
         try {
             const { status } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email: loginData.email, password: loginData.password });
 
             if (status === 200) {
-                setIsVerification(true);
-                setResendTimer(10);
+                setAfterLoad(0);
+                setTimeout(() => {
+                    setIsVerification(true);
+                    setAfterLoad(1);
+                }, 300);
+                setResendTimer(59);
             } else toast.error('Registration failed');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Registration failed');
