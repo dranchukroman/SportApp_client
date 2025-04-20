@@ -7,15 +7,15 @@ import { InButtonWrapper } from "../LoginPage.styled";
 import { GoogleButtonWrapper } from "../LoginPage.styled";
 
 
-function LoginForm({ actionButton, loginData, setLoginData, isLoginPage, logInByGoogle, isRegistrationPage }){
+function LoginForm({ actionButton, loginData, setLoginData, isLoginPage, logInByGoogle, isRegistrationPage }) {
 
     return (
         <div style={{ marginTop: '100px' }}>
-            <Input placeholder='Email' value={loginData.email} type='email' onChange={(e) => setLoginData((prev) => ({...prev, email: e.target.value}))} style={{ marginBottom: '10px' }} />
-            <Input placeholder='Password' value={loginData.password} type='password' onChange={(e) => setLoginData((prev) => ({...prev, password: e.target.value}))} style={{ marginBottom: '10px' }} />
+            <Input placeholder='Email' value={loginData.email} type='email' onChange={(e) => setLoginData((prev) => ({ ...prev, email: e.target.value }))} style={{ marginBottom: '10px' }} />
+            <Input placeholder='Password' value={loginData.password} type='password' onChange={(e) => setLoginData((prev) => ({ ...prev, password: e.target.value }))} style={{ marginBottom: '10px' }} />
 
             {isRegistrationPage && (
-                <Input placeholder='Repeat password' value={loginData.password2} type='password' onChange={(e) => setLoginData((prev) => ({...prev, password2: e.target.value}))} style={{ marginBottom: '10px' }} />
+                <Input placeholder='Repeat password' value={loginData.password2} type='password' onChange={(e) => setLoginData((prev) => ({ ...prev, password2: e.target.value }))} style={{ marginBottom: '10px' }} />
             )}
             {actionButton()}
             <Button style={{ display: 'block' }} onClick={logInByGoogle}>

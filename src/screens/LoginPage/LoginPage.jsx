@@ -15,6 +15,7 @@ function LoginPage() {
     const location = useLocation();
     const isLoginPage = location.pathname.includes('/login');
     const isRegistrationPage = location.pathname.includes('/registration');
+    const [isVerification, setIsVerification] = useState(false);
 
     // Check if token valid
     useEffect(() => {
@@ -46,29 +47,28 @@ function LoginPage() {
         verificationCode: ''
     })
 
-    const [isVerification, setIsVerification] = useState(false);
     const [resendTimer, setResendTimer] = useState(10);
-    const [resendStatus, setResendStatus] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
 
-    useEffect(() => setAfterLoad(1), [afterLoad]);
+    useEffect(() => setAfterLoad(1), [afterLoad]); // Animation to show items after load
 
     const saveTokenAndRedirect = (token, path) => {
         localStorage.setItem('authToken', token);
         navigate(path);
     }
 
+    // Timer to send code again
     useEffect(() => {
-        if (resendTimer === 0) return setResendStatus(true);
-        if (resendStatus) setResendStatus(false);
+        if (resendTimer === 0) return;
 
         const interval = setInterval(() => {
             setResendTimer(prev => prev - 1);
         }, 1000);
 
         return () => clearInterval(interval);
-    }, [resendTimer, resendStatus]);
+    }, [resendTimer]);
 
+    // Log in user
     const handleLogin = async (newUser) => {
         if (!loginData.email && !loginData.password) return toast.error(`Email and password are required`);
         try {
@@ -83,6 +83,7 @@ function LoginPage() {
         console.log(process.env.REACT_APP_SERVER_LINK);
     }
 
+    // Verify code, register and log in user
     const verifyAndRegister = async () => {
         if (loginData.verificationCode === '') toast.error('Verification code is required');
 
@@ -99,6 +100,7 @@ function LoginPage() {
         console.log('Code verification');
     }
 
+    // Send verification code
     const sendCode = async () => {
         if (!loginData.email || !loginData.password || !loginData.password2) return toast.error('All fields are required');
         if (loginData.password !== loginData.password2) return toast.error('Passwords do not match');
@@ -115,6 +117,7 @@ function LoginPage() {
         }
     }
 
+    // Create button below form
     const actionButton = () => {
         let buttonData = { method: null, copy: 'Change button' };
         if (isLoginPage) buttonData = { method: handleLogin, copy: 'Log In' }
@@ -134,7 +137,7 @@ function LoginPage() {
                 <p>Dream big, work hard, stay focused.</p>
                 {
                     isVerification
-                        ? <VerificationForm actionButton={actionButton} loginData={loginData} setLoginData={setLoginData} resendStatus={resendStatus} sendCode={sendCode} resendTimer={resendTimer} />
+                        ? <VerificationForm actionButton={actionButton} loginData={loginData} setLoginData={setLoginData} sendCode={sendCode} resendTimer={resendTimer} />
                         : <LoginForm actionButton={actionButton} loginData={loginData} setLoginData={setLoginData} isLoginPage={isLoginPage} logInByGoogle={logInByGoogle} isRegistrationPage={isRegistrationPage} />
                 }
             </LoadWrapper>
