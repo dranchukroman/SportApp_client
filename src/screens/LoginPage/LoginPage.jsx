@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { StyledLoginPage, LoginPageContainer, InButtonWrapper, GoogleButtonWrapper } from './LoginPage.styled'
+import { LoginPageContainer } from './LoginPage.styled'
 import axios from 'axios';
-import theme from '../../styles/theme';
 import Heading from '../../components/Headings/Heading';
-import Input from '../../components/Inputs/Input';
 import Button from '../../components/Buttons/Button';
-import GoogleIcon from '../../assets/icons/LoginPage/google';
 import { toast } from 'sonner';
 import { LoadWrapper } from '../../components/Loaders/SingleLoader/SingleLoader.styled';
+import LoginForm from './components/LoginForm';
+import VerificationForm from './components/VerificationForm';
 
 function LoginPage() {
     // Location tools
@@ -40,79 +39,104 @@ function LoginPage() {
         checkIfTokenValid();
     }, [navigate]);
 
-    const [email, setEmail] = useState('test1');
-    const [password, setPassword] = useState('test1');
-    const [password2, setPassword2] = useState('');
+    const [loginData, setLoginData] = useState({
+        email: 'test2',
+        password: 'test2',
+        password2: 'test2',
+        verificationCode: ''
+    })
 
+    const [isVerification, setIsVerification] = useState(false);
+    const [resendTimer, setResendTimer] = useState(10);
+    const [resendStatus, setResendStatus] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
 
-    useEffect(() => setAfterLoad(1), [])
+    useEffect(() => setAfterLoad(1), [afterLoad]);
 
     const saveTokenAndRedirect = (token, path) => {
         localStorage.setItem('authToken', token);
         navigate(path);
     }
 
-    // Login function
-    const handleLogin = async () => {
-        if (!email && !password) return toast.error(`Email and password are required`);
+    useEffect(() => {
+        if (resendTimer === 0) return setResendStatus(true);
+        if (resendStatus) setResendStatus(false);
+
+        const interval = setInterval(() => {
+            setResendTimer(prev => prev - 1);
+        }, 1000);
+
+        return () => clearInterval(interval);
+    }, [resendTimer, resendStatus]);
+
+    const handleLogin = async (newUser) => {
+        if (!loginData.email && !loginData.password) return toast.error(`Email and password are required`);
         try {
-            const { data } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email, password });
-            data?.token ? saveTokenAndRedirect(data.token, '/dashboard') : toast.error(data.message);
+            const { data } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/login`, { email: loginData.email, password: loginData.password });
+            data?.token ? saveTokenAndRedirect(data.token, newUser ? '/createProfile' : '/dashboard') : toast.error(data.message);
         } catch (error) {
             toast.error(error.response?.data?.message || 'Login failed');
         }
     }
 
-    // Registration function
-    const handleRegistration = async () => {
-        if (!email || !password || !password2) return toast.error('All fields are required');
-        if (password !== password2) return toast.error('Passwords do not match');
+    const logInByGoogle = async () => {
+        console.log(process.env.REACT_APP_SERVER_LINK);
+    }
+
+    const verifyAndRegister = async () => {
+        if (loginData.verificationCode === '') toast.error('Verification code is required');
 
         try {
-            const { status } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email, password });
+            const { status } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/codeVerification`, { email: loginData.email, verificationCode: loginData.verificationCode });
 
-            if (status === 201) await handleLogin();
-            else toast.error('Registration failed');
+            if (status === 201) {
+                const newUser = true;
+                handleLogin(newUser);
+            }
+        } catch (error) {
+            toast.error(error.response?.data?.message || 'Code verification failed');
+        }
+        console.log('Code verification');
+    }
+
+    const sendCode = async () => {
+        if (!loginData.email || !loginData.password || !loginData.password2) return toast.error('All fields are required');
+        if (loginData.password !== loginData.password2) return toast.error('Passwords do not match');
+
+        try {
+            const { status } = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/register`, { email: loginData.email, password: loginData.password });
+
+            if (status === 200) {
+                setIsVerification(true);
+                setResendTimer(10);
+            } else toast.error('Registration failed');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Registration failed');
         }
-    };
+    }
 
-    // Logic to log in by google button
-    const logInByGoogle = async () => {
-        console.log(process.env.REACT_APP_SERVER_LINK);
+    const actionButton = () => {
+        let buttonData = { method: null, copy: 'Change button' };
+        if (isLoginPage) buttonData = { method: handleLogin, copy: 'Log In' }
+        else if (isRegistrationPage && isVerification) buttonData = { method: verifyAndRegister, copy: 'Verify' }
+        else if (isRegistrationPage && !isVerification) buttonData = { method: sendCode, copy: 'Sing Up' }
+        return (
+            <Button style={{ marginBottom: '10px' }} onClick={buttonData.method} >
+                {buttonData.copy}
+            </Button>
+        )
     }
 
     return (
         <LoginPageContainer>
             <LoadWrapper opacity={afterLoad}>
-            <StyledLoginPage>
                 <Heading>Sport App</Heading>
                 <p>Dream big, work hard, stay focused.</p>
-                <Input placeholder='Email' value={email} type='email' onChange={(e) => setEmail(e.target.value)} style={{ margin: '100px 0 10px 0' }} />
-                <Input placeholder='Password' value={password} type='password' onChange={(e) => setPassword(e.target.value)} style={{ marginBottom: '10px' }} />
-                {/* Show field only if registration */}
-                {isRegistrationPage && (
-                    <Input placeholder='Repeat password' value={password2} type='password' onChange={(e) => setPassword2(e.target.value)} style={{ marginBottom: '10px' }} />
-                )}
-                {/* Button to log in or registration */}
-                <Button style={{ marginBottom: '10px' }} onClick={isLoginPage ? handleLogin : handleRegistration} >
-                    {isLoginPage ? 'Log in' : 'Sing Up'}
-                </Button>
-                <Button style={{ display: 'block' }} onClick={logInByGoogle}>
-                    <InButtonWrapper>
-                        <GoogleButtonWrapper>
-                            <GoogleIcon />
-                        </GoogleButtonWrapper>
-                        <p style={{ margin: 0 }}>Log in by Google</p>
-                    </InButtonWrapper>
-                </Button>
-                {/* Link to log in or registration */}
-                <a href={isLoginPage ? '/registration' : '/login'} style={{ borderBottom: theme.colors.whiteText }}>
-                    <p>{isLoginPage ? "Don't have an account yet? Click here" : "Do you already have an account? Click here"}</p>
-                </a>
-            </StyledLoginPage>
+                {
+                    isVerification
+                        ? <VerificationForm actionButton={actionButton} loginData={loginData} setLoginData={setLoginData} resendStatus={resendStatus} sendCode={sendCode} resendTimer={resendTimer} />
+                        : <LoginForm actionButton={actionButton} loginData={loginData} setLoginData={setLoginData} isLoginPage={isLoginPage} logInByGoogle={logInByGoogle} isRegistrationPage={isRegistrationPage} />
+                }
             </LoadWrapper>
         </LoginPageContainer>
     );

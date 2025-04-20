@@ -1,7 +1,12 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 
-export const StyledLoginPage = styled.div`
+export const LoginPageContainer = styled.div`
+    text-align: center;
+    max-width: 360px;
+    margin: 0 auto;
+    padding-top: 75px;
+
     backgroun-color: ${theme.colors.darkBackground};
 
     p {
@@ -18,13 +23,6 @@ export const StyledLoginPage = styled.div`
             color: ${theme.colors.gradientBase}; /* Зміна кольору при наведенні */
         }
     }
-`;
-
-export const LoginPageContainer = styled.div`
-    text-align: center;
-    max-width: 360px;
-    margin: 0 auto;
-    padding-top: 75px;
 `;
 
 export const InButtonWrapper = styled.div`
