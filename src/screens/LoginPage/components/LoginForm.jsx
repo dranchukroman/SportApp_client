@@ -7,11 +7,11 @@ import { InButtonWrapper } from "../LoginPage.styled";
 import { GoogleButtonWrapper } from "../LoginPage.styled";
 
 
-function LoginForm({ actionButton, loginData, setLoginData, isLoginPage, logInByGoogle, isRegistrationPage }) {
+function LoginForm({ setCurrentScreen, actionButton, loginData, setLoginData, isLoginPage, logInByGoogle, isRegistrationPage }) {
 
     return (
         <div style={{ marginTop: '100px' }}>
-            <Input placeholder='Email' value={loginData.email} type='email' onChange={(e) => setLoginData((prev) => ({ ...prev, email: e.target.value }))} style={{ marginBottom: '10px' }} />
+            <Input placeholder='Email' value={loginData.email} type='text' onChange={(e) => setLoginData((prev) => ({ ...prev, email: e.target.value }))} style={{ marginBottom: '10px' }} />
             <Input placeholder='Password' value={loginData.password} type='password' onChange={(e) => setLoginData((prev) => ({ ...prev, password: e.target.value }))} style={{ marginBottom: '10px' }} />
 
             {isRegistrationPage && (
@@ -27,9 +27,13 @@ function LoginForm({ actionButton, loginData, setLoginData, isLoginPage, logInBy
                 </InButtonWrapper>
             </Button>
 
-            <a href={isLoginPage ? '/registration' : '/login'} style={{ borderBottom: theme.colors.whiteText }}>
+            <a href={isLoginPage ? '/registration' : '/login'} style={{ borderBottom: theme.colors.whiteText}}>
                 <p>{isLoginPage ? "Don't have an account yet? Click here" : "Do you already have an account? Click here"}</p>
             </a>
+            {isLoginPage ?
+                <p onClick={() => setCurrentScreen('ForgotPassword')} style={{ color: '#999', cursor: 'pointer' }}>
+                    Forgot password?
+                </p> : null}
         </div>
     )
 }

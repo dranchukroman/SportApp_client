@@ -2,7 +2,7 @@ import React from "react";
 import Input from "../../../components/Inputs/Input";
 
 
-function VerificationForm({ loginData, setLoginData, actionButton, sendCode, resendTimer }) {
+function VerificationForm({ setCurrentScreen, currentScreen, loginData, setLoginData, actionButton, sendCode, resendTimer }) {
     return (
         <div style={{ marginTop: '100px' }}>
             <p style={{ color: '#666' }}>
