@@ -1,24 +1,66 @@
 import React from "react";
+import { useLocation, useNavigate } from 'react-router-dom';
 import Input from "../../../components/Inputs/Input";
 import theme from "../../../styles/theme";
 import GoogleIcon from "../../../assets/icons/LoginPage/google"
 import Button from "../../../components/Buttons/Button";
 import { InButtonWrapper } from "../LoginPage.styled";
 import { GoogleButtonWrapper } from "../LoginPage.styled";
+import { checkIfEmailExist, logIn, sendVerificationCode } from "../../../api/user/loginMethods";
+import { toast } from "sonner";
 
+function LoginForm({ changeScreen, authData, setAuthData }) {
+    const navigate = useNavigate();
+    const location = useLocation();
+    const isRegistrationPage = location.pathname.includes('/registration');
 
-function LoginForm({ setCurrentScreen, actionButton, loginData, setLoginData, isLoginPage, logInByGoogle, isRegistrationPage }) {
+    const sendCodeToRegister = async () => {
+        try {
+            if(authData.email === '') return toast.error('Email field should not be empty');
+            const isExist = await checkIfEmailExist(authData.email);
+            if (isExist) {
+                toast.error('User with this email already exist');
+                navigate('/login');
+                return;
+            }
+
+            const isDelivered = await sendVerificationCode(authData.email);
+            if (!isDelivered) {
+                toast.error('Can not sent verification code, try again');
+                return;
+            }
+
+            changeScreen('Verification');
+        } catch (error) {
+            console.error('Registration failed ', error);
+            toast.error('Registration failed');
+        }
+    }
+
+    const handleLogIn = async () => {
+        try {
+            if(!authData.email || !authData.password) return toast.error('All fields should be filled');
+            await logIn(authData.email, authData.password, navigate, '/dashboard');
+        } catch (error) {
+            console.log(`Login failed`);
+        }
+    }
 
     return (
         <div style={{ marginTop: '100px' }}>
-            <Input placeholder='Email' value={loginData.email} type='text' onChange={(e) => setLoginData((prev) => ({ ...prev, email: e.target.value }))} style={{ marginBottom: '10px' }} />
-            <Input placeholder='Password' value={loginData.password} type='password' onChange={(e) => setLoginData((prev) => ({ ...prev, password: e.target.value }))} style={{ marginBottom: '10px' }} />
+            <Input placeholder='Email' value={authData.email} type='text'
+                onChange={(e) => setAuthData((prev) => ({ ...prev, email: e.target.value }))} style={{ marginBottom: '10px' }} />
+            <Input placeholder='Password' value={authData.password} type='password'
+                onChange={(e) => setAuthData((prev) => ({ ...prev, password: e.target.value }))} style={{ marginBottom: '10px' }} />
 
             {isRegistrationPage && (
-                <Input placeholder='Repeat password' value={loginData.password2} type='password' onChange={(e) => setLoginData((prev) => ({ ...prev, password2: e.target.value }))} style={{ marginBottom: '10px' }} />
+                <Input placeholder='Repead password' value={authData.password2} type='password' onChange={(e) => setAuthData((prev) => ({ ...prev, password2: e.target.value }))} style={{ marginBottom: '10px' }} />
             )}
-            {actionButton()}
-            <Button style={{ display: 'block' }} onClick={logInByGoogle}>
+
+            <Button style={{ marginBottom: '10px' }} onClick={isRegistrationPage ? sendCodeToRegister : handleLogIn} >
+                {isRegistrationPage ? 'Sing Up' : 'Log In'}
+            </Button>
+            <Button style={{ display: 'none' }} onClick={() => console.log('Log in by google')}>
                 <InButtonWrapper>
                     <GoogleButtonWrapper>
                         <GoogleIcon />
@@ -27,12 +69,12 @@ function LoginForm({ setCurrentScreen, actionButton, loginData, setLoginData, is
                 </InButtonWrapper>
             </Button>
 
-            <a href={isLoginPage ? '/registration' : '/login'} style={{ borderBottom: theme.colors.whiteText}}>
-                <p>{isLoginPage ? "Don't have an account yet? Click here" : "Do you already have an account? Click here"}</p>
+            <a href={!isRegistrationPage ? '/registration' : '/login'} style={{ borderBottom: theme.colors.whiteText }}>
+                <p>{!isRegistrationPage ? "Don't have an account yet? Click here" : "Do you already have an account? Click here"}</p>
             </a>
-            {isLoginPage ?
-                <p onClick={() => setCurrentScreen('ForgotPassword')} style={{ color: '#999', cursor: 'pointer' }}>
-                    Forgot password?
+            {!isRegistrationPage ?
+                <p onClick={() => changeScreen('ForgotPassword')} style={{ color: '#999', cursor: 'pointer' }}>
+                    Forgot password? Click here
                 </p> : null}
         </div>
     )
