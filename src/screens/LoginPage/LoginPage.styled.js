@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
-import SingleLoader from '../../components/Loaders/SingleLoader/SingleLoader';
 
 export const LoginPageContainer = styled.div`
     text-align: center;
