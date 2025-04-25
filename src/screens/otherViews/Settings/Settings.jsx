@@ -7,26 +7,23 @@ import theme from "../../../styles/theme";
 import DivideLine from "../../../components/Dividers/DivideLine";
 
 
-function Settings(
-    {
-        token,
-        userData,
-        setUserData,
-        visiblePartOfScreen,
-        setIsDataChanged
-    }) {
+function Settings({token, userData, setUserData, visiblePartOfScreen, setIsDataChanged}) {
     async function deleteAccount() {
-        const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        })
-
-        if (response.status === 200) {
-            localStorage.removeItem('authToken');
-            window.location.href = '/login';
-            return;
-        } else toast.error('Error while deleting account')
+        try {
+            const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            })
+    
+            if (response.status === 200) {
+                localStorage.removeItem('authToken');
+                window.location.href = '/login';
+                return;
+            } else toast.error('Account has not been deleted');
+        } catch (error) {
+            toast.error('Deleting account failed');
+        }
     }
 
     async function logOut() {
