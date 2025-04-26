@@ -33,9 +33,10 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
                     headers: { Authorization: `Bearer ${token}` },
                     params: { trainingPlanId }
                 });
-                if (response?.data?.trainingDaysData?.data.length > 0)
-                    return setTrainingDays(response.data.trainingDaysData.data);
+                if (response?.data?.trainingDaysData?.length > 0)
+                    return setTrainingDays(response.data.trainingDaysData);
             } catch (error) {
+                console.log(error)
                 toast.error('Can\'t get training days')
             } finally {
                 setLoading(false);

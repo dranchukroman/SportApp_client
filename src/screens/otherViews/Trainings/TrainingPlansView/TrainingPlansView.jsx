@@ -31,9 +31,8 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
                 });
 
                 if (response.status === 200 && response?.data?.data) setTrainingPlans(response.data.data);
-                else toast.error('Cant get training plans');
             } catch (error) {
-                toast.error(error.response?.data?.message);
+                toast.error(error.response?.data?.message || 'Getting training plans failed');
             } finally {
                 setLoading(false);
                 setTimeout(() => setAfterLoad(1), 100);

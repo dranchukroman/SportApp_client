@@ -73,7 +73,7 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
 
                 if (response.status === 200 && response.data.data) {
                     const exerciseData = response.data.data;
-                    const { min, sec } = parseRestTime(exerciseData.rest_time);
+                    const { minutes, seconds } = parseRestTime(exerciseData.rest_time);
                     setExerciseData((prev) => ({
                         ...prev,
                         exerciseId: exerciseData.exercise_id,
@@ -83,8 +83,8 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                         weight: exerciseData.weight,
                         times: exerciseData.reps,
                         description: exerciseData.description,
-                        minutes: min,
-                        seconds: sec,
+                        minutes: minutes,
+                        seconds: seconds,
                     }));
                 }
             } catch (error) {
@@ -147,8 +147,10 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                     <Heading>Exercise</Heading>
                     <SelectList value={exerciseData.name}
                         onChange={(e) => {
+                            const selectedOption = e.target.selectedOptions[0]; // беремо вибраний <option>
+                            const exerciseId = selectedOption.getAttribute('data-exercise-id'); 
                             updateExerciseField('name', e.target.value);
-                            updateExerciseField('exerciseId', e.target.value);
+                            updateExerciseField('exerciseId', exerciseId);
                         }}
                     >
                         {exerciseList.length === 0

@@ -31,7 +31,7 @@ function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, s
                     headers: { Authorization: `Bearer ${token}` },
                     params: { day_id: trainingDayId }
                 });
-                setExercises(response?.data?.exerciseData?.data);
+                setExercises(response?.data?.exerciseData);
             } catch (error) {
                 toast.error('Something went wrong during getting exercises')
                 console.error('Error fetching exercises:', error);

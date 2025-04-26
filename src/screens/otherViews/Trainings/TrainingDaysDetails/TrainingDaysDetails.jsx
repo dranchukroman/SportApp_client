@@ -34,8 +34,8 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                 if (response.status === 200 && response?.data?.trainingDaysData) {
                     setTrainingDayData((prev) => ({
                         ...prev,
-                        dayName: response.data.trainingDaysData.data.name,
-                        dayDescription: response.data.trainingDaysData.data.description
+                        dayName: response?.data?.trainingDaysData?.name,
+                        dayDescription: response?.data?.trainingDaysData?.description
                     }))
                 }
             } catch (error) {

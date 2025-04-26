@@ -136,7 +136,7 @@ function MainScreen({ setModalParams }) {
                     headers: { Authorization: `Bearer ${token}` },
                 });
 
-                if (response.status === 200 && response?.data?.data.length > 0) setTrainingPlans(response.data.data);
+                if (response.status === 200 && response?.data?.data?.length > 0) setTrainingPlans(response.data.data);
             } catch (error) {
                 console.error('Error fetching data:', error);
                 toast.error('Can\'t get training plans');

@@ -13,6 +13,7 @@ function DeleteIcon({activeIcon, style, onClick, editModeStatus, CardStyles }) {
                     opacity: editModeStatus ? '1' : '0',
                     pointerEvents: editModeStatus ? 'auto' : 'none',
                     transition: '0.3s opacity ease',
+                    cursor: 'pointer',
                     ...style,
                 }
             }
