@@ -40,7 +40,8 @@ function LoginForm({ changeScreen, authData, setAuthData }) {
     const handleLogIn = async () => {
         try {
             if(!authData.email || !authData.password) return toast.error('All fields should be filled');
-            await logIn(authData.email, authData.password, navigate, '/dashboard');
+            const isLoggedIn = await logIn(authData.email, authData.password, navigate, '/dashboard');
+            if(!isLoggedIn) return toast.error('Invalid password or email');
         } catch (error) {
             console.log(`Login failed`);
         }
