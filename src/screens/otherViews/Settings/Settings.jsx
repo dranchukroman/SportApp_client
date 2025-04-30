@@ -221,6 +221,75 @@ function Settings({token, userData, setUserData, visiblePartOfScreen, setIsDataC
                 </ButtonsGroup>
                 <DivideLine />
 
+                {/* Other */}
+                <ButtonsGroup
+                    style={{
+                        marginBottom: '20px'
+                    }}
+                >
+                    <Button
+                        style={{
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <div>
+                            <p
+                                style={{
+                                    fontSize: theme.fontSizes.largeParagraph,
+                                    fontWeight: theme.fontWeights.largeHeader,
+                                    color: theme.colors.whiteText,
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                            >
+                                Support
+                            </p>
+                        </div>
+                    </Button>
+                    <Button
+                        style={{
+                            justifyContent: 'center'
+                        }}
+                    >
+                        <div>
+                            <p
+                                style={{
+                                    fontSize: theme.fontSizes.largeParagraph,
+                                    fontWeight: theme.fontWeights.largeHeader,
+                                    color: theme.colors.whiteText,
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                            >
+                                Web-site
+                            </p>
+                        </div>
+                    </Button>
+                    <Button
+                        style={{
+                            justifyContent: 'center',
+                            border: 'none'
+
+                        }}
+                    >
+                        <div>
+                            <p
+                                style={{
+                                    fontSize: theme.fontSizes.largeParagraph,
+                                    fontWeight: theme.fontWeights.largeHeader,
+                                    color: theme.colors.whiteText,
+                                    margin: 0,
+                                    padding: 0
+                                }}
+                            >
+                                Share
+                            </p>
+                        </div>
+                    </Button>
+
+                </ButtonsGroup>
+                <DivideLine />
+
                 {/* Danger zone */}
                 <ButtonsGroup
                     style={{
