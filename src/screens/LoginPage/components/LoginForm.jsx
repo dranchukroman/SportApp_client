@@ -17,16 +17,15 @@ function LoginForm({ changeScreen, authData, setAuthData }) {
     const sendCodeToRegister = async () => {
         try {
             if(authData.email === '') return toast.error('Email field should not be empty');
-            const isExist = await checkIfEmailExist(authData.email);
-            if (isExist) {
-                toast.error('User with this email already exist');
-                navigate('/login');
-                return;
+            const userExisting = await checkIfEmailExist(authData.email);
+            if (userExisting.data.isExist) {
+                toast.error(userExisting.message);
+                return navigate('/login');
             }
 
-            const isDelivered = await sendVerificationCode(authData.email);
-            if (!isDelivered) {
-                toast.error('Can not sent verification code, try again');
+            const codeDelivering = await sendVerificationCode(authData.email);
+            if (!codeDelivering.success) {
+                toast.error(codeDelivering.message);
                 return;
             }
 
@@ -40,8 +39,10 @@ function LoginForm({ changeScreen, authData, setAuthData }) {
     const handleLogIn = async () => {
         try {
             if(!authData.email || !authData.password) return toast.error('All fields should be filled');
-            const isLoggedIn = await logIn(authData.email, authData.password, navigate, '/dashboard');
-            if(!isLoggedIn) return toast.error('Invalid password or email');
+            const loginData = await logIn(authData.email, authData.password);
+            if(!loginData.success) return toast.error(loginData.message);
+            localStorage.setItem('authToken', loginData.data.token);
+            navigate('/dashboard')
         } catch (error) {
             console.log(`Login failed`);
         }

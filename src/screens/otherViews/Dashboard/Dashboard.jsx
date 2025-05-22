@@ -20,6 +20,7 @@ function Dashboard({ onScreenChange, trainingPlans }) {
         try {
             setLoading(true);
             setAfterLoad(0);
+            console.log(trainingPlans.length)
             if (trainingPlans?.length > 0) {
                 const currentPlan = trainingPlans.find(plan => plan.is_current_plan === true);
                 if (currentPlan) {

@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
 import theme from "../../../../styles/theme";
 
 import {
@@ -25,6 +24,7 @@ import { toast } from "sonner";
 import { parseRestTime } from "../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { getExerciseInDayById } from "../../../../api/trainings/exercise";
 
 
 function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress }) {
@@ -61,11 +61,9 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/exercise`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { exerciseId: trainingExerciseId }
-                });
-                const exerciseData = response.data.data;
+                const response = await getExerciseInDayById(trainingExerciseId);
+
+                const exerciseData = response.data.exercise;
                 const { minutes, seconds } = parseRestTime(exerciseData.rest_time);
                 setExerciseData((prev) => ({
                     ...prev,
@@ -77,7 +75,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                     description: exerciseData.description,
                 }))
             } catch (error) {
-                toast.error(error.response?.data?.message || 'Something went wrong');
+                toast.error(error.response?.data?.message || 'Getting exercise failed');
                 console.error('Error fetching exercise data: ', error)
             } finally {
                 setLoading(false);

@@ -9,24 +9,27 @@ import ForgotPassword from './components/ForgotPassword';
 import RestorePassword from './components/RestorePassword';
 
 function LoginPage() {
+    // Sprawdzenie na której stronie
     const location = useLocation();
     const isLoginPage = location.pathname.includes('/login');
 
-    const [currentScreen, setCurrentScreen] = useState(isLoginPage ? 'Login' : 'Registration');
+    // Ekran na którym się znajdu jemy
+    const [currentScreen, setCurrentScreen] = useState(isLoginPage ? 'Login' : 'Registration'); 
 
     const [authData, setAuthData] = useState({
-        email: '',
-        password: '',
-        password2: '',
+        email: 'roman2003dranchuk@gmail.com',
+        password: 'Roman123',
+        password2: 'Roman123',
         verificationCode: ''
     })
+    
 
-    const [afterLoad, setAfterLoad] = useState(0);
+    const [afterLoad, setAfterLoad] = useState(0); // Na początku konponenty są nie widoczne
 
     useEffect(() => {
         let timeout = setTimeout(() => setAfterLoad(1), 300);
         return () => clearTimeout(timeout);
-    }, [currentScreen]);
+    }, [currentScreen]); // Animacja pojawia nia się komponentów
 
     const getCurrentScreen = () => {
         switch (currentScreen) {

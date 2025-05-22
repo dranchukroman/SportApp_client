@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
 import { toast } from "sonner";
 
@@ -10,6 +9,7 @@ import Button from "../../../../components/Buttons/Button";
 import { TrainingDaysWrapper } from "./TrainingDaysDetails.styled";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { addTrainingDay, getTrainingDayById, updateTrainingDay } from "../../../../api/trainings/days";
 
 
 function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, trainingDayId }) {
@@ -27,15 +27,13 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingDay`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { trainingDayId: trainingDayId }
-                })
-                if (response.status === 200 && response?.data?.trainingDaysData) {
+                const response = await getTrainingDayById(trainingDayId);
+
+                if (response.success && response?.data) {
                     setTrainingDayData((prev) => ({
                         ...prev,
-                        dayName: response?.data?.trainingDaysData?.name,
-                        dayDescription: response?.data?.trainingDaysData?.description
+                        dayName: response?.data?.trainingDay?.name,
+                        dayDescription: response?.data?.trainingDay?.description
                     }))
                 }
             } catch (error) {
@@ -57,17 +55,18 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
         if (trainingDayData.dayName === '' || trainingDayData.dayDescription === '') return toast.error('All fields shoud be filled');
         try {
             const isNewDay = trainingDayId === 0;
-            const endpoint = isNewDay ? 'addTrainingDay' : 'updateTrainingDays';
-            const method = isNewDay ? axios.post : axios.put;
-
             const dataToSend = isNewDay
                 ? { trainingPlanId, ...trainingDayData }
                 : { day_id: trainingDayId, ...trainingDayData };
 
-            await method(`${process.env.REACT_APP_SERVER_LINK}/api/${endpoint}`, dataToSend, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
-            onScreenChange('TrainingDaysView');
+            const response = isNewDay
+                ? await addTrainingDay(dataToSend)
+                : await updateTrainingDay(dataToSend)
+
+            if(response.success){
+                toast.info(response.message || 'Action completed successfully');
+                return onScreenChange('TrainingDaysView');
+            } toast.error(response.message || 'Action failed');
         } catch (error) {
             toast.error(error.response?.data?.message || 'Something went wrong');
         }

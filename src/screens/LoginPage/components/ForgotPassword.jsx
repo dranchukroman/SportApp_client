@@ -11,22 +11,21 @@ function ForgotPassword({ changeScreen, currentScreen, setAuthData, authData }) 
     const handleRestoreRequest = async () => {
         try {
             if(!authData.email) return toast.error('Email field should not be empty');
-            const isExist = await checkIfEmailExist(authData.email);
-            if(!isExist){
+            const emailVerification = await checkIfEmailExist(authData.email);
+            if(!emailVerification.data.isExist){
                 navigate('/registration');
                 changeScreen('Registration');
-                return toast.error('Account with this email does not exist');
+                return toast.error(emailVerification.message);
             }
 
             const isDelivered = await sendVerificationCode(authData.email);
-            if (!isDelivered) {
-                toast.error('Can not sent verification code, try again');
-                return;
+            if (!isDelivered.data.isDelivered) {
+                return toast.error(isDelivered.message);
             }
 
             changeScreen('VerificationToRestore');
         } catch (error) {
-            toast.error('Can not sent verification code, try again');
+            toast.error(error.response?.data?.message);
         }
     }
 

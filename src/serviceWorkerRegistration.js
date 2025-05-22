@@ -23,14 +23,12 @@ const isLocalhost = Boolean(
         const swUrl = `${process.env.PUBLIC_URL}/service-worker.js`;
   
         if (isLocalhost) {
-          // Цей блок перевіряє, чи працює Service Worker локально
           checkValidServiceWorker(swUrl, config);
   
           navigator.serviceWorker.ready.then(() => {
             console.log('Це додаток працює в режимі кешу. Додаткові функції доступні.');
           });
         } else {
-          // Реєстрація Service Worker для продакшн середовища
           registerValidSW(swUrl, config);
         }
       });

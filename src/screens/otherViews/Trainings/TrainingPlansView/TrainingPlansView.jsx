@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { StyledTraining, Paragraph } from './TrainingPlansView.styled'
 import theme from "../../../../styles/theme";
 
@@ -12,6 +11,7 @@ import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { toast } from "sonner";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { deleteTrainingPlan, getTrainingPlan } from "../../../../api/trainings/plans";
 
 function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);
@@ -26,13 +26,12 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-
-                if (response.status === 200 && response?.data?.data) setTrainingPlans(response.data.data);
+                const response = await getTrainingPlan();
+                if (response.success && response?.data.trainingPlans) {
+                    setTrainingPlans(response.data.trainingPlans);
+                }
             } catch (error) {
-                toast.error(error.response?.data?.message || 'Getting training plans failed');
+                toast.error(error.response?.message || 'Getting training plans failed');
             } finally {
                 setLoading(false);
                 setTimeout(() => setAfterLoad(1), 100);
@@ -45,14 +44,13 @@ function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEdi
     useEffect(() => {
         const deletePlan = async () => {
             try {
-                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    data: { trainingPlanId: deletePlanId }
-                });
-                if (response.status === 200) setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
+                const response = await deleteTrainingPlan(deletePlanId)
+                if (response.success) {
+                    setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
+                }
                 setDeletePlanId(null);
             } catch (error) {
-                toast.error(error.response?.data?.message)
+                toast.error(error.response?.message || "Deleting training plan failed");
             }
         };
 

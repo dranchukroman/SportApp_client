@@ -1,10 +1,6 @@
 import styled from 'styled-components';
 import theme from '../../styles/theme';
 
-export const SelectWrapper = styled.div`
-    
-`
-
 export const StyledSelect = styled.select`
     // Form
     width: 100%;
@@ -29,3 +25,7 @@ export const StyledSelect = styled.select`
     background-clip: padding-box, border-box;
     box-shadow: ${theme.shadows.mainShadows};
 `;
+
+export const SelectWrapper = styled.div`
+    
+`

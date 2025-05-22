@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import theme from "../../../../styles/theme";
 import { toast } from "sonner";
 
@@ -12,6 +11,7 @@ import EditIcon from "../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { deleteExerciseInDay, getAllExerciseInDay } from "../../../../api/trainings/exercise";
 
 
 function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, setControllTrainings, exercisingStatus, setModalParams, setExercisingStatus, setTrainingProgress }) {
@@ -27,14 +27,12 @@ function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, s
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/getDayExercise`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { day_id: trainingDayId }
-                });
-                setExercises(response?.data?.exerciseData);
+                const response = await getAllExerciseInDay(trainingDayId);
+                if(response.success && response.data?.exercises.length > 0){
+                    setExercises(response?.data?.exercises);
+                }
             } catch (error) {
-                toast.error('Something went wrong during getting exercises')
-                console.error('Error fetching exercises:', error);
+                toast.error(error.response?.data?.message || 'Something went wrong during getting exercises');
             } finally {
                 setLoading(false);
                 setTimeout(() => setAfterLoad(1), 100);
@@ -47,20 +45,16 @@ function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, s
     useEffect(() => {
         const reduceExercises = async () => {
             try {
-                const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteDayExercise`,
-                    {
-                        headers: { Authorization: `Bearer ${token}` },
-                        data: { day_exercise_id: deleteExercise }
-                    }
-                );
+                const response = await deleteExerciseInDay(deleteExercise);
 
-                if (response.status === 200) {
+                if (response.success) {
                     setExercises(prevExercises => prevExercises.filter(exercise => exercise.day_exercise_id !== deleteExercise));
+                    setDeleteExercise(null);
+                } else {
+                    toast.error(response.message || 'Deleting exercise failed');
                 }
-                setDeleteExercise(null);
             } catch (error) {
-                toast.error(error.message);
-                console.error('Error deleting exercise:', error);
+                toast.error(error.response?.data?.message || 'Deleting exercise failed');
             }
         };
         if (deleteExercise !== null) reduceExercises();

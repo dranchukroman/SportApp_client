@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import axios from "axios";
 
 import theme from "../../../../styles/theme";
 import Heading from "../../../../components/Headings/Heading";
@@ -14,6 +13,7 @@ import { Paragraph, TrainingDaysViewWrapper } from "./TrainingDaysView.styled";
 import { toast } from "sonner";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { deleteTrainingDay, getTrainingDays } from "../../../../api/trainings/days";
 
 
 function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTrainings, editModeStatus, setExercisingStatus }) {
@@ -29,15 +29,12 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/getTrainingDays`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { trainingPlanId }
-                });
-                if (response?.data?.trainingDaysData?.length > 0)
-                    return setTrainingDays(response.data.trainingDaysData);
+                const response = await getTrainingDays(trainingPlanId);
+
+                if (response.success && response?.data?.trainingDays?.length > 0)
+                    return setTrainingDays(response.data.trainingDays);
             } catch (error) {
-                console.log(error)
-                toast.error('Can\'t get training days')
+                toast.error(error?.response?.message || 'Getting training days failed')
             } finally {
                 setLoading(false);
                 setTimeout(() => setAfterLoad(1), 100);
@@ -48,11 +45,10 @@ function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTr
 
     useEffect(() => {
         const deleteDay = async () => {
-            await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingDays`, {
-                headers: { Authorization: `Bearer ${token}` },
-                data: { day_id: deleteDayId }
-            });
-
+            const response = await deleteTrainingDay(deleteDayId);
+            if(response.success){
+                toast.info(response.message || 'Training day has been deleted');
+            }
             setTrainingDays(prevDays => prevDays.filter(day => day.day_id !== deleteDayId));
             setDeleteDayId(null);
         };

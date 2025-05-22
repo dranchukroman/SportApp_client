@@ -11,9 +11,9 @@ function RestorePassword({ authData, setAuthData, changeScreen }) {
         try {
             if(!authData.password || !authData.password2) return toast.error('Both fields should be filled');
             if(authData.password !== authData.password2) return toast.error('Both passwords should be the same');
-            const isUpdated = await updatePassword(authData.email, authData.password, authData.password2);
-            if (!isUpdated) return toast.error('Password has not been updated');
-            toast.info('Password has been updated')
+            const updateData = await updatePassword(authData.email, authData.password, authData.password2);
+            if (!updateData.success) return toast.error(updateData.message);
+            toast.info('Password has been updated');
             changeScreen('Login');
         } catch (error) {
             console.log('Updating password failed ');

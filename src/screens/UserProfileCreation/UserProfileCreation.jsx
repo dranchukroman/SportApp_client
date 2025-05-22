@@ -9,6 +9,7 @@ import Button from '../../components/Buttons/Button';
 import StepCounter from '../../components/StepCounter/StepCounter';
 import SelectList from '../../components/SelectList/SelectList';
 import { LoadWrapper } from '../../components/Loaders/SingleLoader/SingleLoader.styled';
+import { createProfile, getProfileData } from '../../api/user/profile';
 
 function UserProfileCreation() {
     const navigate = useNavigate();
@@ -17,10 +18,8 @@ function UserProfileCreation() {
     useEffect(() => {
         const checkIfProfileExist = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
-                    headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-                });
-                if (response.status === 200 && response.data.length > 0) {
+                const userExisting = await getProfileData();
+                if (userExisting.data.profile) {
                     navigate('/dashboard');
                 }
             } catch (error) {
@@ -76,21 +75,19 @@ function UserProfileCreation() {
             age: userData.age,
             gender: userData.gender,
             goal: userData.goal,
-            activity_level: userData.activityLevel,
+            activity_level: userData.activity_level,
         }
 
         try {
-            const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/createProfile`, profileData, {
-                headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
-            });
-
-            if (response.status === 201) {
-                window.location.href = '/dashboard';
-            } else {
-                toast.error(response.data.message);
+            const createProfileData = await createProfile(profileData)
+            if(!createProfileData.success){
+                console.log(profileData)
+                return toast.error(createProfileData?.message || 'Getting profile data failed');
             }
+            navigate('/dashboard');
         } catch (error) {
-            toast.error(error.response?.data?.message || 'Something went wrong');
+            toast.error(error.response?.data?.message || 'Something went wrong during creating profile');
+            console.error(error);
         }
     }
 
@@ -133,7 +130,7 @@ function UserProfileCreation() {
         }
         return true;
     }
-    
+
 
     const animateStepChange = () => {
         setAfterLoad(0); // Почати анімацію зникнення
@@ -237,7 +234,6 @@ function Step1({ userData, setUserData }) {
                 }))}
             />
             <SelectList
-
                 value={userData.gender}
                 onChange={(e) => setUserData((prev) => ({
                     ...prev,
@@ -261,6 +257,9 @@ function Step1({ userData, setUserData }) {
 function Step2({ userData, setUserData }) {
     return (
         <div>
+            <p>
+                This data will be used in the future<br/> to improve your experience and to generate <br/>AI-based training plans.
+            </p>
             <SelectList value={userData.activityLevel}
                 onChange={(e) => setUserData((prev) => ({
                     ...prev,
@@ -306,7 +305,7 @@ function Step3({ userData }) {
                     <span>Height:</span> {userData.height}
                 </p>
                 <p>
-                    <span>Width:</span> {userData.width}
+                    <span>Weight:</span> {userData.weight}
                 </p>
                 <p>
                     <span>Gender:</span> {userData.gender}

@@ -1,28 +1,27 @@
 import React from "react";
-import axios from "axios";
 import { toast } from 'sonner';
 
-import { SettingScreen, ButtonsGroup, Button, SettingInput} from "./Settings.styled";
+import { SettingScreen, ButtonsGroup, Button, SettingInput } from "./Settings.styled";
 import theme from "../../../styles/theme";
 import DivideLine from "../../../components/Dividers/DivideLine";
+import { deleteAccoutn } from "../../../api/user/profile";
+import { useNavigate } from "react-router-dom";
 
 
-function Settings({token, userData, setUserData, visiblePartOfScreen, setIsDataChanged}) {
+function Settings({ userData, setUserData, visiblePartOfScreen, setIsDataChanged }) {
+    const navigate = useNavigate(); // Create navigation object
+
     async function deleteAccount() {
         try {
-            const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/delete`, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            })
-    
-            if (response.status === 200) {
+            const response = await deleteAccoutn();
+
+            if (response.success) {
                 localStorage.removeItem('authToken');
-                window.location.href = '/login';
+                navigate('/login')
                 return;
-            } else toast.error('Account has not been deleted');
+            } else toast.error(response?.message || 'Account has not been deleted');
         } catch (error) {
-            toast.error('Deleting account failed');
+            toast.error(error.response?.message || 'Deleting account failed');
         }
     }
 

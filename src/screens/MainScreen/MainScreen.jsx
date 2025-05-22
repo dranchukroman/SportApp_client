@@ -1,7 +1,6 @@
 // External components
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 import { toast } from 'sonner';
 
 // Themes and style
@@ -19,6 +18,9 @@ import Settings from '../otherViews/Settings/Settings';
 import renderScreen from './renderScreen.js';
 import getPageTitles from './getPageTitles.js';
 import useFunctionalBarHeight from './useFunctionalBarHeight.js';
+import { getProfileData, updateProfile } from '../../api/user/profile.js';
+import { checkIfTokenValid } from '../../api/user/loginMethods.js';
+import { getTrainingPlan } from '../../api/trainings/plans.js';
 
 function MainScreen({ setModalParams }) {
     const navigate = useNavigate(); // Create navigation object
@@ -29,10 +31,15 @@ function MainScreen({ setModalParams }) {
         !token && navigate('/login');
         const tokenValidation = async () => {
             try {
-                const res = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/checkToken`, { headers: { Authorization: `Bearer ${token}` } });
-                res.status !== 200 && navigate('/login');
+                const { tokenStatus } = await checkIfTokenValid();
+                if (!tokenStatus) {
+                    localStorage.removeItem('authToken');
+                    navigate('/login');
+                    toast.error('Session expired');
+                }
             } catch (error) {
                 navigate('/login');
+                toast.error('Something went wrong durign checking active session');
             }
         }
         tokenValidation()
@@ -69,27 +76,24 @@ function MainScreen({ setModalParams }) {
     // Function to get user profile data
     const getUserData = useCallback(async () => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/profile`, {
-                headers: { Authorization: `Bearer ${token}` }
-            });
-
-            if (response.status === 200 && response.data) {
-                const userData = response.data[0];
-                setUserData((prevState) => ({
-                    ...prevState,
-                    name: userData.first_name,
-                    surname: userData.last_name,
-                    height: userData.height,
-                    weight: userData.weight,
-                    age: userData.age,
-                    gender: userData.gender,
-                    goal: userData.goal,
-                    activity_level: userData.activity_level,
-                }))
+            const userData = await getProfileData();
+            if (!userData.success && !userData.data.profile) {
+                return navigate('/createProfile');
             }
+            const { profile } = userData.data;
+            setUserData((prevState) => ({
+                ...prevState,
+                name: profile.first_name,
+                surname: profile.last_name,
+                height: profile.height,
+                weight: profile.weight,
+                age: profile.age,
+                gender: profile.gender,
+                goal: profile.goal,
+                activity_level: profile.activity_level,
+            }))
         } catch (error) {
             console.error('Error fetching user data:', error);
-            navigate('/createProfile') // There is no profile redirect to create profile
         }
     }, [token, navigate]);
 
@@ -103,7 +107,7 @@ function MainScreen({ setModalParams }) {
         if (updateData && isDataChanged) {
             const update = async () => {
                 try {
-                    const profileData = {
+                    const newProfileData = {
                         first_name: userData.name,
                         last_name: userData.surname,
                         height: userData.height,
@@ -113,12 +117,10 @@ function MainScreen({ setModalParams }) {
                         goal: userData.goal,
                         activity_level: userData.activity_level,
                     }
-                    const res = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateProfile`, profileData,
-                        { headers: { Authorization: `Bearer ${token}` } }
-                    );
-                    res.status === 200 ? getUserData() : toast.error(res.data?.message);
+                    const profileUpdateData = await updateProfile(newProfileData);
+                    profileUpdateData.success ? toast.info(profileUpdateData.message || 'Profile updated') : toast.error(profileUpdateData.message || 'Updating profile data failed');
                 } catch (error) {
-                    toast.error(error.res?.data?.message);
+                    toast.error(error.response?.data?.message || 'Updating profile data failed');
                 } finally {
                     setIsDataChanged(false);
                     setUpdateData(false);
@@ -132,11 +134,12 @@ function MainScreen({ setModalParams }) {
     useEffect(() => {
         const fetchTrainingPlans = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-
-                if (response.status === 200 && response?.data?.data?.length > 0) setTrainingPlans(response.data.data);
+                const planData = await getTrainingPlan();
+                if(planData.success && planData.data.trainingPlans.length > 0){
+                    setTrainingPlans(planData.data.trainingPlans);
+                    console.log(planData.data.trainingPlans)
+                }
+                
             } catch (error) {
                 console.error('Error fetching data:', error);
                 toast.error('Can\'t get training plans');
@@ -171,7 +174,7 @@ function MainScreen({ setModalParams }) {
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
             {settingsVisibility && (
-                <Settings token={token} setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} />
+                <Settings setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} />
             )}
             <FunctionalBar
                 style={{
@@ -208,7 +211,7 @@ function MainScreen({ setModalParams }) {
                     })}
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus}/>
+            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus} />
         </MainScreenWrapper>
     );
 }

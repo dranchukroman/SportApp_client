@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useState } from "react";
-import axios from "axios";
 import { toast } from "sonner";
 
 import Heading from "../../../../components/Headings/Heading";
@@ -17,6 +16,7 @@ import theme from "../../../../styles/theme";
 import convertStringToArray from "../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { addTrainingPlan, getTrainingPlanById, updateTrainingPlan } from "../../../../api/trainings/plans";
 
 
 function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, editModeStatus, trainingPlanId }) {
@@ -49,12 +49,11 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlan`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { trainingPlanId: trainingPlanId }
-                })
-                if (response.status === 200 && response?.data?.data) {
-                    const planData = response.data.data;
+                const response = await getTrainingPlanById(trainingPlanId);
+
+
+                if (response.success && response?.data.trainingPlan) {
+                    const planData = response.data.trainingPlan;
                     setPlanData((prev) => ({
                         ...prev,
                         name: planData.name,
@@ -65,7 +64,7 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
                     }))
                 }
             } catch (error) {
-                toast.error(error.response?.data?.message);
+                toast.error(error.response?.data?.message || 'Getting training plan data failed');
             } finally {
                 setLoading(false);
                 setTimeout(() => setAfterLoad(1), 100);
@@ -84,29 +83,27 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
             return toast.error('All fields should be filled');
         try {
             // Send api request depend on editModeStatus
-            const endpoint = editModeStatus
-                ? `${process.env.REACT_APP_SERVER_LINK}/api/updateTrainingPlan`
-                : `${process.env.REACT_APP_SERVER_LINK}/api/addTrainingPlan`;
-
             const dataToSend = editModeStatus
                 ? { ...planData, trainingPlanId }
                 : planData;
 
-            const method = editModeStatus ? axios.put : axios.post;
+            const response = editModeStatus
+                ? await updateTrainingPlan(dataToSend)
+                : await addTrainingPlan(dataToSend);
 
-            const response = await method(endpoint, dataToSend, {
-                headers: { Authorization: `Bearer ${token}` },
-            });
+            if (response.success) {
+                toast.info(response.message || 'Action completed successfully');
 
-            // Redirect to correct screen depends on editModeStatus
-            if (!editModeStatus) {
-                setControllTrainings((prev) => ({
-                    ...prev,
-                    trainingPlanId: response.data.planId
-                }))
-                onScreenChange('TrainingDaysView');
-            } else onScreenChange('Trainings');
-
+                if (!editModeStatus) {
+                    setControllTrainings((prev) => ({
+                        ...prev,
+                        trainingPlanId: response.data.planId
+                    }))
+                    onScreenChange('TrainingDaysView');
+                } else onScreenChange('Trainings');
+            } else {
+                toast.error(response.message || 'Action failed');
+            }
         } catch (error) {
             toast.error(error.response?.data?.message || "Something went wrong");
         }

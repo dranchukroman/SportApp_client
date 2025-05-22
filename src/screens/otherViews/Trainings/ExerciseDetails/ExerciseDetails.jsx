@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { toast } from "sonner";
 
 import Heading from "../../../../components/Headings/Heading";
@@ -10,6 +9,8 @@ import SelectList from '../../../../components/SelectList/SelectList';
 import { parseRestTime } from "../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { addExerciseInDay, getAllExerciseInDay, getExerciseInDayById, updateExerciseInDay } from "../../../../api/trainings/exercise";
+import { getExercisesFromLibrary } from "../../../../api/trainings/exerciseLibrary";
 
 function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus, trainingExerciseId }) {
     const [exerciseList, setExerciseList] = useState([]);
@@ -34,14 +35,11 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
     useEffect(() => {
         const fetchExercisesFromLibrary = async () => {
             try {
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/getAllExercises`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { muscle_group: exerciseData.muscleGroup }
-                });
+                const response = await getExercisesFromLibrary(exerciseData.muscleGroup)
 
-                if (response.status === 200) {
-                    setExerciseList(response.data.data);
-                    const firstExercise = response.data.data[0] || {};
+                if (response.success && response.data.exerciseList.length > 0) {
+                    setExerciseList(response.data.exerciseList);
+                    const firstExercise = response.data.exerciseList[0] || {};
                     setExerciseData((prev) => {
                         if (prev.name === '' && prev.exerciseId !== firstExercise.exercise_id) {
                             return {
@@ -54,7 +52,7 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                     });
                 }
             } catch (error) {
-                toast.error(error.response?.data?.message);
+                toast.error(error.response?.data?.message || 'Getting exercise list failed');
             }
         };
         fetchExercisesFromLibrary();
@@ -66,13 +64,10 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/exercise`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                    params: { exerciseId: trainingExerciseId }
-                });
+                const response = await getExerciseInDayById(trainingExerciseId);
 
-                if (response.status === 200 && response.data.data) {
-                    const exerciseData = response.data.data;
+                if (response.success && response.data) {
+                    const exerciseData = response.data.exercise;
                     const { minutes, seconds } = parseRestTime(exerciseData.rest_time);
                     setExerciseData((prev) => ({
                         ...prev,
@@ -120,13 +115,12 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                 description: exerciseData.description,
                 rest_time: `${exerciseData.minutes}:${exerciseData.seconds}`
             };
-
-            const endpoint = editing ? 'updateDayExercise' : 'addDayExercise';
-            const method = editing ? axios.put : axios.post;
+            
             const dataToSend = editing ? { ...exerciseToSave, day_exercise_id: trainingExerciseId } : exerciseToSave
-            await method(`${process.env.REACT_APP_SERVER_LINK}/api/${endpoint}`, dataToSend, {
-                headers: { Authorization: `Bearer ${token}` }
-            })
+
+            const response = editing
+                ? await updateExerciseInDay(dataToSend)
+                : await addExerciseInDay(dataToSend)
             onScreenChange('ExercisesView');
         } catch (error) {
             toast.error(error.response?.data?.message);

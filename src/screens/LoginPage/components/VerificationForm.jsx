@@ -25,15 +25,17 @@ function VerificationForm({ changeScreen, currentScreen, authData, setAuthData, 
         if (authData.verificationCode.trim() === '') return toast.error('Verification code is required');
         if(!authData.email) return toast.error('Email field can not be empty');
         try {
-            const isCodeValid = await verifyCode(authData.email, authData.verificationCode);
-            if (!isCodeValid) return;
+            const response = await verifyCode(authData.email, authData.verificationCode);
+            if (!response.success) return toast.error(response.message);
 
-            const isRegistered = await register(authData.email, authData.password);
-            if (!isRegistered) return;
+            const registerData = await register(authData.email, authData.password);
+            console.log(registerData);
+            if (!registerData.success) return toast.error(registerData.message);
+            if (!registerData.data.token) navigate('/login');
 
             setAfterLoad(0);
-            const isLogin = await logIn(authData.email, authData.password, navigate, '/createProfile');
-            if(!isLogin) toast.error('Login failed');
+            localStorage.setItem('authToken', registerData.data.token);
+            navigate('/createProfile');
         } catch (error) {
             toast.error('Registration failed, try again');
         }
@@ -43,8 +45,8 @@ function VerificationForm({ changeScreen, currentScreen, authData, setAuthData, 
         if (authData.verificationCode.trim() === '') return toast.error('Verification code is required');
         if(!authData.email) return toast.error('Email field can not be empty');
         try {
-            const isCodeValid = await verifyCode(authData.email, authData.verificationCode);
-            if (!isCodeValid) return toast.error('Verification code is not valid');
+            const response = await verifyCode(authData.email, authData.verificationCode);
+            if (!response.success) return toast.error(response.message);
             changeScreen('UpdatePassword');
         } catch (error) {
             toast.error('Verification failed');
