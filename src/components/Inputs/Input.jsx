@@ -1,7 +1,7 @@
 import React from "react";
 import { StyledInput } from './Input.styled';
 
-function Input({ placeholder = 'Set placeholder', style, type, value, onChange, className }) {
+function Input({ placeholder = 'Set placeholder', style, type, value, onChange, className, onBlur }) {
     return (
         <StyledInput
             className={className}
@@ -10,6 +10,7 @@ function Input({ placeholder = 'Set placeholder', style, type, value, onChange, 
             type={type}
             value={value}
             onChange={onChange}
+            onBlur={onBlur}
         />
     );
 }
