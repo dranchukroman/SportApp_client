@@ -1,17 +1,14 @@
 import React from "react";
-import { StyledCheckbox, StyledCheckboxWrapper, StyledCheckboxLabel } from './CheckBox.styled';
+import { CheckBoxWrapper1 } from './CheckBox.styled';
+import CheckMark from '../../../assets/icons/CheckMark'
 
-
-function CheckBox({ onClick, style, checked }) {
+function CheckBox({ onClick, active = false}) {
     return (
-        <StyledCheckboxWrapper 
-            style={style}
-            onClick={onClick}>
-            <StyledCheckbox
-                checked={checked}
-            />
-            <StyledCheckboxLabel />
-        </StyledCheckboxWrapper>
+        <CheckBoxWrapper1
+            onClick={onClick}
+        >
+            {active && <CheckMark/>}
+        </CheckBoxWrapper1>
     );
 }
 

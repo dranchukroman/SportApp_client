@@ -147,11 +147,12 @@ function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, edit
                     </Heading>
                     <IsCurrentPlanWrapper>
                         <Paragraph>You will see your training plan on dashboard</Paragraph>
-                        <CheckBox style={{ height: '20px' }} checked={planData.is_current_plan}
+                        <CheckBox style={{ height: '20px' }} active={planData.is_current_plan}
                             onClick={() => setPlanData((prev) => ({
                                 ...prev,
                                 is_current_plan: !prev.is_current_plan
                             }))}
+                            onChange={null}
                         />
                     </IsCurrentPlanWrapper>
 

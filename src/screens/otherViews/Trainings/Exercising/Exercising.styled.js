@@ -49,7 +49,7 @@ export const ExerciseHistory = styled.div`
     width: 334px;
     margin-top: 15px;
     color: ${theme.colors.whiteText};
-    text-align: ${props => props.textPosition || 'center'};
+    text-align: ${({ $textPosition }) => $textPosition || 'center'};
     border-top: 2px solid ${theme.colors.gradientBase};
 `
 

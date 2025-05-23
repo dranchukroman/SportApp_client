@@ -157,7 +157,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                             <Button style={{ marginLeft: '10px' }} width={'70px'}>Rest</Button>
                         </FlexItems>
                     </ControllPanel>
-                    <ExerciseHistory textPosition={exerciseHistory.length > 0 ? 'center' : 'center'}>
+                    <ExerciseHistory $textPosition={exerciseHistory.length > 0 ? 'center' : 'center'}>
                         {exerciseHistory.length === 0
                             ? <HistoryRecord>No added series yet</HistoryRecord>
 
