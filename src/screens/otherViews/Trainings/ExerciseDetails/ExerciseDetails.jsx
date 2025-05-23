@@ -32,44 +32,50 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
     const [afterLoad, setAfterLoad] = useState(0);
 
     useEffect(() => {
-        const fetchMuscleGroups = async () => {
-            try {
-                const response = await getMuscleGroups();
-                if(response.success){
-                    setMuscleGroups(response.data.muscleGroupsList);
-                }
-            } catch (error) {
-                toast.error(error.response?.data?.message || 'Getting muscle groups failed');
+    const fetchExercises = async () => {
+        try {
+            const muscleGroupResponse = await getMuscleGroups();
+            if (!muscleGroupResponse?.success) {
+                toast.error('Getting muscle groups failed');
             }
-        }
-        fetchMuscleGroups();
-    }, [])
 
-    // Fetch exercises from library based on selected muscle group
-    useEffect(() => {
-        const fetchExercisesFromLibrary = async () => {
-            try {
-                const response = await getExercisesFromLibrary(exerciseData.muscleGroup || muscleGroupList[0]?.name)
-                if (response.success && response.data?.exerciseList?.length > 0) {
-                    setExerciseList(response.data.exerciseList);
-                    const firstExercise = response.data.exerciseList[0] || {};
-                    return setExerciseData((prev) => {
-                        if (prev.name === '' && prev.exerciseId !== firstExercise.exercise_id) {
-                            return {
-                                ...prev,
-                                name: firstExercise.name,
-                                exerciseId: firstExercise.exercise_id,
-                            };
-                        }
-                        return prev;
-                    });
-                } setExerciseList([]);
-            } catch (error) {
-                toast.error(error.response?.data?.message || 'Getting exercise list failed');
+            const muscleGroups = muscleGroupResponse.data.muscleGroupsList;
+            setMuscleGroups(muscleGroups);
+
+            const selectedGroup = exerciseData.muscleGroup || muscleGroups[0]?.name;
+
+            const exercisesResponse = await getExercisesFromLibrary(selectedGroup);
+            if (!exercisesResponse?.success) {
+                toast.error('Getting exercises failed');
             }
-        };
-        fetchExercisesFromLibrary();
-    }, [token, editModeStatus, exerciseData.muscleGroup, muscleGroupList]);
+
+            const exerciseList = exercisesResponse.data.exerciseList;
+            setExerciseList(exerciseList);
+
+            const firstExercise = exerciseList[0];
+            if (firstExercise) {
+                setExerciseData((prev) => {
+                    if (prev.name === '' && prev.exerciseId !== firstExercise.exercise_id) {
+                        return {
+                            ...prev,
+                            name: firstExercise.name,
+                            exerciseId: firstExercise.exercise_id,
+                        };
+                    }
+                    return prev;
+                });
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error(
+                error.response?.data?.message || 'Помилка при завантаженні м’язів або вправ',
+                { id: 'muscleGroupAndExerciseFailed' }
+            );
+        }
+    };
+
+    fetchExercises();
+}, [exerciseData.muscleGroup]); // Виконується тільки один раз (на початку). Якщо потрібно — додай залежності
 
     // Fetch exercise data to edit
     useEffect(() => {
