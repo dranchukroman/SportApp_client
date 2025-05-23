@@ -44,7 +44,7 @@ function LoginForm({ changeScreen, authData, setAuthData }) {
             localStorage.setItem('authToken', loginData.data.token);
             navigate('/dashboard')
         } catch (error) {
-            console.log(`Login failed`);
+            toast.error(error.response?.data?.message || 'Login failed');
         }
     }
 

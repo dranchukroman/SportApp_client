@@ -66,16 +66,15 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                 });
             }
         } catch (error) {
-            console.error(error);
             toast.error(
-                error.response?.data?.message || 'Помилка при завантаженні м’язів або вправ',
+                error.response?.data?.message || 'Getting muscle groups or exercises failed',
                 { id: 'muscleGroupAndExerciseFailed' }
             );
         }
     };
 
     fetchExercises();
-}, [exerciseData.muscleGroup]); // Виконується тільки один раз (на початку). Якщо потрібно — додай залежності
+}, [exerciseData.muscleGroup]);
 
     // Fetch exercise data to edit
     useEffect(() => {

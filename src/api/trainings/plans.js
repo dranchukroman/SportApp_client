@@ -5,7 +5,7 @@ const token = localStorage.getItem('authToken');
 export async function getTrainingPlan() {
     try {
         const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
         });
 
         return response.data;
@@ -18,7 +18,7 @@ export async function getTrainingPlan() {
 export async function getTrainingPlanById(trainingPlanId) {
     try {
         const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlan`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
             params: { trainingPlanId }
         })
 
@@ -32,7 +32,7 @@ export async function getTrainingPlanById(trainingPlanId) {
 export async function addTrainingPlan(planData) {
     try {
         const response = await axios.post(`${process.env.REACT_APP_SERVER_LINK}/api/addTrainingPlan`, planData, {
-            headers: { Authorization: `Bearer ${token}` }
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         })
 
         return response.data;
@@ -45,7 +45,7 @@ export async function addTrainingPlan(planData) {
 export async function updateTrainingPlan(planData) {
     try {
         const response = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateTrainingPlan`, planData, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
         })
 
         return response.data;
@@ -58,7 +58,7 @@ export async function updateTrainingPlan(planData) {
 export async function deleteTrainingPlan(deletePlanId) {
     try {
         const response = await axios.delete(`${process.env.REACT_APP_SERVER_LINK}/api/deleteTrainingPlan`, {
-            headers: { Authorization: `Bearer ${token}` },
+            headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` },
             data: { trainingPlanId: deletePlanId }
         });
 
