@@ -5,7 +5,7 @@ function Button({ children = 'Set button text', width, height, bgColor, onClick,
     return (
         <StyledButton
             width={width}
-            bgColor={bgColor}
+            $bgColor={bgColor}
             onClick={onClick}
             style={style}
             height={height}

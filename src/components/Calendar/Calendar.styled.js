@@ -20,18 +20,18 @@ export const ControllButtons = styled.div`
     width: 25px;
     height: 45px;
     display: flex;
-    justify-content: ${(prop) => prop.flexDirection ? `flex-${prop.flexDirection}` : 'center'};
+    justify-content: ${($flexDirection) => $flexDirection ? `flex-${$flexDirection}` : 'center'};
     align-items: center;
 `
 
 export const TileElement = styled.div`
-    width: ${({ isToday }) => !isToday ? '30px' : '34px'};
-    height: ${({ isToday }) => !isToday ? '42px' : '46px'};
+    width: ${({ $isToday }) => !$isToday ? '30px' : '34px'};
+    height: ${({ $isToday }) => !$isToday ? '42px' : '46px'};
     color: ${theme.colors.whiteText};
     border-radius: 7px;
 
-    ${({ isToday }) =>
-        !isToday
+    ${({ $isToday }) =>
+        !$isToday
             ? css`
                   border: 2px solid transparent;
 
@@ -72,5 +72,5 @@ export const ActiveTileDott = styled.div`
     margin: 6px auto 0 auto;
     border-radius: 50%;
     background-color: ${theme.colors.whiteText};
-    opacity: ${(prop) => prop.active ? 1 : 0};
+    opacity: ${({ $active }) => $active ? 1 : 0};
 `

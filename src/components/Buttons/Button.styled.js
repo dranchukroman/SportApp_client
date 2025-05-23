@@ -9,8 +9,8 @@ export const StyledButton = styled.button`
     border: none;
 
     /* Color */
-    background-color: ${({ bgColor }) => bgColor || theme.colors.gradientBase};
-    background-image: ${({ bgColor }) => bgColor ? 'none': theme.colors.gradient};
+    background-color: ${({ $bgColor }) => $bgColor || theme.colors.gradientBase};
+    background-image: ${({ $bgColor }) => $bgColor ? 'none': theme.colors.gradient};
 
     /* Fonts */
     color: ${theme.colors.whiteText};

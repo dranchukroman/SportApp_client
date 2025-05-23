@@ -31,15 +31,15 @@ function MainScreen({ setModalParams }) {
         !token && navigate('/login');
         const tokenValidation = async () => {
             try {
-                const { tokenStatus } = await checkIfTokenValid();
-                if (!tokenStatus) {
+                const token = await checkIfTokenValid();
+                if (!token || !token.tokenStatus) {
                     localStorage.removeItem('authToken');
+                    toast.error('Session expired, please log in again', {id: 'expired-token'});
                     navigate('/login');
-                    toast.error('Session expired');
                 }
             } catch (error) {
+                toast.error('Session expired, please log in again', {id: 'expired-token'});
                 navigate('/login');
-                toast.error('Something went wrong durign checking active session');
             }
         }
         tokenValidation()
@@ -95,7 +95,7 @@ function MainScreen({ setModalParams }) {
         } catch (error) {
             console.error('Error fetching user data:', error);
         }
-    }, [token, navigate]);
+    }, [navigate]);
 
     // Fetch user profile data
     useEffect(() => {
@@ -137,7 +137,6 @@ function MainScreen({ setModalParams }) {
                 const planData = await getTrainingPlan();
                 if(planData.success && planData.data.trainingPlans.length > 0){
                     setTrainingPlans(planData.data.trainingPlans);
-                    console.log(planData.data.trainingPlans)
                 }
                 
             } catch (error) {

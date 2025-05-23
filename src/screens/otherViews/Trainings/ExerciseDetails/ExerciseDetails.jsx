@@ -9,7 +9,7 @@ import SelectList from '../../../../components/SelectList/SelectList';
 import { parseRestTime } from "../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { addExerciseInDay, getAllExerciseInDay, getExerciseInDayById, updateExerciseInDay } from "../../../../api/trainings/exercise";
+import { addExerciseInDay, getExerciseInDayById, updateExerciseInDay } from "../../../../api/trainings/exercise";
 import { getExercisesFromLibrary } from "../../../../api/trainings/exerciseLibrary";
 
 function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus, trainingExerciseId }) {
@@ -121,7 +121,9 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
             const response = editing
                 ? await updateExerciseInDay(dataToSend)
                 : await addExerciseInDay(dataToSend)
-            onScreenChange('ExercisesView');
+            if(!response.success){
+                return toast.error(response.message);
+            } return onScreenChange('ExercisesView');
         } catch (error) {
             toast.error(error.response?.data?.message);
         }
