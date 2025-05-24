@@ -79,7 +79,7 @@ function UserProfileCreation() {
 
         try {
             const createProfileData = await createProfile(profileData)
-            if(!createProfileData.success){
+            if (!createProfileData.success) {
                 console.log(profileData)
                 return toast.error(createProfileData?.message || 'Getting profile data failed');
             }
@@ -183,6 +183,17 @@ function UserProfileCreation() {
                                 {step === maxStep ? 'Create' : 'Next'}
                             </Button>
                         </div>
+                        <Button
+                            style={{ marginTop: 10 }}
+                            onClick={() => {
+                                if (localStorage.getItem('authToken')) {
+                                    localStorage.removeItem('authToken');
+                                }
+                                navigate('/login');
+                            }}
+                        >
+                            Log out
+                        </Button>
                     </StyledCreateProfile>
                 </LoadWrapper>
             </CreateProfileContainer>
@@ -257,7 +268,7 @@ function Step2({ userData, setUserData }) {
     return (
         <div>
             <p>
-                This data will be used in the future<br/> to improve your experience and to generate <br/>AI-based training plans.
+                This data will be used in the future<br /> to improve your experience and to generate <br />AI-based training plans.
             </p>
             <SelectList value={userData.activityLevel}
                 onChange={(e) => setUserData((prev) => ({

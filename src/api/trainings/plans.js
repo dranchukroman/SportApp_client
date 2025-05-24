@@ -1,7 +1,5 @@
 import axios from "axios";
 
-const token = localStorage.getItem('authToken');
-
 export async function getTrainingPlan() {
     try {
         const response = await axios.get(`${process.env.REACT_APP_SERVER_LINK}/api/trainingPlans`, {
