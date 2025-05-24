@@ -18,8 +18,8 @@ function LoginPage() {
 
     const [authData, setAuthData] = useState({
         email: process.env.NODE_ENV === 'development' ? 'roman2003dranchuk@gmail.com' : '' ,
-        password: process.env.NODE_ENV === 'development' ? 'Roman123@gmail.com' : '',
-        password2: process.env.NODE_ENV === 'development' ? 'Roman123@gmail.com' : '',
+        password: process.env.NODE_ENV === 'development' ? 'Roman123' : '',
+        password2: process.env.NODE_ENV === 'development' ? 'Roman123' : '',
         verificationCode: ''
     })
     

@@ -183,17 +183,22 @@ function UserProfileCreation() {
                                 {step === maxStep ? 'Create' : 'Next'}
                             </Button>
                         </div>
-                        <Button
-                            style={{ marginTop: 10 }}
-                            onClick={() => {
-                                if (localStorage.getItem('authToken')) {
-                                    localStorage.removeItem('authToken');
-                                }
-                                navigate('/login');
-                            }}
-                        >
-                            Log out
-                        </Button>
+                        {step === 1
+                            ? (
+                                <Button
+                                    style={{ marginTop: 10 }}
+                                    onClick={() => {
+                                        if (localStorage.getItem('authToken')) {
+                                            localStorage.removeItem('authToken');
+                                        }
+                                        navigate('/login');
+                                    }}
+                                >
+                                    Log out
+                                </Button>
+                            )
+                            : null
+                        }
                     </StyledCreateProfile>
                 </LoadWrapper>
             </CreateProfileContainer>

@@ -77,10 +77,11 @@ function MainScreen({ setModalParams }) {
     const getUserData = useCallback(async () => {
         try {
             const userData = await getProfileData();
-            if (!userData.success && !userData.data.profile) {
+            if (!userData.success || !userData.data.profile) {
                 return navigate('/createProfile');
             }
             const { profile } = userData.data;
+            console.log(userData)
             setUserData((prevState) => ({
                 ...prevState,
                 name: profile.first_name,
