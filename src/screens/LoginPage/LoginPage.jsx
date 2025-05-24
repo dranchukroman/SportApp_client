@@ -17,9 +17,9 @@ function LoginPage() {
     const [currentScreen, setCurrentScreen] = useState(isLoginPage ? 'Login' : 'Registration'); 
 
     const [authData, setAuthData] = useState({
-        email: 'roman2003dranchuk@gmail.com',
-        password: 'Roman123',
-        password2: 'Roman123',
+        email: process.env.NODE_ENV === 'development' ? 'roman2003dranchuk@gmail.com' : '' ,
+        password: process.env.NODE_ENV === 'development' ? 'Roman123@gmail.com' : '',
+        password2: process.env.NODE_ENV === 'development' ? 'Roman123@gmail.com' : '',
         verificationCode: ''
     })
     
