@@ -25,6 +25,7 @@ import { parseRestTime } from "../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { getExerciseInDayById } from "../../../../api/trainings/exercise";
+import Timer from "../../../../components/Timer/Timer";
 
 
 function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress }) {
@@ -51,6 +52,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
         note: ''
     })
     const [activeDelButton, setActiveDelButton] = useState(false);
+    const [timerActive, setTimerActive] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
@@ -154,7 +156,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                         </FlexItems>
                         <FlexItems>
                             <Input style={{ width: '233px' }} placeholder="Note" value={recordInfo.note} onChange={e => setRecordInfo(prev => ({ ...prev, note: e.target.value }))} />
-                            <Button style={{ marginLeft: '10px' }} width={'70px'}>Rest</Button>
+                            <Button onClick={() => (setTimerActive(prev => !prev))} style={{ marginLeft: '10px' }} width={'70px'}>Rest</Button>
                         </FlexItems>
                     </ControllPanel>
                     <ExerciseHistory $textPosition={exerciseHistory.length > 0 ? 'center' : 'center'}>
@@ -207,7 +209,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                             ))
                         }
                     </ExerciseHistory>
-
+                    {timerActive && <Timer setTimerActive={setTimerActive}/>}
                     {/* Temporary buttons */}
                     <Button
                         onClick={handleDoneButton}

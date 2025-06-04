@@ -1,4 +1,5 @@
 import styled from "styled-components";
+import theme from "../../styles/theme";
 
 export const Container = styled.div`
     display: flex;
@@ -16,6 +17,7 @@ export const Container = styled.div`
 export const TimeSelectors = styled.div`
     display: flex;
     justify-content: center;
+    align-items: center
 `;
 
 export const ScrollList = styled.div`
@@ -38,15 +40,10 @@ export const ScrollItem = styled.div`
   color: rgba(238, 238, 238, 0.5);
 
   &.active {
-    color: white;
+    color: ${theme.colors.whiteText};
     font-size: 57px;
     line-height: 55px;
   }
-`;
-
-export const TimeLeft = styled.div`
-  font-size: 36px;
-  margin: 20px 0;
 `;
 
 export const Controls = styled.div`
@@ -54,3 +51,18 @@ export const Controls = styled.div`
   justify-content: space-between;
   margin-top: 10px;
 `;
+
+export const DivideDots = styled.div`
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    align-items: center;
+    height: 20px;
+`
+export const Dot = styled.div`
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background-color: ${theme.colors.whiteText}
+`
+

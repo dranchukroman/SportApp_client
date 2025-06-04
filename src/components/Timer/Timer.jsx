@@ -1,25 +1,17 @@
-import React, { useEffect, useRef, useState } from "react";
-import {
-    Container,
-    TimeSelectors,
-    ScrollList,
-    ScrollItem,
-    TimeLeft,
-    Controls,
-} from "./Timer.styled";
-
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { Container, TimeSelectors, ScrollList, ScrollItem, DivideDots, Dot, Controls } from "./Timer.styled";
 import Button from "../Buttons/Button";
+import { toast } from "sonner";
 
-function Timer({ children }) {
+function Timer({ children, timerEndMessage, newMinutes, newSeconds, setTimerActive }) {
     const [isRunning, setIsRunning] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
-    const [totalSeconds, setTotalSeconds] = useState(0);
-    const [displayTime, setDisplayTime] = useState("00:00:00");
 
-    const hoursRef = useRef(null);
     const minutesRef = useRef(null);
     const secondsRef = useRef(null);
     const intervalRef = useRef(null);
+    const isPausedRef = useRef(false);
+    const totalSecondsRef = useRef(0);
 
     const createScrollList = (max) => {
         return Array.from({ length: max + 1 }, (_, i) => i.toString().padStart(2, "0"));
@@ -38,111 +30,116 @@ function Timer({ children }) {
         return parseInt(activeItem?.textContent || "0");
     };
 
-    const updateDisplay = (seconds) => {
-        const h = Math.floor(seconds / 3600);
-        const m = Math.floor((seconds % 3600) / 60);
+    const scrollToTime = (seconds) => {
+        const scrollToValue = (ref, value) => {
+            if (!ref.current) return;
+            const scrollPosition = value * 40;
+            ref.current.scrollTo({ top: scrollPosition, behavior: "smooth" });
+        };
+
+        const m = Math.floor(seconds / 60);
         const s = seconds % 60;
-        setDisplayTime(
-            `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`
-        );
+        scrollToValue(minutesRef, m);
+        scrollToValue(secondsRef, s);
+        updateActive(minutesRef);
+        updateActive(secondsRef);
     };
 
-    const resetTimer = () => {
+    const resetTimer = useCallback(() => {
         clearInterval(intervalRef.current);
-        setTotalSeconds(0);
+        totalSecondsRef.current = 0;
         setIsRunning(false);
         setIsPaused(false);
-        updateDisplay(0);
-    };
+        scrollToTime(0);
+    }, []);
 
-    const startTimer = () => {
-        const hours = getSelectedTime(hoursRef);
+    const startTimer = useCallback(() => {
         const minutes = getSelectedTime(minutesRef);
         const seconds = getSelectedTime(secondsRef);
-        const total = hours * 3600 + minutes * 60 + seconds;
+        const total = minutes * 60 + seconds;
 
         if (total <= 0) return;
 
-        setTotalSeconds(total);
+        totalSecondsRef.current = total;
         setIsRunning(true);
-        updateDisplay(total);
+        scrollToTime(total);
 
         intervalRef.current = setInterval(() => {
-            setTotalSeconds((prev) => {
-                if (isPaused) return prev;
+            if (isPausedRef.current) return;
 
-                const newTime = prev - 1;
-                if (newTime <= 0) {
-                    clearInterval(intervalRef.current);
-                    alert("Время вышло!");
-                    resetTimer();
-                    return 0;
-                }
-                updateDisplay(newTime);
-                return newTime;
-            });
+            const newTime = totalSecondsRef.current - 1;
+            totalSecondsRef.current = newTime;
+
+            if (newTime <= 0) {
+                clearInterval(intervalRef.current);
+                toast.info(timerEndMessage || "Timer finished", { id: "restTimeFinished" });
+                resetTimer();
+            } else {
+                scrollToTime(newTime);
+            }
         }, 1000);
-    };
+    }, [resetTimer, timerEndMessage]);
+
+    const handleScroll = (ref) => () => updateActive(ref);
 
     useEffect(() => {
-        const hours = hoursRef.current;
         const minutes = minutesRef.current;
         const seconds = secondsRef.current;
 
-        const handleScroll = (ref) => () => updateActive(ref);
+        const handleMinutesScroll = handleScroll(minutesRef);
+        const handleSecondsScroll = handleScroll(secondsRef);
 
-        [hours, minutes, seconds].forEach((ref) => {
-            ref.addEventListener("scroll", handleScroll({ current: ref }));
-        });
-
-        updateActive(hoursRef);
-        updateActive(minutesRef);
-        updateActive(secondsRef);
+        minutes.addEventListener("scroll", handleMinutesScroll);
+        seconds.addEventListener("scroll", handleSecondsScroll);
 
         return () => {
-            [hours, minutes, seconds].forEach((ref) => {
-                ref?.removeEventListener("scroll", handleScroll({ current: ref }));
-            });
+            minutes?.removeEventListener("scroll", handleMinutesScroll);
+            seconds?.removeEventListener("scroll", handleSecondsScroll);
             clearInterval(intervalRef.current);
         };
     }, []);
 
-    const hours = createScrollList(12);
+    useEffect(() => {
+        const seconds = newMinutes * 60 + newSeconds;
+        scrollToTime(seconds);
+    }, [newMinutes, newSeconds]);
+
     const minutes = createScrollList(59);
     const seconds = createScrollList(59);
-
-    const closeTimer = () => {
-        console.log('Close timer');
-    }
 
     return (
         <div>
             <Container>
                 <TimeSelectors>
-                    <ScrollList ref={hoursRef}>
-                        {hours.map((h) => (
-                            <ScrollItem key={`h-${h}`}>{h}</ScrollItem>
-                        ))}
-                    </ScrollList>
                     <ScrollList ref={minutesRef}>
                         {minutes.map((m) => (
                             <ScrollItem key={`m-${m}`}>{m}</ScrollItem>
                         ))}
                     </ScrollList>
+                    <DivideDots><Dot /><Dot /></DivideDots>
                     <ScrollList ref={secondsRef}>
                         {seconds.map((s) => (
                             <ScrollItem key={`s-${s}`}>{s}</ScrollItem>
                         ))}
                     </ScrollList>
                 </TimeSelectors>
-                <TimeLeft>{displayTime}</TimeLeft>
-
                 <Controls>
-                    <Button width={'172px'} onClick={isRunning ? (prev) => setIsPaused(!prev) : startTimer}>
-                        {isRunning ? `${isPaused ? 'Продолжить' : 'Пауза'}` : 'Старт'}
+                    <Button
+                        width={"172px"}
+                        onClick={() =>
+                            isRunning
+                                ? setIsPaused((prev) => {
+                                    const next = !prev;
+                                    isPausedRef.current = next;
+                                    return next;
+                                })
+                                : startTimer()
+                        }
+                    >
+                        {isRunning ? (isPaused ? "Продолжить" : "Пауза") : "Старт"}
                     </Button>
-                    <Button width={'172px'} onClick={isRunning ? resetTimer : closeTimer}>
-                        {isRunning ? 'Отмена' : 'Назад'}
+                    <Button width={"172px"} onClick={() => (isRunning ? resetTimer() : setTimerActive(prev => !prev))}>
+                        {isRunning ? "Отмена" : "Назад"}
                     </Button>
                 </Controls>
             </Container>
