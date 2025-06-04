@@ -25,8 +25,8 @@ export const RingContainer = styled.div`
 `
 
 export const StepRing = styled.div`
-    min-width: ${({ active }) => active ? '55px' : '35px'};
-    height: ${({ active }) => active ? '55px' : '35px'};
+    min-width: ${({ $active }) => $active ? '55px' : '35px'};
+    height: ${({ $active }) => $active ? '55px' : '35px'};
     color: ${theme.colors.whiteText};
     display: flex;
     justify-content: center;
@@ -36,7 +36,7 @@ export const StepRing = styled.div`
 
     transition: all 0.3s ease;
 
-    ${({ previous }) => previous ? `
+    ${({ $previous }) => $previous ? `
         background-color: ${theme.colors.gradientBase};
         background-image: ${theme.colors.gradient};
     ` : `

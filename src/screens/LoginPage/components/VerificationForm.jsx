@@ -29,7 +29,6 @@ function VerificationForm({ changeScreen, currentScreen, authData, setAuthData, 
             if (!response.success) return toast.error(response.message);
 
             const registerData = await register(authData.email, authData.password);
-            console.log(registerData);
             if (!registerData.success) return toast.error(registerData.message);
             if (!registerData.data.token) navigate('/login');
 

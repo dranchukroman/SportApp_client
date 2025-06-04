@@ -81,7 +81,6 @@ function MainScreen({ setModalParams }) {
                 return navigate('/createProfile');
             }
             const { profile } = userData.data;
-            console.log(userData)
             setUserData((prevState) => ({
                 ...prevState,
                 name: profile.first_name,

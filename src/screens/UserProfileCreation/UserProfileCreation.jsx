@@ -255,7 +255,7 @@ function Step1({ userData, setUserData }) {
                     gender: e.target.value
                 }))}
             >
-                <option value="" disabled selected hidden>Gender</option>
+                <option value="" disabled hidden>Gender</option>
                 <option value="male">
                     Male
                 </option>

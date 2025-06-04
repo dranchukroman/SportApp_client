@@ -48,7 +48,6 @@ export async function updateProfile(profileData) {
     // activity_level: userData.activityLevel,
 
     try {
-        console.log(profileData)
         const response = await axios.put(`${process.env.REACT_APP_SERVER_LINK}/api/updateProfile`, profileData, {
             headers: { Authorization: `Bearer ${localStorage.getItem('authToken')}` }
         });

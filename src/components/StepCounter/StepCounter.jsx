@@ -11,13 +11,13 @@ function StepCounter({ stepCount = 1, width, headersArray = [], activeStep = 1 }
             const active = activeStep === countIndex;
             const previous = activeStep !== countIndex && countIndex < activeStep
             steps.push(
-                <RingContainer>
-                    <StepRing active={active} previous={previous}>
+                <RingContainer key={`ring-${i}`}>
+                    <StepRing $active={active} $previous={previous}>
                         <Heading>{countIndex}</Heading>
                     </StepRing>
                 </RingContainer>)
             if (countIndex !== stepCount) {
-                steps.push(<StepLine />)
+                steps.push(<StepLine key={`divide-step-line-${i}`} />)
             }
         }
         return steps;
