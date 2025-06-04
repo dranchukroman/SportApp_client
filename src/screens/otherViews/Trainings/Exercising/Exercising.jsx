@@ -41,7 +41,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
     // Save or get training history
     const [exerciseHistory, setExerciseHistory] = useState(() => {
         const existingExercise = trainingProgress?.progress?.find(exercise => exercise.exerciseId === trainingExerciseId);
-        return existingExercise ? existingExercise.history : [];
+        return existingExercise ? existingExercise.records : [];
     });
 
     // State for inputs
@@ -107,10 +107,10 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                 progress: progressArray.some(ex => ex.exerciseId === trainingExerciseId)
                     ? progressArray.map(ex =>
                         ex.exerciseId === trainingExerciseId
-                            ? { ...ex, history: [...exerciseHistory] }
+                            ? { ...ex, records: [...exerciseHistory] }
                             : ex
                     )
-                    : [...progressArray, { exerciseId: trainingExerciseId, history: [...exerciseHistory] }]
+                    : [...progressArray, { exerciseId: trainingExerciseId, records: [...exerciseHistory] }]
             };
         });
         setExerciseHistory([]);

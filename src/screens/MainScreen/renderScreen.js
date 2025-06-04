@@ -42,7 +42,7 @@ const renderScreen = ({
         case 'TrainingDaysDetails':
             return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
         case 'ExercisesView':
-            return <ExercisesView token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} />
+            return <ExercisesView token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingPlanId={controllTrainings.trainingPlanId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress}/>
         case 'ExerciseDetails':
             return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
         case 'Exercising':

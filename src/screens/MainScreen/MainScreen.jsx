@@ -210,7 +210,7 @@ function MainScreen({ setModalParams }) {
                     })}
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus} />
+            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} progress={trainingProgress.progress} />
         </MainScreenWrapper>
     );
 }

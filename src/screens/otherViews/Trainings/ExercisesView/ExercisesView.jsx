@@ -12,9 +12,9 @@ import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { deleteExerciseInDay, getAllExerciseInDay } from "../../../../api/trainings/exercise";
+import { saveTrainingRecords } from "../../../../api/trainings/training";
 
-
-function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, setControllTrainings, exercisingStatus, setModalParams, setExercisingStatus, setTrainingProgress }) {
+function ExercisesView({ token, onScreenChange, trainingDayId, trainingPlanId, editModeStatus, setControllTrainings, exercisingStatus, setModalParams, setExercisingStatus, setTrainingProgress, trainingProgress }) {
     const [exercises, setExercises] = useState([]);
     const [deleteExercise, setDeleteExercise] = useState(null);
 
@@ -102,8 +102,10 @@ function ExercisesView({ token, onScreenChange, trainingDayId, editModeStatus, s
         }
     }
 
-    const saveTrainingProgress = () => {
-        console.log('Training should be saved');
+    const saveTrainingProgress = async () => {
+        const result = await saveTrainingRecords(trainingPlanId, trainingDayId, trainingProgress.progress);
+        setTrainingProgress([]);
+        setExercisingStatus(false);
         onScreenChange('Dashboard');
         setModalParams((prev) => ({
             ...prev,

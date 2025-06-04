@@ -7,6 +7,7 @@ import DashboardIcon from "../../assets/icons/Navigation/dashboard";
 import TrainingsdIcon from "../../assets/icons/Navigation/trainings";
 import DietIcon from "../../assets/icons/Navigation/diet";
 import CalculatorIcon from "../../assets/icons/Navigation/calculator";
+import { saveTrainingRecords } from "../../api/trainings/training";
 
 function Navigation({
     currentScreen,
@@ -14,7 +15,10 @@ function Navigation({
     setTrainingProgress,
     exercisingStatus,
     setModalParams,
-    setExercisingStatus
+    setExercisingStatus,
+    trainingPlanId,
+    trainingDayId,
+    progress
 }) {
     const tryToRedirect = (triedView) => {
         if (!exercisingStatus) return onScreenChange(triedView)
@@ -30,6 +34,7 @@ function Navigation({
                 btn3Color: null,
                 btn1Method: () => {
                     saveTrainingProgress();
+                    setTrainingProgress([]);
                     setExercisingStatus(false);
                     setModalParams((prev) => ({
                         ...prev,
@@ -57,8 +62,9 @@ function Navigation({
         }
     }
 
-    const saveTrainingProgress = () => {
+    const saveTrainingProgress = async () => {
         console.log('Save data, Navigation!')
+        const result = await saveTrainingRecords(trainingPlanId, trainingDayId, progress);
     }
 
     return (
