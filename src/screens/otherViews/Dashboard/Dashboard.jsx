@@ -8,6 +8,7 @@ import theme from "../../../styles/theme";
 import FunctionalBarLoader from '../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { toast } from "sonner";
+import Timer from "../../../components/Timer/Timer";
 
 function Dashboard({ onScreenChange, trainingPlans }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
@@ -82,98 +83,100 @@ function Dashboard({ onScreenChange, trainingPlans }) {
         <StyledDashboard>
             {loading ? <FunctionalBarLoader /> :
                 <LoadWrapper opacity={afterLoad}>
-                    {/* Current plan data */}
-                    <Heading
-                        fontSize={theme.fontSizes.mediumHeader}
-                    >
-                        {headerUnderTraininTile}
-                    </Heading>
-                    {createTrainingTile()}
-                    <DivideLine />
-
-                    <Heading
-                        fontSize={theme.fontSizes.mediumHeader}
-                    >
-                        Progress
-                    </Heading>
-
-                    {/* Statistic */}
-                    <div
-                        style={{
-                            display: 'flex',
-                            width: '360px',
-                            margin: '0 auto',
-                            marginTop: '10px'
-                        }}
-                    >
-                        <Card
-                            style={{
-                                width: '172px',
-                                paddingBottom: '18px',
-                                paddingTop: '18px'
-                            }}
-                        >
-                            <Heading
-                                fontSize={theme.fontSizes.largeHeader}
-                            >
-                                {trainingProgress.spentExercising ? trainingProgress.spentExercising : '0 min'}
-                            </Heading>
-                            <p
-                                style={{
-                                    color: theme.colors.whiteText,
-                                    margin: '8px 0 0 0',
-                                    fontSize: theme.fontSizes.largeParagraph
-                                }}
-                            >
-                                Spent exercising
-                            </p>
-                        </Card>
-
-                        <Card
-                            style={{
-                                width: '172px',
-                                paddingBottom: '18px',
-                                paddingTop: '18px',
-                            }}
-                        >
-                            <Heading
-                                fontSize={theme.fontSizes.largeHeader}
-                            >
-                                {trainingProgress.trainingPeWeek ? trainingProgress.trainingPeWeek : '0'}
-                            </Heading>
-                            <p
-                                style={{
-                                    color: theme.colors.whiteText,
-                                    margin: '8px 0 0 0',
-                                    fontSize: theme.fontSizes.largeParagraph
-                                }}
-                            >
-                                Training per week
-                            </p>
-                        </Card>
-                    </div>
-                    <Card
-                        style={{
-                            marginTop: '16px'
-                        }}
-                        paddingBottom={'18px'}
-                        paddingTop={'18px'}
-                    >
+                    <Timer>
+                        {/* Current plan data */}
                         <Heading
-                            fontSize={theme.fontSizes.largeHeader}
+                            fontSize={theme.fontSizes.mediumHeader}
                         >
-                            {trainingProgress.workoutsCompleted ? trainingProgress.workoutsCompleted : '0'}
+                            {headerUnderTraininTile}
                         </Heading>
-                        <p
+                        {createTrainingTile()}
+                        <DivideLine />
+
+                        <Heading
+                            fontSize={theme.fontSizes.mediumHeader}
+                        >
+                            Progress
+                        </Heading>
+
+                        {/* Statistic */}
+                        <div
                             style={{
-                                color: theme.colors.whiteText,
-                                margin: '8px 0 0 0',
-                                fontSize: theme.fontSizes.largeParagraph
+                                display: 'flex',
+                                width: '360px',
+                                margin: '0 auto',
+                                marginTop: '10px'
                             }}
                         >
-                            Workouts completed
-                        </p>
-                    </Card>
+                            <Card
+                                style={{
+                                    width: '172px',
+                                    paddingBottom: '18px',
+                                    paddingTop: '18px'
+                                }}
+                            >
+                                <Heading
+                                    fontSize={theme.fontSizes.largeHeader}
+                                >
+                                    {trainingProgress.spentExercising ? trainingProgress.spentExercising : '0 min'}
+                                </Heading>
+                                <p
+                                    style={{
+                                        color: theme.colors.whiteText,
+                                        margin: '8px 0 0 0',
+                                        fontSize: theme.fontSizes.largeParagraph
+                                    }}
+                                >
+                                    Spent exercising
+                                </p>
+                            </Card>
+
+                            <Card
+                                style={{
+                                    width: '172px',
+                                    paddingBottom: '18px',
+                                    paddingTop: '18px',
+                                }}
+                            >
+                                <Heading
+                                    fontSize={theme.fontSizes.largeHeader}
+                                >
+                                    {trainingProgress.trainingPeWeek ? trainingProgress.trainingPeWeek : '0'}
+                                </Heading>
+                                <p
+                                    style={{
+                                        color: theme.colors.whiteText,
+                                        margin: '8px 0 0 0',
+                                        fontSize: theme.fontSizes.largeParagraph
+                                    }}
+                                >
+                                    Training per week
+                                </p>
+                            </Card>
+                        </div>
+                        <Card
+                            style={{
+                                marginTop: '16px'
+                            }}
+                            paddingBottom={'18px'}
+                            paddingTop={'18px'}
+                        >
+                            <Heading
+                                fontSize={theme.fontSizes.largeHeader}
+                            >
+                                {trainingProgress.workoutsCompleted ? trainingProgress.workoutsCompleted : '0'}
+                            </Heading>
+                            <p
+                                style={{
+                                    color: theme.colors.whiteText,
+                                    margin: '8px 0 0 0',
+                                    fontSize: theme.fontSizes.largeParagraph
+                                }}
+                            >
+                                Workouts completed
+                            </p>
+                        </Card>
+                    </Timer>
                 </LoadWrapper>}
         </StyledDashboard>
     )

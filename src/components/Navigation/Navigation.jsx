@@ -8,6 +8,7 @@ import TrainingsdIcon from "../../assets/icons/Navigation/trainings";
 import DietIcon from "../../assets/icons/Navigation/diet";
 import CalculatorIcon from "../../assets/icons/Navigation/calculator";
 import { saveTrainingRecords } from "../../api/trainings/training";
+import { toast } from "sonner";
 
 function Navigation({
     currentScreen,
@@ -63,8 +64,10 @@ function Navigation({
     }
 
     const saveTrainingProgress = async () => {
-        console.log('Save data, Navigation!')
         const result = await saveTrainingRecords(trainingPlanId, trainingDayId, progress);
+        if(!result.success){
+            toast.error(result.message || 'Training data has not been saved')
+        }
     }
 
     return (

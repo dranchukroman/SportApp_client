@@ -104,6 +104,7 @@ function ExercisesView({ token, onScreenChange, trainingDayId, trainingPlanId, e
 
     const saveTrainingProgress = async () => {
         const result = await saveTrainingRecords(trainingPlanId, trainingDayId, trainingProgress.progress);
+        toast.error(result.message || 'Training data has not been saved')
         setTrainingProgress([]);
         setExercisingStatus(false);
         onScreenChange('Dashboard');
