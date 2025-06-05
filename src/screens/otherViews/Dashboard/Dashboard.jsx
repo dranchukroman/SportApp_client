@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import StyledDashboard from './Dashboard.styled'
 import Card from '../../../components/Cards/InfoCard'
 import Button from '../../../components/Buttons/Button'
@@ -8,31 +8,60 @@ import theme from "../../../styles/theme";
 import FunctionalBarLoader from '../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { toast } from "sonner";
+import { getFullDbStatistic } from "../../../api/user/statistic";
 
 function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
-    const trainingProgress = { workoutsCompleted: 4, trainingPeWeek: 4, spentExercising: 134 };
+    const [trainingProgress, setTrainingProgress] = useState({
+        total_sessions: 0,
+        avg_sessions_per_week: 0,
+        total_training_minutes: 0
+    })
 
     const [loading, setLoading] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
 
+    const changeHeaderIfTrainingPlanExist = useCallback(() => {
+        if (trainingPlans?.length > 0) {
+            const currentPlan = trainingPlans.find(plan => plan.is_current_plan === true);
+            if (currentPlan) {
+                setHeaderUnderTraininTile('Current training plan');
+            }
+        }
+    }, [trainingPlans]);
+
     useEffect(() => {
+        const fetchStatistic = async () => {
+            try {
+                const result = await getFullDbStatistic();
+                if (result?.success) {
+                    const { total_sessions, avg_sessions_per_week, total_training_minutes } = result.data;
+
+                    const hours = Math.floor(total_training_minutes / 60);
+                    const minutes = total_training_minutes % 60;
+                    setTrainingProgress({
+                        total_sessions,
+                        avg_sessions_per_week,
+                        total_training_minutes: `${hours ? hours + 'h' : null} ${minutes}m`
+                    })
+                }
+            } catch (error) {
+                toast.error(error?.response?.message || 'Getting statistic failed');
+            }
+        }
+
         try {
             setLoading(true);
             setAfterLoad(0);
-            if (trainingPlans?.length > 0) {
-                const currentPlan = trainingPlans.find(plan => plan.is_current_plan === true);
-                if (currentPlan) {
-                    setHeaderUnderTraininTile('Current training plan');
-                }
-            }
+            changeHeaderIfTrainingPlanExist()
+            fetchStatistic();
         } catch (error) {
-            toast.error('Can\'t get training plans');
+            toast.error('Something went wrong!');
         } finally {
             setLoading(false);
             setTimeout(() => setAfterLoad(1), 100);
         }
-    }, [trainingPlans]);
+    }, [trainingPlans, changeHeaderIfTrainingPlanExist]);
 
     function createTrainingTile() {
         if (trainingPlans?.length > 0) {
@@ -53,7 +82,7 @@ function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
                         </Heading>
                         <Button
                             onClick={() => {
-                                setControllTrainings(prev => ({...prev, trainingPlanId: currentPlan[0].plan_id}));
+                                setControllTrainings(prev => ({ ...prev, trainingPlanId: currentPlan[0].plan_id }));
                                 onScreenChange('TrainingDaysView');
                             }}
                             width={'280px'}
@@ -119,7 +148,7 @@ function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
                             <Heading
                                 fontSize={theme.fontSizes.largeHeader}
                             >
-                                {trainingProgress.spentExercising ? trainingProgress.spentExercising : '0 min'}
+                                {trainingProgress.total_training_minutes || 0}
                             </Heading>
                             <p
                                 style={{
@@ -142,7 +171,7 @@ function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
                             <Heading
                                 fontSize={theme.fontSizes.largeHeader}
                             >
-                                {trainingProgress.trainingPeWeek ? trainingProgress.trainingPeWeek : '0'}
+                                {trainingProgress.avg_sessions_per_week || 0}
                             </Heading>
                             <p
                                 style={{
@@ -165,7 +194,7 @@ function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
                         <Heading
                             fontSize={theme.fontSizes.largeHeader}
                         >
-                            {trainingProgress.workoutsCompleted ? trainingProgress.workoutsCompleted : '0'}
+                            {trainingProgress.total_sessions || 0}
                         </Heading>
                         <p
                             style={{
