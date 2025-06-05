@@ -28,7 +28,7 @@ function ExercisesView({ token, onScreenChange, trainingDayId, trainingPlanId, e
                 setLoading(true);
                 setAfterLoad(0);
                 const response = await getAllExerciseInDay(trainingDayId);
-                if(response.success && response.data?.exercises.length > 0){
+                if (response.success && response.data?.exercises.length > 0) {
                     setExercises(response?.data?.exercises);
                 }
             } catch (error) {
@@ -103,8 +103,17 @@ function ExercisesView({ token, onScreenChange, trainingDayId, trainingPlanId, e
     }
 
     const saveTrainingProgress = async () => {
-        const result = await saveTrainingRecords(trainingPlanId, trainingDayId, trainingProgress.progress);
-        toast.error(result.message || 'Training data has not been saved')
+        if (trainingProgress.progress) {
+            try {
+                const result = await saveTrainingRecords(trainingPlanId, trainingDayId, trainingProgress.progress);
+                if (!result?.success && trainingProgress.progress) {
+                    toast.error(result?.message || 'Training data has not been saved')
+                }
+            } catch (error) {
+                toast.error(error?.response?.message || 'Unexpected error occurred while saving training data');
+            }
+        }
+
         setTrainingProgress([]);
         setExercisingStatus(false);
         onScreenChange('Dashboard');
@@ -206,7 +215,7 @@ function ExercisesView({ token, onScreenChange, trainingDayId, trainingPlanId, e
 
                         <Button
                             onClick={() => {
-                                if(editModeStatus){
+                                if (editModeStatus) {
                                     setControllTrainings((prev) => ({
                                         ...prev,
                                         trainingExerciseId: 0

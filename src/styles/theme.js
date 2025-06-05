@@ -12,7 +12,7 @@ const theme = {
       largeHeader: '27px',
       mediumHeader: '20px',
       smallHeader: '18px',
-      largeParagraph: '15px',
+      largeParagraph: '16px',
       mediumParagraph: '12px',
       smallParagraph: '8px',
       ButtonCTA: '15px'

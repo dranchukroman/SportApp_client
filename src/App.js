@@ -16,6 +16,8 @@ import Download from './screens/downloadPWA/Download';
 const PageWrapper = styled.div`
   min-height: 100vh;
   background-color: ${(props) => props.$bgColor};
+  padding-bottom: constant(safe-area-inset-bottom);
+  padding-bottom: env(safe-area-inset-bottom);
 `;
 
 function App() {
