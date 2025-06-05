@@ -31,7 +31,7 @@ function Timer({ children, timerEndMessage, restTime, setTimerActive }) {
         return parseInt(activeItem?.textContent || "0");
     };
 
-    const scrollToTime = (seconds) => {
+    const scrollToTime = useCallback((seconds) => {
         const scrollToValue = (ref, value) => {
             if (!ref.current) return;
             const scrollPosition = value * 40;
@@ -44,7 +44,7 @@ function Timer({ children, timerEndMessage, restTime, setTimerActive }) {
         scrollToValue(secondsRef, s);
         updateActive(minutesRef);
         updateActive(secondsRef);
-    };
+    }, []);
 
     const resetTimer = useCallback(() => {
         clearInterval(intervalRef.current);
@@ -52,7 +52,7 @@ function Timer({ children, timerEndMessage, restTime, setTimerActive }) {
         setIsRunning(false);
         setIsPaused(false);
         scrollToTime(0);
-    }, []);
+    }, [scrollToTime]);
 
     const startTimer = useCallback(() => {
         const minutes = getSelectedTime(minutesRef);
@@ -80,9 +80,9 @@ function Timer({ children, timerEndMessage, restTime, setTimerActive }) {
                 scrollToTime(newTime);
             }
         }, 1000);
-    }, [resetTimer, timerEndMessage]);
+    }, [resetTimer, timerEndMessage, scrollToTime, setTimerActive]);
 
-    const handleScroll = (ref) => () => updateActive(ref);
+    const handleScroll = useCallback((ref) => () => updateActive(ref), []);
 
     useEffect(() => {
         const minutes = minutesRef.current;
@@ -99,13 +99,13 @@ function Timer({ children, timerEndMessage, restTime, setTimerActive }) {
             seconds?.removeEventListener("scroll", handleSecondsScroll);
             clearInterval(intervalRef.current);
         };
-    }, []);
+    }, [handleScroll]);
 
     useEffect(() => {
         const parsedTime = parseRestTime(restTime);
         const totalSeconds = Number(parsedTime.minutes) * 60 + Number(parsedTime.seconds);
         scrollToTime(totalSeconds);
-    }, []);
+    }, [restTime, scrollToTime]);
 
     const minutes = createScrollList(59);
     const seconds = createScrollList(59);
@@ -139,10 +139,10 @@ function Timer({ children, timerEndMessage, restTime, setTimerActive }) {
                                 : startTimer()
                         }
                     >
-                        {isRunning ? (isPaused ? "Продолжить" : "Пауза") : "Старт"}
+                        {isRunning ? (isPaused ? "Resume" : "Pause") : "Start"}
                     </Button>
                     <Button width={"150px"} onClick={() => (isRunning ? resetTimer() : setTimerActive(prev => !prev))}>
-                        {isRunning ? "Отмена" : "Назад"}
+                        {isRunning ? "Cancel" : "Back"}
                     </Button>
                 </Controls>
             </Container>
