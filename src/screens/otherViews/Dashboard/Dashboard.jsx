@@ -9,7 +9,7 @@ import FunctionalBarLoader from '../../../components/Loaders/FunctionalBarLoader
 import { LoadWrapper } from "../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { toast } from "sonner";
 
-function Dashboard({ onScreenChange, trainingPlans }) {
+function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
     const trainingProgress = { workoutsCompleted: 4, trainingPeWeek: 4, spentExercising: 134 };
 
@@ -52,7 +52,10 @@ function Dashboard({ onScreenChange, trainingPlans }) {
                             {currentPlan[0].name}
                         </Heading>
                         <Button
-                            onClick={() => { console.log(`Button to start training, planId ${currentPlan[0].plan_id}`) }}
+                            onClick={() => {
+                                setControllTrainings(prev => ({...prev, trainingPlanId: currentPlan[0].plan_id}));
+                                onScreenChange('TrainingDaysView');
+                            }}
                             width={'280px'}
                         >
                             Start training

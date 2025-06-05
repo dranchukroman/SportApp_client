@@ -32,7 +32,7 @@ const renderScreen = ({
   }) => {
     switch (currentScreen) {
         case 'Dashboard':
-            return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} />
+            return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} setControllTrainings={setControllTrainings}/>
         case 'Trainings':
             return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} setLoader={setLoader}/>
         case 'TrainingPlanDetails':
