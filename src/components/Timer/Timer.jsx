@@ -2,8 +2,9 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { Container, TimeSelectors, ScrollList, ScrollItem, DivideDots, Dot, Controls } from "./Timer.styled";
 import Button from "../Buttons/Button";
 import { toast } from "sonner";
+import { parseRestTime } from "../../utils/stringHelpers";
 
-function Timer({ children, timerEndMessage, newMinutes, newSeconds, setTimerActive }) {
+function Timer({ children, timerEndMessage, restTime, setTimerActive }) {
     const [isRunning, setIsRunning] = useState(false);
     const [isPaused, setIsPaused] = useState(false);
 
@@ -73,6 +74,7 @@ function Timer({ children, timerEndMessage, newMinutes, newSeconds, setTimerActi
             if (newTime <= 0) {
                 clearInterval(intervalRef.current);
                 toast.info(timerEndMessage || "Timer finished", { id: "restTimeFinished" });
+                setTimerActive(prev => !prev);
                 resetTimer();
             } else {
                 scrollToTime(newTime);
@@ -100,9 +102,10 @@ function Timer({ children, timerEndMessage, newMinutes, newSeconds, setTimerActi
     }, []);
 
     useEffect(() => {
-        const seconds = newMinutes * 60 + newSeconds;
-        scrollToTime(seconds);
-    }, [newMinutes, newSeconds]);
+        const parsedTime = parseRestTime(restTime);
+        const totalSeconds = Number(parsedTime.minutes) * 60 + Number(parsedTime.seconds);
+        scrollToTime(totalSeconds);
+    }, []);
 
     const minutes = createScrollList(59);
     const seconds = createScrollList(59);
@@ -125,7 +128,7 @@ function Timer({ children, timerEndMessage, newMinutes, newSeconds, setTimerActi
                 </TimeSelectors>
                 <Controls>
                     <Button
-                        width={"172px"}
+                        width={"150px"}
                         onClick={() =>
                             isRunning
                                 ? setIsPaused((prev) => {
@@ -138,7 +141,7 @@ function Timer({ children, timerEndMessage, newMinutes, newSeconds, setTimerActi
                     >
                         {isRunning ? (isPaused ? "Продолжить" : "Пауза") : "Старт"}
                     </Button>
-                    <Button width={"172px"} onClick={() => (isRunning ? resetTimer() : setTimerActive(prev => !prev))}>
+                    <Button width={"150px"} onClick={() => (isRunning ? resetTimer() : setTimerActive(prev => !prev))}>
                         {isRunning ? "Отмена" : "Назад"}
                     </Button>
                 </Controls>

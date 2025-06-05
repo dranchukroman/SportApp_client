@@ -4,6 +4,7 @@ import theme from "../../../../styles/theme";
 export const ExerciseFrame = styled.div`
     width: 338px;
     padding: 14px 9px;
+    position: relative;
 
     background-image: 
         linear-gradient(

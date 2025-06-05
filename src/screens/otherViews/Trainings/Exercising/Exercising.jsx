@@ -27,7 +27,6 @@ import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleL
 import { getExerciseInDayById } from "../../../../api/trainings/exercise";
 import Timer from "../../../../components/Timer/Timer";
 
-
 function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress }) {
     // Current exercise
     const [exerciseData, setExerciseData] = useState({
@@ -51,6 +50,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
         reps: '',
         note: ''
     })
+
     const [activeDelButton, setActiveDelButton] = useState(false);
     const [timerActive, setTimerActive] = useState(false);
 
@@ -121,7 +121,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
     }
 
     return (
-        <ExerciseFrame>
+        <ExerciseFrame style={{overflowY: timerActive ? 'hidden' : 'auto'}}>
             {loading ? <FunctionalBarLoader /> :
                 <LoadWrapper opacity={afterLoad}>
                     <FlexItems>
@@ -209,7 +209,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                             ))
                         }
                     </ExerciseHistory>
-                    {timerActive && <Timer setTimerActive={setTimerActive}/>}
+                    {timerActive && <Timer restTime={exerciseData.restTime} setTimerActive={setTimerActive}/>}
                     {/* Temporary buttons */}
                     <Button
                         onClick={handleDoneButton}

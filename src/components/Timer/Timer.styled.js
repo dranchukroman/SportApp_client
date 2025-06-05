@@ -4,14 +4,17 @@ import theme from "../../styles/theme";
 export const Container = styled.div`
     display: flex;
     position: absolute;
-    top: 104px;
-    width: 360px;
-    height: 450px;
+    top: 0;
+    left: 0;
+    width: 356px;
+    height: 100%;
     backdrop-filter: blur(3px);
     display: flex;
     flex-direction: column;
     color: white;
     justify-content: center;
+    border-radius: 7px;
+    background-color: rgba(0, 0, 0, 0.5)
 `;
 
 export const TimeSelectors = styled.div`
@@ -48,7 +51,7 @@ export const ScrollItem = styled.div`
 
 export const Controls = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   margin-top: 10px;
 `;
 
