@@ -12,7 +12,7 @@ import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/Tra
 import ExercisesView from '../otherViews/Trainings/ExercisesView/ExercisesView.jsx';
 import ExerciseDetails from '../otherViews/Trainings/ExerciseDetails/ExerciseDetails.jsx';
 import Exercising from '../otherViews/Trainings/Exercising/Exercising.jsx';
-import ExercisingHistory from '../otherViews/Trainings/ExercisingHistory/ExercisingHistory.jsx';
+import ExercisingHistory from '../otherViews/Trainings/ExercisingHistory/';
 
 
 const renderScreen = ({
