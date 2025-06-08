@@ -12,6 +12,7 @@ import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/Tra
 import ExercisesView from '../otherViews/Trainings/ExercisesView/ExercisesView.jsx';
 import ExerciseDetails from '../otherViews/Trainings/ExerciseDetails/ExerciseDetails.jsx';
 import Exercising from '../otherViews/Trainings/Exercising/Exercising.jsx';
+import ExercisingHistory from '../otherViews/Trainings/ExercisingHistory/ExercisingHistory.jsx';
 
 
 const renderScreen = ({
@@ -47,6 +48,8 @@ const renderScreen = ({
             return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
         case 'Exercising':
             return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={controllTrainings.trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} />
+        case 'ExercisingHistory':
+            return <ExercisingHistory exerciseId={controllTrainings.trainingExerciseId} onScreenChange={setCurrentScreen}/>
         case 'Diet':
             return <Diet token={token} onScreenChange={setCurrentScreen} />
         case 'Calculator':

@@ -145,7 +145,9 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                                 Note - {exerciseData.description}
                             </ExerciseParagraf>
                         </ExerciseInfoFrame>
-                        <HistoryIcon />
+                        <div onClick={() => onScreenChange('ExercisingHistory')}>
+                            <HistoryIcon />
+                        </div>
                     </FlexItems>
                     <DivideLine />
                     <ControllPanel>
@@ -170,7 +172,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
                                 >
                                     <RecordInfo>
                                         <div>
-                                            {index + 1} {record.weight} kg x {record.reps} reps
+                                            {index + 1 + ')'} {record.weight} kg x {record.reps} reps
                                         </div>
                                         <div style={{ opacity: 0.7, fontSize: theme.fontSizes.mediumParagraph }}>
                                             {record.note}
