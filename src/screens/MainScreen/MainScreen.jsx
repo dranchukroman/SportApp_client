@@ -12,7 +12,7 @@ import Navigation from '../../components/Navigation/Navigation';
 import UserIcon from '../../components/UserIcon/UserIcon';
 
 // Main pages/views
-import Settings from '../otherViews/Settings/Settings';
+import Settings from './views/Settings/Settings';
 
 // Other functions
 import renderScreen from './renderScreen.js';

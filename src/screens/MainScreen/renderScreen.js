@@ -1,18 +1,18 @@
 // Maing pages/views
-import Dashboard from '../otherViews/Dashboard/Dashboard';
-import Diet from '../otherViews/Diet/Diet';
-import Calculator from '../otherViews/Calculator/Calculator';
-import NotFound from '../otherViews/NotFound/NotFound';
+import Dashboard from './views/Dashboard/Dashboard';
+import Diet from './views/Diet/Diet';
+import Calculator from './views/Calculator/Calculator';
+import NotFound from './views/NotFound/NotFound';
 
 // Trainings
-import TrainingPlansView from '../otherViews/Trainings/TrainingPlansView/TrainingPlansView.jsx';
-import TrainingPlanDetails from '../otherViews/Trainings/TrainingPlanDetails/TrainingPlanDetails.jsx';
-import TrainingDaysView from '../otherViews/Trainings/TrainingDaysView/TrainingDaysView.jsx';
-import TrainingDaysDetails from '../otherViews/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
-import ExercisesView from '../otherViews/Trainings/ExercisesView/ExercisesView.jsx';
-import ExerciseDetails from '../otherViews/Trainings/ExerciseDetails/ExerciseDetails.jsx';
-import Exercising from '../otherViews/Trainings/Exercising/Exercising.jsx';
-import ExercisingHistory from '../otherViews/Trainings/ExercisingHistory/';
+import TrainingPlansView from './views/Trainings/TrainingPlansView/TrainingPlansView.jsx';
+import TrainingPlanDetails from './views/Trainings/TrainingPlanDetails/TrainingPlanDetails.jsx';
+import TrainingDaysView from './views/Trainings/TrainingDaysView/TrainingDaysView.jsx';
+import TrainingDaysDetails from './views/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
+import ExercisesView from './views/Trainings/ExercisesView/ExercisesView.jsx';
+import ExerciseDetails from './views/Trainings/ExerciseDetails/ExerciseDetails.jsx';
+import Exercising from './views/Trainings/Exercising/Exercising.jsx';
+import ExercisingHistory from './views/Trainings/ExercisingHistory/';
 
 
 const renderScreen = ({
