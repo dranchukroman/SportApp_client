@@ -11,7 +11,7 @@ import {
     IsCurrentPlanWrapper,
     Paragraph,
     TrainingDaysWrapper
-} from "./TrainingPlanDetails";
+} from "./TrainingPlanDetails.styled";
 import theme from "../../../../../styles/theme";
 import convertStringToArray from "../../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';

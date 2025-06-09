@@ -1,7 +1,7 @@
 import React from "react";
-import theme from "../../styles/theme";
+import theme from "../../../styles/theme";
 
-function Android3dots() {
+function ThreeDotsMenuButton() {
     return (
             <div style={{
                 width: 35, 
@@ -18,4 +18,4 @@ function Android3dots() {
     )
 }
 
-export default Android3dots;
+export default ThreeDotsMenuButton;

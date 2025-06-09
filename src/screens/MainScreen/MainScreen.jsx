@@ -15,9 +15,9 @@ import UserIcon from '../../components/UserIcon/UserIcon';
 import Settings from './views/Settings/Settings';
 
 // Other functions
-import renderScreen from './renderScreen.js';
-import getPageTitles from './getPageTitles.js';
-import useFunctionalBarHeight from './useFunctionalBarHeight.js';
+import renderScreen from './utils/renderScreen.js';
+import getPageTitles from './utils/getPageTitles.js';
+import useFunctionalBarHeight from './hooks/useFunctionalBarHeight.js';
 import { getProfileData, updateProfile } from '../../api/user/profile.api';
 import { checkIfTokenValid } from '../../api/user/token.api.js';
 import { getTrainingPlan } from '../../api/trainings/plans.api.js';

@@ -1,7 +1,7 @@
 // import React from "react";
-// import { ScrollerWrapper, ScrollerButtons } from './ScrolleChoose.styled'
+// import { ScrollerWrapper, ScrollerButtons } from './ScrollChoose.styled'
 
-// function ScrolleChoose (){
+// function ScrollChoose (){
 //     return (
 //         <ScrollerWrapper>
             
@@ -9,7 +9,7 @@
 //     )
 // }
 
-// export default ScrolleChoose;
+// export default ScrollChoose;
 import React, { useState, useEffect, useRef } from "react";
 import {
     ScrollerWrapper,
@@ -17,9 +17,9 @@ import {
     TimerWheel,
     TimerLabel,
     TimerItem,
-} from "./ScrolleChoose.styled";
+} from "./ScrollChoose.styled";
 
-function ScrolleChoose() {
+function ScrollChoose() {
     const [selectedTime, setSelectedTime] = useState({
         hours: 0,
         minutes: 0,
@@ -106,4 +106,4 @@ function ScrolleChoose() {
     );
 }
 
-export default ScrolleChoose;
+export default ScrollChoose;

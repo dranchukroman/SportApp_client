@@ -6,7 +6,7 @@ import {ReactComponent as Plus} from "../../assets/icons/plus.svg";
 import {ReactComponent as Safari} from '../../assets/icons/safari.svg'
 import {ReactComponent as Copy} from '../../assets/icons/copy.svg'
 import {ReactComponent as Paste} from '../../assets/icons/paste.svg'
-import Android3dots from "../../components/icons/Android3dots";
+import ThreeDotsMenuButton from "../../components/icons/ThreeDotsMenuButton/ThreeDotsMenuButton";
 import {ReactComponent as Google} from "../../assets/icons/google.svg";
 import { copyCurrentUrl } from "../../utils/copyUrl";
 
@@ -46,7 +46,7 @@ export const downloadInstructions = {
         Supported: [
             {
                 title: <>Tap the <b>three dots</b> icon</>,
-                icon: <Android3dots />,
+                icon: <ThreeDotsMenuButton />,
             },
             {
                 title: <>Select <b>Add to Home Screen</b></>,

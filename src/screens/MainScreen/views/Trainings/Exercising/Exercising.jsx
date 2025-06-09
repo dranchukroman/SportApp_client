@@ -19,7 +19,7 @@ import Input from "../../../../../components/Inputs/Input";
 import {ReactComponent as HistoryIcon} from '../../../../../assets/icons/history.svg';
 import DivideLine from "../../../../../components/Dividers/DivideLine";
 import Button from "../../../../../components/Buttons/Button";
-import CrossIcon from "../../../../../components/icons/CrossIcon";
+import CrossIcon from "../../../../../components/icons/CrossIcon/CrossIcon";
 import { toast } from "sonner";
 import { parseRestTime } from "../../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';

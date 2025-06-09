@@ -1,6 +1,6 @@
 import React from "react";
-import { ReactComponent as Edit } from '../../assets/icons/edit.svg';
-import theme from "../../styles/theme";
+import { ReactComponent as Edit } from '../../../assets/icons/edit.svg';
+import theme from "../../../styles/theme";
 
 // If icon is active change color
 function EditIcon({ activeIcon, style, CardStyles, editModeStatus }) {

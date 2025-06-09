@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { DownloadWrapper, InfoContainer, StepSection, RingContainer, IconWrapper } from "./Downloadn.styled";
+import { DownloadWrapper, InfoContainer, StepSection, RingContainer, IconWrapper } from "./Download.styled";
 import Heading from "../../components/Headings/Heading";
 import { LoadWrapper } from "../../components/Loaders/SingleLoader/SingleLoader.styled";
 import theme from "../../styles/theme";

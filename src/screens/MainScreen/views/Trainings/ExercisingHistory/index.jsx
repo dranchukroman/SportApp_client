@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { PageWrapper } from './ExercisingHistory.styled';
 import FunctionalBarLoader from "../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader";
-import { getExerciseHistory } from "./api/trainingHistory.api";
+import { getExerciseHistory } from "./api/";
 import { toast } from "sonner";
 import Button from "../../../../../components/Buttons/Button";
 import HistoryTile from "./components/HistoryTile";

@@ -1,6 +1,6 @@
 import React from "react";
-import {ReactComponent as TrashIcon} from '../../assets/icons/trash.svg';
-import theme from "../../styles/theme";
+import {ReactComponent as TrashIcon} from '../../../assets/icons/trash.svg';
+import theme from "../../../styles/theme";
 
 function DeleteIcon({activeIcon, style, onClick, editModeStatus, CardStyles }) {
     return (
