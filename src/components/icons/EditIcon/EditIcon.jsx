@@ -3,31 +3,14 @@ import { ReactComponent as Edit } from '../../../assets/icons/edit.svg';
 import theme from "../../../styles/theme";
 
 // If icon is active change color
-function EditIcon({ activeIcon, style, CardStyles, editModeStatus }) {
+function EditIcon({ activeIcon, onClick, className }) {
     return (
-        <div
-            style={!CardStyles
-                ? style
-                : {
-                    ...style,
-                    position: 'absolute',
-                    right: 0,
-                    top: 0,
-                    zIndex: '100',
-                    cursor: 'pointer',
-                    opacity: editModeStatus ? '1' : '0',
-                    pointerEvents: editModeStatus ? 'auto' : 'none',
-                    transition: '0.3s opacity ease'
-                }
-            }
-        >
-            <Edit color={activeIcon ? theme.colors.darkBackground : theme.colors.whiteText}/>
-        </div>
+        <Edit
+            color={activeIcon ? theme.colors.darkBackground : theme.colors.whiteText}
+            className={className}
+            onClick={onClick}
+        />
     )
 }
 
 export default EditIcon;
-
-
-
-

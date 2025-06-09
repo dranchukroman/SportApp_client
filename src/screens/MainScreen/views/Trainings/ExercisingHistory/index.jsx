@@ -1,11 +1,11 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { PageWrapper } from './ExercisingHistory.styled';
 import FunctionalBarLoader from "../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader";
 import { getExerciseHistory } from "./api/";
 import { toast } from "sonner";
 import Button from "../../../../../components/Buttons/Button";
 import HistoryTile from "./components/HistoryTile";
-import NoHistoryRecords from "./components/NoHistoryRecords";
+import PageWrapper from "../../../../../components/layout/PageWrapper/PageWrapper";
+import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar";
 
 function ExercisingHistory({ exerciseId, onScreenChange }) {
     const [status, setStatus] = useState('loading');
@@ -40,13 +40,13 @@ function ExercisingHistory({ exerciseId, onScreenChange }) {
         return <FunctionalBarLoader />
     }
     if (['error', 'empty'].includes(status)) {
-        return <NoHistoryRecords onScreenChange={onScreenChange} />
+        return <EmptyFunctionalBar headerText={'No records to display'} buttonText={'Back'} onButtonClick={() => onScreenChange('Exercising')} />
     }
     return (
         <PageWrapper>
             <Button onClick={() => onScreenChange('Exercising')}>Back</Button>
-            {exerciseHistory.map(training =>
-            (<HistoryTile key={training.session_id} trainingData={training} />
+            {exerciseHistory.map(training => (
+                <HistoryTile key={training.session_id} trainingData={training} />
             ))}
         </PageWrapper>
     )

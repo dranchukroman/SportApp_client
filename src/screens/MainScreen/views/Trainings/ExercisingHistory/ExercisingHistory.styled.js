@@ -1,15 +1,6 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import theme from '../../../../../styles/theme';
 import Heading from '../../../../../components/Headings/Heading';
-
-const fadeIn = keyframes`
-    from {opacity: 0;}
-    to {opacity: 1;}
-`
-
-export const PageWrapper = styled.div`
-    animation: ${fadeIn} 0.3s ease-in-out;
-`
 
 export const RecordTile = styled.div`
     width: 338px;
@@ -54,10 +45,4 @@ export const Time = styled.div`
     text-align: right;
     align-items: center;
     display: flex;
-`
-
-export const EmptyStateHeading = styled(Heading)`
-  padding: 30px 0 20px 0;
-`;
-export const NoRecordsWrapper = styled.div`
 `

@@ -5,7 +5,7 @@ import Calculator from '../views/Calculator/Calculator.jsx';
 import NotFound from '../views/NotFound/NotFound.jsx';
 
 // Trainings
-import TrainingPlansView from '../views/Trainings/TrainingPlansView/TrainingPlansView.jsx';
+import TrainingPlansView from '../views/Trainings/TrainingPlansView/';
 import TrainingPlanDetails from '../views/Trainings/TrainingPlanDetails/TrainingPlanDetails.jsx';
 import TrainingDaysView from '../views/Trainings/TrainingDaysView/TrainingDaysView.jsx';
 import TrainingDaysDetails from '../views/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
@@ -35,7 +35,7 @@ const renderScreen = ({
         case 'Dashboard':
             return <Dashboard onScreenChange={setCurrentScreen} trainingPlans={trainingPlans} setControllTrainings={setControllTrainings}/>
         case 'Trainings':
-            return <TrainingPlansView token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus} setLoader={setLoader}/>
+            return <TrainingPlansView onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus}/>
         case 'TrainingPlanDetails':
             return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} trainingPlanId={controllTrainings.trainingPlanId} />
         case 'TrainingDaysView':
