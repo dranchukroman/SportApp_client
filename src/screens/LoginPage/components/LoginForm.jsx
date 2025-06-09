@@ -6,7 +6,7 @@ import GoogleIcon from "../../../assets/icons/LoginPage/google"
 import Button from "../../../components/Buttons/Button";
 import { InButtonWrapper } from "../LoginPage.styled";
 import { GoogleButtonWrapper } from "../LoginPage.styled";
-import { checkIfEmailExist, logIn, sendVerificationCode } from "../../../api/user/loginMethods";
+import { checkIfEmailExist, logIn, sendVerificationCode } from "../api/loginMethods.api";
 import { toast } from "sonner";
 
 function LoginForm({ changeScreen, authData, setAuthData }) {

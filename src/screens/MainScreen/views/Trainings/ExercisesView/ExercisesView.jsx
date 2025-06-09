@@ -11,8 +11,8 @@ import EditIcon from "../../../../../assets/icons/Trainings/editIcon";
 import DeleteIcon from "../../../../../assets/icons/DeleteIcon";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { deleteExerciseInDay, getAllExerciseInDay } from "../../../../../api/trainings/exercise";
-import { saveTrainingRecords } from "../../../../../api/trainings/training";
+import { deleteExerciseInDay, getAllExerciseInDay } from "./api";
+import { saveTrainingRecords } from "../../../../../api/trainings/training.api";
 
 function ExercisesView({ token, onScreenChange, trainingDayId, trainingPlanId, editModeStatus, setControllTrainings, exercisingStatus, setModalParams, setExercisingStatus, setTrainingProgress, trainingProgress }) {
     const [exercises, setExercises] = useState([]);

@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
-
 import { toast } from "sonner";
-
 import Heading from "../../../../../components/Headings/Heading";
 import Input from "../../../../../components/Inputs/Input";
 import Button from "../../../../../components/Buttons/Button";
-
 import { TrainingDaysWrapper } from "./TrainingDaysDetails.styled";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { addTrainingDay, getTrainingDayById, updateTrainingDay } from "../../../../../api/trainings/days";
+import { addTrainingDay, getTrainingDayById, updateTrainingDay } from "./api";
 
 
 function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, trainingDayId }) {

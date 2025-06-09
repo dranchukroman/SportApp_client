@@ -16,7 +16,7 @@ import theme from "../../../../../styles/theme";
 import convertStringToArray from "../../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { addTrainingPlan, getTrainingPlanById, updateTrainingPlan } from "../../../../../api/trainings/plans";
+import { addTrainingPlan, getTrainingPlanById, updateTrainingPlan } from "./api";
 
 
 function TrainingPlanDetails({ token, setControllTrainings, onScreenChange, editModeStatus, trainingPlanId }) {

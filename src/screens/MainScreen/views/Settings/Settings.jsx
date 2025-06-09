@@ -4,7 +4,7 @@ import { toast } from 'sonner';
 import { SettingScreen, ButtonsGroup, Button, SettingInput } from "./Settings.styled";
 import theme from "../../../../styles/theme";
 import DivideLine from "../../../../components/Dividers/DivideLine";
-import { deleteAccoutn } from "../../../../api/user/profile";
+import { deleteAccoutn } from "../../../../api/user/profile.api";
 import { useNavigate } from "react-router-dom";
 
 

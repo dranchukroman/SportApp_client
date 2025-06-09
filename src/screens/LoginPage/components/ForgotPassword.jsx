@@ -2,7 +2,7 @@ import React from "react";
 import Input from "../../../components/Inputs/Input";
 import Button from "../../../components/Buttons/Button";
 import { toast } from "sonner";
-import { checkIfEmailExist, sendVerificationCode } from "../../../api/user/loginMethods";
+import { checkIfEmailExist, sendVerificationCode } from "../api/loginMethods.api";
 import { useNavigate } from "react-router-dom";
 
 function ForgotPassword({ changeScreen, currentScreen, setAuthData, authData }) {

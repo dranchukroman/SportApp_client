@@ -18,9 +18,9 @@ import Settings from './views/Settings/Settings';
 import renderScreen from './renderScreen.js';
 import getPageTitles from './getPageTitles.js';
 import useFunctionalBarHeight from './useFunctionalBarHeight.js';
-import { getProfileData, updateProfile } from '../../api/user/profile.js';
-import { checkIfTokenValid } from '../../api/user/loginMethods.js';
-import { getTrainingPlan } from '../../api/trainings/plans.js';
+import { getProfileData, updateProfile } from '../../api/user/profile.api';
+import { checkIfTokenValid } from '../../api/user/token.api.js';
+import { getTrainingPlan } from '../../api/trainings/plans.api.js';
 
 function MainScreen({ setModalParams }) {
     const navigate = useNavigate(); // Create navigation object

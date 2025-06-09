@@ -11,7 +11,8 @@ import DeleteIcon from "../../../../../assets/icons/DeleteIcon";
 import { toast } from "sonner";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { deleteTrainingPlan, getTrainingPlan } from "../../../../../api/trainings/plans";
+import { deleteTrainingPlan } from "./api";
+import { getTrainingPlan } from "../../../../../api/trainings/plans.api";
 
 function TrainingPlansView({ token, onScreenChange, setControllTrainings, setEditModeStatus, editModeStatus }) {
     const [trainingPlans, setTrainingPlans] = useState(null);

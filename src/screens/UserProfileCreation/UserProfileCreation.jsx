@@ -8,7 +8,7 @@ import Button from '../../components/Buttons/Button';
 import StepCounter from '../../components/StepCounter/StepCounter';
 import SelectList from '../../components/SelectList/SelectList';
 import { LoadWrapper } from '../../components/Loaders/SingleLoader/SingleLoader.styled';
-import { createProfile, getProfileData } from '../../api/user/profile';
+import { createProfile, getProfileData } from '../../api/user/profile.api';
 
 function UserProfileCreation() {
     const navigate = useNavigate();

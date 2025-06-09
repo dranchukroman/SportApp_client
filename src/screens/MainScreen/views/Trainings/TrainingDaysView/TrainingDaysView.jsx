@@ -13,7 +13,7 @@ import { Paragraph, TrainingDaysViewWrapper } from "./TrainingDaysView.styled";
 import { toast } from "sonner";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { deleteTrainingDay, getTrainingDays } from "../../../../../api/trainings/days";
+import { deleteTrainingDay, getTrainingDays } from "./api";
 
 
 function TrainingDaysView({ token, onScreenChange, trainingPlanId, setControllTrainings, editModeStatus, setExercisingStatus }) {

@@ -7,7 +7,7 @@ import DashboardIcon from "../../assets/icons/Navigation/dashboard";
 import TrainingsdIcon from "../../assets/icons/Navigation/trainings";
 import DietIcon from "../../assets/icons/Navigation/diet";
 import CalculatorIcon from "../../assets/icons/Navigation/calculator";
-import { saveTrainingRecords } from "../../api/trainings/training";
+import { saveTrainingRecords } from "../../api/trainings/training.api";
 import { toast } from "sonner";
 
 function Navigation({

@@ -9,8 +9,8 @@ import SelectList from '../../../../../components/SelectList/SelectList';
 import { parseRestTime } from "../../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { addExerciseInDay, getExerciseInDayById, updateExerciseInDay } from "../../../../../api/trainings/exercise";
-import { getExercisesFromLibrary, getMuscleGroups } from "../../../../../api/trainings/exerciseLibrary";
+import { getExercisesFromLibrary, getMuscleGroups, addExerciseInDay, updateExerciseInDay } from "./api";
+import {getExerciseInDayById} from '../../../../../api/trainings/exercise.api'
 
 function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus, trainingExerciseId }) {
     const [exerciseList, setExerciseList] = useState([]);

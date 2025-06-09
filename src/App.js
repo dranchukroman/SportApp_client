@@ -10,7 +10,7 @@ import UserProfileCreation from './screens/UserProfileCreation/UserProfileCreati
 import { Toaster } from 'sonner';
 import ModalPopUp from './components/ModalPopUp/ModalPopUp';
 import LoaderPage from './components/Loaders/LoaderPage/LoaderPage';
-import { getMobileOS, getBrowserName } from './utils/usePwaTool';
+import { getMobileOS, getBrowserName } from './utils/deviceUtils';
 import Download from './screens/downloadPWA/Download';
 
 const PageWrapper = styled.div`

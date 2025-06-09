@@ -8,7 +8,7 @@ import theme from "../../../../styles/theme";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { toast } from "sonner";
-import { getFullDbStatistic } from "../../../../api/user/statistic";
+import { getFullDbStatistic } from "./api/statistic.api";
 
 function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');

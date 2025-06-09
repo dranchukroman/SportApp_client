@@ -24,7 +24,7 @@ import { toast } from "sonner";
 import { parseRestTime } from "../../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
-import { getExerciseInDayById } from "../../../../../api/trainings/exercise";
+import { getExerciseInDayById } from "../../../../../api/trainings/exercise.api";
 import Timer from "../../../../../components/Timer/Timer";
 
 function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress }) {

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import Input from "../../../components/Inputs/Input";
 import Button from "../../../components/Buttons/Button";
 import { useNavigate } from 'react-router-dom';
-import { register, sendVerificationCode, verifyCode } from "../../../api/user/loginMethods";
+import { register, sendVerificationCode, verifyCode } from "../api/loginMethods.api";
 import { toast } from 'sonner';
 
 function VerificationForm({ changeScreen, currentScreen, authData, setAuthData, setAfterLoad, }) {
