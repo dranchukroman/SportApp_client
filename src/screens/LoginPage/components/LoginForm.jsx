@@ -6,7 +6,7 @@ import { ReactComponent as GoogleIcon} from "../../../assets/icons/google.svg"
 import Button from "../../../components/Buttons/Button";
 import { InButtonWrapper } from "../LoginPage.styled";
 import { GoogleButtonWrapper } from "../LoginPage.styled";
-import { checkIfEmailExist, logIn, sendVerificationCode } from "../api/loginMethods.api";
+import { checkIfEmailExist, logIn, sendVerificationCode } from "../api";
 import { toast } from "sonner";
 
 function LoginForm({ changeScreen, authData, setAuthData }) {

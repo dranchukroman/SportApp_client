@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import Input from "../../../components/Inputs/Input";
 import Button from "../../../components/Buttons/Button";
-import { updatePassword } from "../api/loginMethods.api";
+import { updatePassword } from "../api";
 import { toast } from "sonner";
 
 function RestorePassword({ authData, setAuthData, changeScreen }) {
