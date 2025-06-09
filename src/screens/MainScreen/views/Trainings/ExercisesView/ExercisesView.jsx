@@ -7,8 +7,8 @@ import { ExerciseViewWrapper, ExerciseDataWrapper, ExerciseParagraph, ExerciseHe
 import Heading from "../../../../../components/Headings/Heading";
 import Button from "../../../../../components/Buttons/Button";
 import Card from "../../../../../components/Cards/InfoCard";
-import EditIcon from "../../../../../assets/icons/Trainings/editIcon";
-import DeleteIcon from "../../../../../assets/icons/DeleteIcon";
+import EditIcon from "../../../../../components/icons/editIcon";
+import DeleteIcon from "../../../../../components/icons/DeleteIcon";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { deleteExerciseInDay, getAllExerciseInDay } from "./api";

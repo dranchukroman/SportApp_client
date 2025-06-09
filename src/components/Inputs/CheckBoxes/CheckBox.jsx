@@ -1,6 +1,6 @@
 import React from "react";
 import { CheckBoxWrapper1 } from './CheckBox.styled';
-import CheckMark from '../../../assets/icons/CheckMark'
+import {ReactComponent as CheckMark} from '../../../assets/icons/check-mark.svg'
 
 function CheckBox({ onClick, active = false}) {
     return (

@@ -16,10 +16,10 @@ import {
 } from './Exercising.styled';
 
 import Input from "../../../../../components/Inputs/Input";
-import HistoryIcon from '../../../../../assets/icons/Trainings/HistoryIcon';
+import {ReactComponent as HistoryIcon} from '../../../../../assets/icons/history.svg';
 import DivideLine from "../../../../../components/Dividers/DivideLine";
 import Button from "../../../../../components/Buttons/Button";
-import CrossIcon from "../../../../../assets/icons/CrossIcon";
+import CrossIcon from "../../../../../components/icons/CrossIcon";
 import { toast } from "sonner";
 import { parseRestTime } from "../../../../../utils/stringHelpers";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';

@@ -1,11 +1,13 @@
-import Share from "../../assets/icons/DownloadPages/Share";
-import { AddToMainScreenIOS, AddToMainScreenAndroid } from "../../assets/icons/DownloadPages/AddToMainScreen";
-import Plus from "../../assets/icons/DownloadPages/Plus";
-import Safari from '../../assets/icons/DownloadPages/Safari'
-import Copy from '../../assets/icons/DownloadPages/Copy'
-import Paste from '../../assets/icons/DownloadPages/Paste'
-import Android3dots from "../../assets/icons/DownloadPages/Android3dots";
-import Google from "../../assets/icons/DownloadPages/Google";
+import {ReactComponent as Share} from "../../assets/icons/share.svg";
+import {ReactComponent as AddToMainScreenAndroid} from "../../assets/icons/add-to-main-screen-android.svg";
+import {ReactComponent as AddToMainScreenIOS} from "../../assets/icons/add-to-main-screen-ios.svg";
+
+import {ReactComponent as Plus} from "../../assets/icons/plus.svg";
+import {ReactComponent as Safari} from '../../assets/icons/safari.svg'
+import {ReactComponent as Copy} from '../../assets/icons/copy.svg'
+import {ReactComponent as Paste} from '../../assets/icons/paste.svg'
+import Android3dots from "../../components/icons/Android3dots";
+import {ReactComponent as Google} from "../../assets/icons/google.svg";
 import { copyCurrentUrl } from "../../utils/copyUrl";
 
 export const downloadInstructions = {

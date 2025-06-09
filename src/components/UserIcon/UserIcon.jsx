@@ -1,7 +1,7 @@
 import React from "react";
 import { StyledUserIcon } from './UserIcon.styled'
 
-import ProfileIcon from "../../assets/icons/Main/userProfile";
+import { ReactComponent as ProfileIcon } from "../../assets/icons/user-profile.svg";
 
 function UserIcon({ onClick }) {
     return (

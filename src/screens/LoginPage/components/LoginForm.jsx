@@ -2,7 +2,7 @@ import React from "react";
 import { useLocation, useNavigate } from 'react-router-dom';
 import Input from "../../../components/Inputs/Input";
 import theme from "../../../styles/theme";
-import GoogleIcon from "../../../assets/icons/LoginPage/google"
+import { ReactComponent as GoogleIcon} from "../../../assets/icons/google.svg"
 import Button from "../../../components/Buttons/Button";
 import { InButtonWrapper } from "../LoginPage.styled";
 import { GoogleButtonWrapper } from "../LoginPage.styled";

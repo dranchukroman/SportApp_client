@@ -1,14 +1,10 @@
 import React from "react";
 
 import { NavigationWrapper, StyledNavigation, IconsWrapper } from './Navigation.styled'
-
 import DivideLine from "../Dividers/DivideLine";
-import DashboardIcon from "../../assets/icons/Navigation/dashboard";
-import TrainingsdIcon from "../../assets/icons/Navigation/trainings";
-import DietIcon from "../../assets/icons/Navigation/diet";
-import CalculatorIcon from "../../assets/icons/Navigation/calculator";
 import { saveTrainingRecords } from "../../api/trainings/training.api";
 import { toast } from "sonner";
+import { DashboardIcon, DietIcon, TrainingIcon, CalculatorIcon } from "./Navigation.styled";
 
 function Navigation({
     currentScreen,
@@ -62,10 +58,9 @@ function Navigation({
             }))
         }
     }
-
     const saveTrainingProgress = async () => {
         const result = await saveTrainingRecords(trainingPlanId, trainingDayId, progress);
-        if(!result.success){
+        if (!result.success) {
             toast.error(result.message || 'Training data has not been saved')
         }
     }
@@ -76,13 +71,11 @@ function Navigation({
             <StyledNavigation>
                 <IconsWrapper>
                     <DashboardIcon
-                        activeIcon={
-                            currentScreen === 'Dashboard'
-                        }
+                        active={currentScreen === 'Dashboard'}
                         onClick={() => tryToRedirect('Dashboard')}
                     />
-                    <TrainingsdIcon
-                        activeIcon={
+                    <TrainingIcon
+                        active={
                             currentScreen === 'Trainings' ||
                             currentScreen === 'TrainingPlanDetails' ||
                             currentScreen === 'TrainingDaysView' ||
@@ -94,13 +87,13 @@ function Navigation({
                         onClick={() => tryToRedirect('Trainings')}
                     />
                     <DietIcon
-                        activeIcon={
+                        active={
                             currentScreen === 'Diet'
                         }
                         onClick={() => tryToRedirect('Diet')}
                     />
                     <CalculatorIcon
-                        activeIcon={
+                        active={
                             currentScreen === 'Calculator'
                         }
                         onClick={() => tryToRedirect('Calculator')}
