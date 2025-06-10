@@ -1,5 +1,5 @@
 import React from 'react';
-import { TextCheckboxWrapper } from './CheckBox.styled';
+import { TextCheckboxWrapper } from '../TrainingPlanDetails.styled';
 
 function TextCheckBox({ isActive = false, children, onClick }) {
     return (

@@ -71,11 +71,11 @@ function Navigation({
             <StyledNavigation>
                 <IconsWrapper>
                     <DashboardIcon
-                        active={currentScreen === 'Dashboard'}
+                        $active={currentScreen === 'Dashboard'}
                         onClick={() => tryToRedirect('Dashboard')}
                     />
                     <TrainingIcon
-                        active={
+                        $active={
                             currentScreen === 'Trainings' ||
                             currentScreen === 'TrainingPlanDetails' ||
                             currentScreen === 'TrainingDaysView' ||
@@ -87,13 +87,13 @@ function Navigation({
                         onClick={() => tryToRedirect('Trainings')}
                     />
                     <DietIcon
-                        active={
+                        $active={
                             currentScreen === 'Diet'
                         }
                         onClick={() => tryToRedirect('Diet')}
                     />
                     <CalculatorIcon
-                        active={
+                        $active={
                             currentScreen === 'Calculator'
                         }
                         onClick={() => tryToRedirect('Calculator')}

@@ -23,6 +23,7 @@ export const RecordTile = styled.div`
 `
 export const TileHeading = styled(Heading)`
     padding: 10px;
+    font-size: ${theme.fontSizes.largeParagraph};
 `;
 export const Record = styled.div`
     padding: 5px 0 5px 7px ;

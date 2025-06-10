@@ -1,13 +1,11 @@
 import React from "react";
-import { CardDeleteIcon, CardEditIcon, FormatedCard, Paragraph } from "../TrainingPlansView.styled";
-import theme from "../../../../../../styles/theme";
-import Heading from "../../../../../../components/Headings/Heading";
+import { CardDeleteIcon, CardEditIcon, FormatedCard, Paragraph, CardHeading } from "../TrainingPlansView.styled";
 
 function TrainingPlanCard({ planData, onSelect, onEdit, onDelete }) {
     const { plan_id, name, description } = planData
     return (
         <FormatedCard onClick={() => onSelect(plan_id)}>
-            <Heading fontSize={theme.fontSizes.smallHeader}>{name}</Heading>
+            <CardHeading>{name}</CardHeading>
             <Paragraph>{description}</Paragraph>
             {!!onEdit && <CardEditIcon
                 onClick={(e) => {

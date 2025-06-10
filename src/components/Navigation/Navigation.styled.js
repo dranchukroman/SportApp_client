@@ -42,18 +42,18 @@ export const NavigationWrapper = styled.div`
 `;
 
 export const DashboardIcon = styled(Dashboard)`
-    color: ${({ active }) => (active ? theme.colors.darkBackground : theme.colors.whiteText)};
+    color: ${({ $active }) => ($active ? theme.colors.darkBackground : theme.colors.whiteText)};
     transition: color ease 0.3s;
 `
 export const TrainingIcon = styled(Training)`
-    color: ${({ active }) => (active ? theme.colors.darkBackground : theme.colors.whiteText)};
+    color: ${({ $active }) => ($active ? theme.colors.darkBackground : theme.colors.whiteText)};
     transition: color ease 0.3s;
 `
 export const DietIcon = styled(Diet)`
-    color: ${({ active }) => (active ? theme.colors.darkBackground : theme.colors.whiteText)};
+    color: ${({ $active }) => ($active ? theme.colors.darkBackground : theme.colors.whiteText)};
     transition: color ease 0.3s;
 `
 export const CalculatorIcon = styled(Calculator)`
-    color: ${({ active }) => (active ? theme.colors.darkBackground : theme.colors.whiteText)};
+    color: ${({ $active }) => ($active ? theme.colors.darkBackground : theme.colors.whiteText)};
     transition: color ease 0.3s;
 `

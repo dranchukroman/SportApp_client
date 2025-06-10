@@ -6,7 +6,7 @@ import NotFound from '../views/NotFound/NotFound.jsx';
 
 // Trainings
 import TrainingPlansView from '../views/Trainings/TrainingPlansView/';
-import TrainingPlanDetails from '../views/Trainings/TrainingPlanDetails/TrainingPlanDetails.jsx';
+import TrainingPlanDetails from '../views/Trainings/TrainingPlanDetails/';
 import TrainingDaysView from '../views/Trainings/TrainingDaysView/TrainingDaysView.jsx';
 import TrainingDaysDetails from '../views/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
 import ExercisesView from '../views/Trainings/ExercisesView/ExercisesView.jsx';
@@ -37,23 +37,23 @@ const renderScreen = ({
         case 'Trainings':
             return <TrainingPlansView onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} setEditModeStatus={setEditModeStatus}/>
         case 'TrainingPlanDetails':
-            return <TrainingPlanDetails token={token} onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} trainingPlanId={controllTrainings.trainingPlanId} />
+            return <TrainingPlanDetails onScreenChange={setCurrentScreen} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} trainingPlanId={controllTrainings.trainingPlanId} />
         case 'TrainingDaysView':
-            return <TrainingDaysView token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} editModeStatus={editModeStatus} setControllTrainings={setControllTrainings} setExercisingStatus={setExercisingStatus} />
+            return <TrainingDaysView onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} editModeStatus={editModeStatus} setControllTrainings={setControllTrainings} setExercisingStatus={setExercisingStatus} />
         case 'TrainingDaysDetails':
-            return <TrainingDaysDetails token={token} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
+            return <TrainingDaysDetails onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
         case 'ExercisesView':
-            return <ExercisesView token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingPlanId={controllTrainings.trainingPlanId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress}/>
+            return <ExercisesView onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingPlanId={controllTrainings.trainingPlanId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress}/>
         case 'ExerciseDetails':
-            return <ExerciseDetails token={token} onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
+            return <ExerciseDetails onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
         case 'Exercising':
-            return <Exercising token={token} onScreenChange={setCurrentScreen} trainingExerciseId={controllTrainings.trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} />
+            return <Exercising onScreenChange={setCurrentScreen} trainingExerciseId={controllTrainings.trainingExerciseId} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} />
         case 'ExercisingHistory':
             return <ExercisingHistory exerciseId={controllTrainings.trainingExerciseId} onScreenChange={setCurrentScreen}/>
         case 'Diet':
-            return <Diet token={token} onScreenChange={setCurrentScreen} />
+            return <Diet onScreenChange={setCurrentScreen} />
         case 'Calculator':
-            return <Calculator token={token} onScreenChange={setCurrentScreen} />
+            return <Calculator onScreenChange={setCurrentScreen} />
         default:
             return <NotFound onScreenChange={setCurrentScreen} />
     }

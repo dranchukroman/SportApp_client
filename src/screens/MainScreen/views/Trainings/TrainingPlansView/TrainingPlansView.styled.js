@@ -4,10 +4,14 @@ import Card from "../../../../../components/Cards/InfoCard";
 import EditIcon from "../../../../../components/icons/EditIcon/EditIcon";
 import DeleteIcon from "../../../../../components/icons/DeleteIcon/DeleteIcon";
 import { fadeInAnimation } from "../../../../../styles/animation";
+import Heading from "../../../../../components/Headings/Heading";
 
 export const FormatedCard = styled(Card)`
     margin-bottom: 14px;
     position: relative;
+`
+export const CardHeading = styled(Heading)`
+    font-size: ${theme.fontSizes.smallHeader};
 `
 export const Paragraph = styled.p`
     margin: 0;
