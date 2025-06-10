@@ -1,5 +1,4 @@
 import React from "react";
-import Button from "../../Buttons/Button";
 import { ButtonsWrapper, ControlButton } from "./ControlButtonsGroup.styled";
 function ControlButtonsGroup({ firstButtonText, onFirstButtonClick, secondButtonText, onSecondButtonClick }) {
 
@@ -10,9 +9,10 @@ function ControlButtonsGroup({ firstButtonText, onFirstButtonClick, secondButton
                     {firstButtonText}
                 </ControlButton>
             }
-            <ControlButton onClick={onSecondButtonClick}>
-                {secondButtonText}
-            </ControlButton>
+            {onSecondButtonClick &&
+                <ControlButton onClick={onSecondButtonClick}>
+                    {secondButtonText}
+                </ControlButton>}
         </ButtonsWrapper>
     )
 }

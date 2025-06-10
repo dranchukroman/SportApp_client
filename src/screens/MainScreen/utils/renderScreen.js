@@ -7,7 +7,7 @@ import NotFound from '../views/NotFound/NotFound.jsx';
 // Trainings
 import TrainingPlansView from '../views/Trainings/TrainingPlansView/';
 import TrainingPlanDetails from '../views/Trainings/TrainingPlanDetails/';
-import TrainingDaysView from '../views/Trainings/TrainingDaysView/TrainingDaysView.jsx';
+import TrainingDaysView from '../views/Trainings/TrainingDaysView/';
 import TrainingDaysDetails from '../views/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
 import ExercisesView from '../views/Trainings/ExercisesView/ExercisesView.jsx';
 import ExerciseDetails from '../views/Trainings/ExerciseDetails/ExerciseDetails.jsx';
@@ -19,7 +19,6 @@ const renderScreen = ({
     currentScreen,
     setCurrentScreen,
     trainingPlans,
-    token,
     setControllTrainings,
     editModeStatus,
     setEditModeStatus,

@@ -3,12 +3,15 @@ import { NoRecordsWrapper, EmptyStateHeading } from './EmptyFunctionalBar.styled
 import theme from "../../../styles/theme";
 import Button from "../../Buttons/Button";
 
-function EmptyFunctionalBar({ headerText, buttonText, onButtonClick }) {
+function EmptyFunctionalBar({ headerText, buttonText, onButtonClick, backButtonText, onBackButtonClick }) {
     return (
         <NoRecordsWrapper>
             <EmptyStateHeading fontSize={theme.fontSizes.mediumHeader}>
                 {headerText}
             </EmptyStateHeading>
+            {backButtonText && <Button onClick={onBackButtonClick}>
+                {backButtonText}
+            </Button>}
             <Button onClick={onButtonClick}>
                 {buttonText}
             </Button>
