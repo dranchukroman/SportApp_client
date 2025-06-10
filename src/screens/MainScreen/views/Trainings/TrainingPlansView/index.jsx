@@ -75,7 +75,11 @@ function TrainingPlansView({ onScreenChange, setControllTrainings, setEditModeSt
     }
     if (['error', 'empty'].includes(status)) {
         return (
-            <EmptyFunctionalBar headerText={'No training plans yet'} buttonText={'Create training plan'} onButtonClick={handlePlanCreation} />
+            <EmptyFunctionalBar 
+                headerText={'No training plans yet'} 
+                buttonText={'Create training plan'} 
+                onButtonClick={handlePlanCreation} 
+            />
         );
     }
     return (

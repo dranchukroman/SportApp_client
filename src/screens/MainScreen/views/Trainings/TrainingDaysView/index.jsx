@@ -65,7 +65,13 @@ function TrainingDaysView({ onScreenChange, trainingPlanId, setControllTrainings
         return <FunctionalBarLoader />;
     }
     if (['empty', 'error'].includes(status)) {
-        return <EmptyFunctionalBar />
+        return <EmptyFunctionalBar
+            headerText={'No training days yet'}
+            buttonText={'Add training day'}
+            onButtonClick={handleAddDayButton}
+            backButtonText={'Back'}
+            onBackButtonClick={handleBackButton}
+        />
     }
     return (
         <PageWrapper>

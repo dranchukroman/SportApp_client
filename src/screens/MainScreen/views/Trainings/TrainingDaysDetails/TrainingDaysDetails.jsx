@@ -3,53 +3,55 @@ import { toast } from "sonner";
 import Heading from "../../../../../components/Headings/Heading";
 import Input from "../../../../../components/Inputs/Input";
 import Button from "../../../../../components/Buttons/Button";
-import { TrainingDaysWrapper } from "./TrainingDaysDetails.styled";
+import { ViewHeading, ViewInput } from "./TrainingDaysDetails.styled";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { addTrainingDay, getTrainingDayById, updateTrainingDay } from "./api";
+import PageWrapper from '../../../../../components/layout/PageWrapper/PageWrapper'
+import ControllButtonsGroup from '../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup'
+import EmptyFunctionalBar from '../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar'
 
-
-function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeStatus, trainingDayId }) {
+function TrainingDaysDetails({ onScreenChange, trainingPlanId, editModeStatus, trainingDayId }) {
+    const [status, setStatus] = useState(editModeStatus ? 'loading' : 'idle');
     const [trainingDayData, setTrainingDayData] = useState({
-        dayName: '',
-        dayDescription: '',
+        name: '',
+        description: '',
     })
 
-    const [loading, setLoading] = useState(false);
-    const [afterLoad, setAfterLoad] = useState(0);
-
-    // Get training day data
     useEffect(() => {
         const fetchTrainingDaysData = async () => {
-            try {
-                setLoading(true);
-                setAfterLoad(0);
-                const response = await getTrainingDayById(trainingDayId);
+            if (!editModeStatus) return;
 
-                if (response.success && response?.data) {
-                    setTrainingDayData((prev) => ({
-                        ...prev,
-                        dayName: response?.data?.trainingDay?.name,
-                        dayDescription: response?.data?.trainingDay?.description
-                    }))
+            setStatus('loading');
+            try {
+                const response = await getTrainingDayById(trainingDayId);
+                if (response.success) {
+                    if (response?.data) {
+                        setTrainingDayData((prev) => ({
+                            ...prev,
+                            name: response?.data?.trainingDay?.name,
+                            description: response?.data?.trainingDay?.description
+                        }))
+                        setStatus('success');
+                    } else {
+                        setStatus('empty');
+                    }
+                } else {
+                    setStatus('error');
                 }
             } catch (error) {
                 toast.error(error.response?.data?.message || 'Something went wrong');
-            } finally {
-                setLoading(false);
-                setTimeout(() => setAfterLoad(1), 100);
+                setStatus('error');
             }
         }
-        if (editModeStatus && trainingDayId !== 0) fetchTrainingDaysData();
-        else {
-            setLoading(false);
-            setAfterLoad(1);
-        }
-    }, [editModeStatus, trainingDayId, token]);
+        fetchTrainingDaysData();
+    }, [editModeStatus, trainingDayId]);
 
-    // Add or update training day
-    const handleTrainingPlan = async () => {
-        if (trainingDayData.dayName === '' || trainingDayData.dayDescription === '') return toast.error('All fields shoud be filled');
+    const handleSubmitClick = async () => {
+        if (trainingDayData.name === '' || trainingDayData.description === '') {
+            return toast.error('All fields shoud be filled');
+        }
+        setStatus('submitting');
         try {
             const isNewDay = trainingDayId === 0;
             const dataToSend = isNewDay
@@ -60,50 +62,60 @@ function TrainingDaysDetails({ token, onScreenChange, trainingPlanId, editModeSt
                 ? await addTrainingDay(dataToSend)
                 : await updateTrainingDay(dataToSend)
 
-            if(response.success){
-                toast.info(response.message || 'Action completed successfully');
-                return onScreenChange('TrainingDaysView');
-            } toast.error(response.message || 'Action failed');
+            if (response.success) {
+                onScreenChange('TrainingDaysView');
+            } else {
+                toast.error(response.message || 'Action failed');
+            }
         } catch (error) {
             toast.error(error.response?.data?.message || 'Something went wrong');
+        } finally {
+            setStatus('idle');
         }
     }
 
+    const handleBackClick = () => onScreenChange('TrainingDaysView');
+
+    const handleInputChange = (field, value) => {
+        setTrainingDayData((prev) => ({
+            ...prev,
+            [field]: value
+        }))
+    }
+
+    if (status === 'loading') {
+        return <FunctionalBarLoader />;
+    }
+
+    if (['empty', 'error'].includes(status)) {
+        return <EmptyFunctionalBar
+            headerText={'Error getting data to edit'}
+            backButtonText={'Back'}
+            onBackButtonClick={handleBackClick}
+        />
+    }
     return (
-        <TrainingDaysWrapper>
-            {loading ? <FunctionalBarLoader /> :
-                <LoadWrapper opacity={afterLoad}>
-                    <Heading>Training day details</Heading>
-                    <Input placeholder={'Day name'} value={trainingDayData.dayName}
-                        onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayName: e.target.value }))}
-                    />
-                    <Input placeholder={'Description'} value={trainingDayData.dayDescription}
-                        onChange={(e) => setTrainingDayData((prev) => ({ ...prev, dayDescription: e.target.value }))}
-                    />
-
-                    <div
-                        style={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            marginTop: '10px'
-                        }}
-                    >
-                        <Button
-                            onClick={() => onScreenChange('TrainingDaysView')}
-                            width={'172px'}
-                        >
-                            Back
-                        </Button>
-
-                        <Button
-                            onClick={handleTrainingPlan}
-                            width={'172px'}
-                        >
-                            {editModeStatus ? 'Save' : 'Add day'}
-                        </Button>
-                    </div>
-                </LoadWrapper>}
-        </TrainingDaysWrapper>
+        <PageWrapper>
+            <ViewHeading>Training day details</ViewHeading>
+            <ViewInput
+                name='name'
+                placeholder={'Day name'}
+                value={trainingDayData.name}
+                onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+            />
+            <ViewInput
+                name='description'
+                placeholder={'Day description'}
+                value={trainingDayData.description}
+                onChange={(e) => handleInputChange(e.target.name, e.target.value)}
+            />
+            <ControllButtonsGroup
+                firstButtonText={'Back'}
+                onFirstButtonClick={handleBackClick}
+                secondButtonText={editModeStatus ? 'Save' : 'Add day'}
+                onSecondButtonClick={status === 'submitting' ? null : handleSubmitClick}
+            />
+        </PageWrapper>
     )
 }
 

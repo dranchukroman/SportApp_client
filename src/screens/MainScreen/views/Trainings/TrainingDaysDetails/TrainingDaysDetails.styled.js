@@ -1,11 +1,16 @@
 import styled from "styled-components";
 import theme from "../../../../../styles/theme";
+import Heading from "../../../../../components/Headings/Heading";
+import Input from "../../../../../components/Inputs/Input";
 
-export const TrainingDaysWrapper = styled.div`
-    input {
+export const ViewHeading = styled(Heading)`
+    font-size: ${theme.fontSizes.mediumHeader};
+
+    &:not(:first-of-type) {
         margin-top: 10px;
     }
-    h1 {
-        font-size: ${theme.fontSizes.mediumHeader};
-    }
+`
+
+export const ViewInput = styled(Input)`
+    margin-top: 10px;
 `

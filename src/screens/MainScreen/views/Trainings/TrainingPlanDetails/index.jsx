@@ -108,8 +108,8 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
     if (['empty', 'error'].includes(status)) {
         return <EmptyFunctionalBar
             headerText={'No data to display'}
-            buttonText={'Back'}
-            onButtonClick={() => onScreenChange('Trainings')}
+            backButtonText={'Back'}
+            onBackButtonClick={() => onScreenChange('Trainings')}
         />
     }
     return <TrainingPlanForm

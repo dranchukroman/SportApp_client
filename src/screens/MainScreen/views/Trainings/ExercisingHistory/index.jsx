@@ -40,7 +40,11 @@ function ExercisingHistory({ exerciseId, onScreenChange }) {
         return <FunctionalBarLoader />
     }
     if (['error', 'empty'].includes(status)) {
-        return <EmptyFunctionalBar headerText={'No records to display'} buttonText={'Back'} onButtonClick={() => onScreenChange('Exercising')} />
+        return <EmptyFunctionalBar
+            headerText={'No records to display'}
+            backButtonText={'Back'}
+            onBackButtonClick={() => onScreenChange('Exercising')}
+        />
     }
     return (
         <PageWrapper>
