@@ -16,6 +16,7 @@ function ExercisingHistory({ exerciseId, onScreenChange }) {
         try {
             const result = await getExerciseHistory(exerciseId)
             if (result?.success) {
+                console.log(result.data.length === 0)
                 if (result.data.length === 0) {
                     setStatus('empty');
                 } else {
