@@ -1,69 +1,81 @@
-import React from "react";
+import React, { useCallback } from "react";
+import { toast } from "sonner";
+import { useModal } from "../../providers/ModalProvider";
 
-import { NavigationWrapper, StyledNavigation, IconsWrapper } from './Navigation.styled'
+import { NavigationWrapper, StyledNavigation, IconsWrapper, DashboardIcon, DietIcon, TrainingIcon, CalculatorIcon } from './Navigation.styled';
 import DivideLine from "../Dividers/DivideLine";
 import { saveTrainingRecords } from "../../api/trainings/training.api";
-import { toast } from "sonner";
-import { DashboardIcon, DietIcon, TrainingIcon, CalculatorIcon } from "./Navigation.styled";
 
 function Navigation({
     currentScreen,
     onScreenChange,
     setTrainingProgress,
     exercisingStatus,
-    setModalParams,
     setExercisingStatus,
     trainingPlanId,
     trainingDayId,
     progress
 }) {
-    const tryToRedirect = (triedView) => {
-        if (!exercisingStatus) return onScreenChange(triedView)
-        else {
-            setModalParams((prev) => ({
-                ...prev,
-                mainText: 'Would you like to finish your training?',
-                btn1Text: 'Save and Finish',
-                btn2Text: 'Discard and Finish',
-                btn3Text: 'Cancel',
-                btn1Color: null,
-                btn2Color: null,
-                btn3Color: null,
-                btn1Method: () => {
-                    saveTrainingProgress();
-                    setTrainingProgress([]);
-                    setExercisingStatus(false);
-                    setModalParams((prev) => ({
-                        ...prev,
-                        isVisible: false
-                    }));
-                    onScreenChange(triedView);
-                },
-                btn2Method: () => {
-                    setTrainingProgress({});
-                    setExercisingStatus(false);
-                    setModalParams((prev) => ({
-                        ...prev,
-                        isVisible: false
-                    }));
-                    onScreenChange(triedView);
-                },
-                btn3Method: () => {
-                    setModalParams((prev) => ({
-                        ...prev,
-                        isVisible: false
-                    }));
-                },
-                isVisible: true,
-            }))
+    const { showModal, hideModal } = useModal();
+
+    const handleSaveProgress = async () => {
+        if (!progress) return true; // Якщо немає чого зберігати, вважаємо успіхом
+        try {
+            const result = await saveTrainingRecords(trainingPlanId, trainingDayId, progress);
+            if (!result.success) {
+                toast.error(result?.message || 'Training data saving failed');
+                return false; // Повертаємо ознаку неуспіху
+            }
+            return true; // Повертаємо ознаку успіху
+        } catch (error) {
+            toast.error(error?.response?.message || 'Training data saving failed');
+            return false;
         }
-    }
-    const saveTrainingProgress = async () => {
-        const result = await saveTrainingRecords(trainingPlanId, trainingDayId, progress);
-        if (!result.success) {
-            toast.error(result.message || 'Training data has not been saved')
+    };
+
+    const handleEmptyProgress = () => {
+        setTrainingProgress({});
+        setExercisingStatus(false);
+    };
+
+    const checkAndRedirect = (targetView) => {
+        // Якщо тренування не активне, просто переходимо
+        if (!exercisingStatus) {
+            onScreenChange(targetView);
+            return;
         }
-    }
+
+        // Якщо тренування активне, показуємо модальне вікно
+        // з динамічно створеними обробниками кнопок
+        showModal({
+            mainText: 'Would you like to finish your training?',
+            buttons: [
+                {
+                    text: 'Save and Finish',
+                    onClick: async () => {
+                        const isSuccess = await handleSaveProgress();
+                        if (isSuccess) {
+                            handleEmptyProgress();
+                            onScreenChange(targetView);
+                        }
+                        hideModal();
+                    }
+                },
+                {
+                    text: 'Discard and Finish',
+                    onClick: () => {
+                        handleEmptyProgress();
+                        hideModal();
+                        onScreenChange(targetView);
+                    }
+                },
+                {
+                    text: 'Cancel',
+                    onClick: hideModal
+                },
+            ]
+        });
+    };
 
     return (
         <NavigationWrapper>
@@ -72,7 +84,7 @@ function Navigation({
                 <IconsWrapper>
                     <DashboardIcon
                         $active={currentScreen === 'Dashboard'}
-                        onClick={() => tryToRedirect('Dashboard')}
+                        onClick={() => checkAndRedirect('Dashboard')}
                     />
                     <TrainingIcon
                         $active={
@@ -84,19 +96,19 @@ function Navigation({
                             currentScreen === 'ExercisesView' ||
                             currentScreen === 'Exercising'
                         }
-                        onClick={() => tryToRedirect('Trainings')}
+                        onClick={() => checkAndRedirect('Trainings')}
                     />
                     <DietIcon
                         $active={
                             currentScreen === 'Diet'
                         }
-                        onClick={() => tryToRedirect('Diet')}
+                        onClick={() => checkAndRedirect('Diet')}
                     />
                     <CalculatorIcon
                         $active={
                             currentScreen === 'Calculator'
                         }
-                        onClick={() => tryToRedirect('Calculator')}
+                        onClick={() => checkAndRedirect('Calculator')}
                     />
                 </IconsWrapper>
             </StyledNavigation>

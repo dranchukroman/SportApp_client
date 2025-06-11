@@ -8,8 +8,8 @@ import NotFound from '../views/NotFound/NotFound.jsx';
 import TrainingPlansView from '../views/Trainings/TrainingPlansView/';
 import TrainingPlanDetails from '../views/Trainings/TrainingPlanDetails/';
 import TrainingDaysView from '../views/Trainings/TrainingDaysView/';
-import TrainingDaysDetails from '../views/Trainings/TrainingDaysDetails/TrainingDaysDetails.jsx';
-import ExercisesView from '../views/Trainings/ExercisesView/ExercisesView.jsx';
+import TrainingDaysDetails from '../views/Trainings/TrainingDaysDetails/';
+import ExercisesView from '../views/Trainings/ExercisesView/';
 import ExerciseDetails from '../views/Trainings/ExerciseDetails/ExerciseDetails.jsx';
 import Exercising from '../views/Trainings/Exercising/Exercising.jsx';
 import ExercisingHistory from '../views/Trainings/ExercisingHistory/index.jsx';
@@ -25,10 +25,8 @@ const renderScreen = ({
     controllTrainings,
     setExercisingStatus,
     exercisingStatus,
-    setModalParams,
     setTrainingProgress,
     trainingProgress,
-    setLoader,    
   }) => {
     switch (currentScreen) {
         case 'Dashboard':
@@ -42,7 +40,7 @@ const renderScreen = ({
         case 'TrainingDaysDetails':
             return <TrainingDaysDetails onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} editModeStatus={editModeStatus} />
         case 'ExercisesView':
-            return <ExercisesView onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingPlanId={controllTrainings.trainingPlanId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setModalParams={setModalParams} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress}/>
+            return <ExercisesView onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingPlanId={controllTrainings.trainingPlanId} setControllTrainings={setControllTrainings} editModeStatus={editModeStatus} exercisingStatus={exercisingStatus} setExercisingStatus={setExercisingStatus} setTrainingProgress={setTrainingProgress} trainingProgress={trainingProgress}/>
         case 'ExerciseDetails':
             return <ExerciseDetails onScreenChange={setCurrentScreen} trainingDayId={controllTrainings.trainingDayId} trainingExerciseId={controllTrainings.trainingExerciseId} editModeStatus={editModeStatus} />
         case 'Exercising':

@@ -1,5 +1,7 @@
 import styled from "styled-components";
 import theme from "../../styles/theme";
+import Heading from "../Headings/Heading";
+import { fadeInAnimation } from "../../styles/animation";
 
 export const Overlay = styled.div`
     position: fixed;
@@ -12,7 +14,12 @@ export const Overlay = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    backdrop-filter: blur(3px); /* Блюр */
+    /* 1. Встановлюємо фінальний блюр одразу */
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px); // Для підтримки Safari
+
+    /* 2. Анімуємо прозорість, а не блюр */
+    ${fadeInAnimation}
 `
 
 export const PopUp = styled.div`
@@ -35,6 +42,10 @@ export const PopUp = styled.div`
     h1 {
         text-align: center;
     }
+`
+
+export const ModalHeading = styled(Heading)`
+    font-size: ${theme.fontSizes.mediumHeader}
 `
 
 export const ButtonsWrapper = styled.div`

@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import Heading from "../../../../../components/Headings/Heading";
-import Input from "../../../../../components/Inputs/Input";
-import Button from "../../../../../components/Buttons/Button";
 import { ViewHeading, ViewInput } from "./TrainingDaysDetails.styled";
 import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
-import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { addTrainingDay, getTrainingDayById, updateTrainingDay } from "./api";
 import PageWrapper from '../../../../../components/layout/PageWrapper/PageWrapper'
 import ControllButtonsGroup from '../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup'
@@ -17,6 +13,7 @@ function TrainingDaysDetails({ onScreenChange, trainingPlanId, editModeStatus, t
         name: '',
         description: '',
     })
+
 
     useEffect(() => {
         const fetchTrainingDaysData = async () => {

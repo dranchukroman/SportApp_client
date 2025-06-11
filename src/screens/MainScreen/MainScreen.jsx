@@ -22,7 +22,7 @@ import { getProfileData, updateProfile } from '../../api/user/profile.api';
 import { checkIfTokenValid } from '../../api/user/token.api.js';
 import { getTrainingPlan } from '../../api/trainings/plans.api.js';
 
-function MainScreen({ setModalParams }) {
+function MainScreen() {
     const navigate = useNavigate(); // Create navigation object
     const token = localStorage.getItem('authToken'); // Get token
 
@@ -194,7 +194,6 @@ function MainScreen({ setModalParams }) {
                 >
                     {renderScreen({
                         token,
-                        setModalParams,
                         trainingPlans,
                         currentScreen,
                         setCurrentScreen,
@@ -210,7 +209,7 @@ function MainScreen({ setModalParams }) {
                     })}
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} setModalParams={setModalParams} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} progress={trainingProgress.progress} />
+            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} progress={trainingProgress.progress} />
         </MainScreenWrapper>
     );
 }

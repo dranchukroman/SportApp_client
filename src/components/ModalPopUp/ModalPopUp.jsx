@@ -1,46 +1,37 @@
 import React from "react";
-import { Overlay, PopUp, ButtonsWrapper } from './ModalPopUp.styled';
-import theme from "../../styles/theme";
-
-import Heading from "../Headings/Heading";
+import { Overlay, PopUp, ButtonsWrapper, ModalHeading } from './ModalPopUp.styled';
 import Button from "../Buttons/Button";
+import { useModal } from "../../providers/ModalProvider";
 
-function ModalPopUp({ modalParams }) {
-    const renderButtons = () => {
-        const buttons = [];
+function ModalPopUp() {
+    const { modalConfig, hideModal } = useModal();
 
-        Object.entries(modalParams).forEach(([key, value]) => {
-            const match = key.match(/^btn(\d+)Text$/);
+    if (!modalConfig?.isVisible) {
+        return null;
+    }
 
-            if (match && value) {
-                const index = match[1]; // отримаємо "1", "2", "3" і т.д.
-                const text = value;
-                const color = modalParams[`btn${index}Color`];
-                const method = modalParams[`btn${index}Method`];
+    const handleOverlayClick = () => {
+        hideModal();
+    }
 
-                buttons.push(
-                    <Button
-                        key={index}
-                        bgColor={color}
-                        onClick={method}
-                    >
-                        {text}
-                    </Button>
-                );
-            }
-        });
-
-        return buttons;
-    };
+    const handlePopUpClick = (e) => e.stopPropagation();
 
     return (
-        <Overlay style={{ display: modalParams?.isVisible ? '' : "none" }}>
-            <PopUp>
-                <Heading fontSize={theme.fontSizes.mediumHeader}>
-                    {modalParams?.mainText}
-                </Heading>
+        <Overlay onClick={handleOverlayClick}>
+            <PopUp onClick={handlePopUpClick}>
+                <ModalHeading>
+                    {modalConfig.mainText}
+                </ModalHeading>
                 <ButtonsWrapper>
-                    {renderButtons()}
+                    {modalConfig.buttons?.map((button, index) => (
+                        <Button
+                            key={button.text || index}
+                            bgColor={button.color}
+                            onClick={button.onClick}
+                        >
+                            {button.text}
+                        </Button>
+                    ))}
                 </ButtonsWrapper>
             </PopUp>
         </Overlay>
