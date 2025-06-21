@@ -11,11 +11,15 @@ import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBar
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { getExercisesFromLibrary, getMuscleGroups, addExerciseInDay, updateExerciseInDay } from "./api";
 import {getExerciseInDayById} from '../../../../../api/trainings/exercise.api'
+import { useParams, useNavigate } from "react-router-dom";
 
-function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus, trainingExerciseId }) {
+function ExerciseDetails() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
     const [exerciseList, setExerciseList] = useState([]);
     const [muscleGroupList, setMuscleGroups] = useState([]);
-
+    const { dayId, exerciseId, planId } = useParams();
+    const navigate = useNavigate();
     const [exerciseData, setExerciseData] = useState({
         exerciseId: '',
         name: '',
@@ -82,7 +86,7 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await getExerciseInDayById(trainingExerciseId);
+                const response = await getExerciseInDayById(exerciseId);
 
                 if (response.success && response.data) {
                     const exerciseData = response.data.exercise;
@@ -107,12 +111,12 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                 setTimeout(() => setAfterLoad(1), 100);
             }
         };
-        if (editModeStatus && trainingExerciseId !== 0) fetchExerciseData();
+        if (editModeStatus && exerciseId !== 0) fetchExerciseData();
         else {
             setLoading(false);
             setAfterLoad(1);
         }
-    }, [editModeStatus, trainingExerciseId, token]);
+    }, [editModeStatus, exerciseId]);
 
     const updateExerciseField = (key, value) => {
         setExerciseData((prev) => ({ ...prev, [key]: value }));
@@ -122,9 +126,9 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
     const handleExercise = async () => {
         if (exerciseData.name === '' || exerciseData.muscleGroup === '') return toast.error('Select muscle group and exercise');
         try {
-            const editing = editModeStatus && trainingExerciseId !== 0;
+            const editing = editModeStatus && exerciseId !== 0;
             const exerciseToSave = {
-                day_id: trainingDayId,
+                day_id: dayId,
                 exercise_id: exerciseData.exerciseId,
                 muscle_group: exerciseData.muscleGroup,
                 sets: exerciseData.series,
@@ -134,14 +138,14 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                 rest_time: returnRestTime(exerciseData.minutes, exerciseData.seconds)
             };
 
-            const dataToSend = editing ? { ...exerciseToSave, day_exercise_id: trainingExerciseId } : exerciseToSave
+            const dataToSend = editing ? { ...exerciseToSave, day_exercise_id: exerciseId } : exerciseToSave
 
             const response = editing
                 ? await updateExerciseInDay(dataToSend)
                 : await addExerciseInDay(dataToSend)
             if (!response.success) {
                 return toast.error(response.message);
-            } return onScreenChange('ExercisesView');
+            } return navigate(`/plans/${planId}/days/${dayId}/exercises`);
         } catch (error) {
             toast.error(error.response?.data?.message);
         }
@@ -224,7 +228,7 @@ function ExerciseDetails({ token, onScreenChange, trainingDayId, editModeStatus,
                     </TimerWrapper>
 
                     <div style={{ display: "flex", justifyContent: "space-between", marginTop: '10px' }}>
-                        <Button onClick={() => onScreenChange('ExercisesView')} width={'172px'}>Back</Button>
+                        <Button onClick={() => navigate(`/days/${dayId}/exercises`)} width={'172px'}>Back</Button>
                         <Button onClick={handleExercise} width={'172px'}>{editModeStatus ? 'Save' : 'Add'}</Button>
                     </div>
                 </LoadWrapper>}

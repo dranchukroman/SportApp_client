@@ -4,15 +4,14 @@ import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { useNavigate } from "react-router-dom";
 
-function Diet({ children, onScreenChange }) {
-    const handleGoToDashboard = () => {
-        onScreenChange('Dashboard');
-    }
+function Diet({ children }) {
+    const handleGoToDashboard = () => navigate('/dashboard');
 
     const [loading,] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
-
+    const navigate = useNavigate();
     useEffect(() => setAfterLoad(1), [])
 
     return (
@@ -25,7 +24,7 @@ function Diet({ children, onScreenChange }) {
                         }}
                     >
                         <Heading
-
+                            onClick={handleGoToDashboard}
                             fontSize={'23px'}
                         >
                             Functionality is not available

@@ -9,17 +9,22 @@ import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctional
 import TrainingExerciseCard from "./components/TrainingExerciseCard";
 import { useModal } from "../../../../../providers/ModalProvider";
 import { useTraining } from "../../../../../providers/TrainingProvider";
+import { useParams, useNavigate } from "react-router-dom";
 
-function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editModeStatus, setControllTrainings }) {
+function ExercisesView() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
     const [status, setStatus] = useState('loading');
     const [exercises, setExercises] = useState([]);
     const { showModal, hideModal } = useModal();
     const { trainingProgress, updateProgress, finishTraining } = useTraining();
+    const { dayId, planId } = useParams();
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             setStatus('loading');
             try {
-                const response = await getAllExerciseInDay(trainingDayId);
+                const response = await getAllExerciseInDay(dayId);
                 if (response.success) {
                     if (response.data?.exercises.length > 0) {
                         setExercises(response?.data?.exercises);
@@ -37,11 +42,11 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
             }
         };
         fetchData();
-    }, [trainingDayId]);
+    }, [dayId]);
 
     const handleSaveProgress = async () => {
         try {
-            const result = await saveTrainingRecords(trainingPlanId, trainingDayId, trainingProgress.progress);
+            const result = await saveTrainingRecords(planId, dayId, trainingProgress.progress);
             if (result.success) {
                 handleEmptyProgress();
             } else {
@@ -56,7 +61,7 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
         updateProgress({});
         finishTraining();
         hideModal();
-        onScreenChange('TrainingDaysView');
+        navigate(`/plans/${planId}/days`);
     }
 
     const handleDelete = async (exerciseIdToDelete) => {
@@ -73,16 +78,12 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
     }
 
     const handleEdit = (trainingExerciseId) => {
-        setControllTrainings((prev) => ({
-            ...prev,
-            trainingExerciseId
-        }))
-        onScreenChange('ExerciseDetails');
+        navigate(`/exercises/${trainingExerciseId}/edit`);
     }
 
     const handleBackButton = () => {
         if (editModeStatus) {
-            onScreenChange('TrainingDaysView');
+            navigate(`/plans/${planId}/days`);
         } else {
             showModal({
                 mainText: 'Would you like to finish your training?',
@@ -107,17 +108,11 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
         }
     }
 
-    const handleSubmitButton = () => {
+    const handleSubmitButton = (trainingExerciseId) => {
         if (editModeStatus) {
-            console.log('Its editing')
-            setControllTrainings((prev) => ({
-                ...prev,
-                trainingExerciseId: 0
-            }))
-            onScreenChange('ExerciseDetails');
+            navigate(`/exercises/${trainingExerciseId}/edit`);
         } else if (!trainingProgress?.progress[0]?.records?.length > 0) {
-            console.log('Its training with no progress')
-            onScreenChange('TrainingDaysView');
+            navigate(`/plans/${planId}/days`);
         } else {
             console.log('Its training')
             showModal({
@@ -147,11 +142,7 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
         if (editModeStatus) {
             toast.warning('Save editing before starting training')
         } else {
-            setControllTrainings((prev) => ({
-                ...prev,
-                trainingExerciseId
-            }))
-            onScreenChange('Exercising');
+            navigate(`/workout/${trainingExerciseId}`);
         }
     }
 
@@ -165,7 +156,7 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
             backButtonText={'Back'}
             onBackButtonClick={handleBackButton}
             buttonText={'Add exercise'}
-            onButtonClick={handleSubmitButton}
+            onButtonClick={handleSubmitButton(0)}
         />
     }
 
@@ -184,7 +175,7 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
                 firstButtonText={'Back'}
                 onFirstButtonClick={handleBackButton}
                 secondButtonText={editModeStatus ? 'Add exercise' : 'Finish'}
-                onSecondButtonClick={handleSubmitButton}
+                onSecondButtonClick={() => handleSubmitButton(0)} // To thing how to get exercise id
             />
         </PageWrapper>
     );

@@ -7,17 +7,21 @@ import PageWrapper from '../../../../../components/layout/PageWrapper/PageWrappe
 import ControllButtonsGroup from '../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup'
 import TrainingDayCard from "./components/TrainingDayCard";
 import { useTraining } from "../../../../../providers/TrainingProvider";
+import { useParams, useNavigate } from "react-router-dom";
 
-function TrainingDaysView({ onScreenChange, trainingPlanId, setControllTrainings, editModeStatus }) {
+function TrainingDaysView() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
     const [status, setStatus] = useState('loading');
     const [trainingDays, setTrainingDays] = useState([]);
     const { startTraining } = useTraining();
-
+    const { planId } = useParams();
+    const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
             setStatus('loading');
             try {
-                const response = await getTrainingDays(trainingPlanId);
+                const response = await getTrainingDays(planId);
                 if (response.success) {
                     if (response?.data?.trainingDays?.length > 0) {
                         setTrainingDays(response.data.trainingDays);
@@ -34,20 +38,16 @@ function TrainingDaysView({ onScreenChange, trainingPlanId, setControllTrainings
             }
         };
         fetchData();
-    }, [trainingPlanId]);
+    }, [planId]);
 
-    const setDayIdAndNavigate = (dayId, screen) => {
-        setControllTrainings(prev => ({ ...prev, trainingDayId: dayId }));
-        onScreenChange(screen);
-    }
 
-    const handleBackButton = () => onScreenChange("Trainings");
-    const handleAddDayButton = () => setDayIdAndNavigate(0, "TrainingDaysDetails");
-    const handleEditing = (trainingDayId) => setDayIdAndNavigate(trainingDayId, "TrainingDaysDetails");
-    const handleEditExercise = (trainingDayId) => setDayIdAndNavigate(trainingDayId, "ExercisesView");
+    const handleBackButton = () => navigate("/plans");
+    const handleAddDayButton = () => navigate(`/plans/${planId}/days/new`);
+    const handleEditing = (trainingDayId) => navigate(`/plans/${planId}/days/${trainingDayId}/edit`);
+    const handleEditExercise = (trainingDayId) => navigate(`/plans/${planId}/days/${trainingDayId}/exercises`);
     const handleTrainingStart = (trainingDayId) => {
         startTraining();
-        setDayIdAndNavigate(trainingDayId, "ExercisesView");
+        navigate(`/days/${trainingDayId}/exercises`);
     }
 
     const handleDelete = async (dayIdToDelete) => {

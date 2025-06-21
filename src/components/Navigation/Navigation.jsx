@@ -6,20 +6,19 @@ import { NavigationWrapper, StyledNavigation, IconsWrapper, DashboardIcon, DietI
 import DivideLine from "../Dividers/DivideLine";
 import { saveTrainingRecords } from "../../api/trainings/training.api";
 import { useTraining } from "../../providers/TrainingProvider";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 
-function Navigation({
-    currentScreen,
-    onScreenChange,
-    trainingPlanId,
-    trainingDayId,
-}) {
+function Navigation() {
     const { showModal, hideModal } = useModal();
     const { isExercising, trainingProgress, updateProgress, finishTraining } = useTraining();
+    const { dayId, planId } = useParams();
+    const navigate = useNavigate();
+    const location = useLocation();
 
     const handleSaveProgress = async () => {
         if (!trainingProgress.progress) return true; // Якщо немає чого зберігати, вважаємо успіхом
         try {
-            const result = await saveTrainingRecords(trainingPlanId, trainingDayId, trainingProgress.progress);
+            const result = await saveTrainingRecords(planId, dayId, trainingProgress.progress);
             if (!result.success) {
                 toast.error(result?.message || 'Training data saving failed');
                 return false; // Повертаємо ознаку неуспіху
@@ -39,7 +38,7 @@ function Navigation({
     const checkAndRedirect = (targetView) => {
         // Якщо тренування не активне, просто переходимо
         if (!isExercising) {
-            onScreenChange(targetView);
+            navigate(targetView);
             return;
         }
 
@@ -54,7 +53,7 @@ function Navigation({
                         const isSuccess = await handleSaveProgress();
                         if (isSuccess) {
                             handleEmptyProgress();
-                            onScreenChange(targetView);
+                            navigate(targetView);
                         }
                         hideModal();
                     }
@@ -64,7 +63,7 @@ function Navigation({
                     onClick: () => {
                         handleEmptyProgress();
                         hideModal();
-                        onScreenChange(targetView);
+                        navigate(targetView);
                     }
                 },
                 {
@@ -81,32 +80,29 @@ function Navigation({
             <StyledNavigation>
                 <IconsWrapper>
                     <DashboardIcon
-                        $active={currentScreen === 'Dashboard'}
-                        onClick={() => checkAndRedirect('Dashboard')}
+                        $active={location.pathname === '/dashboard'}
+                        onClick={() => checkAndRedirect('/dashboard')}
                     />
                     <TrainingIcon
                         $active={
-                            currentScreen === 'Trainings' ||
-                            currentScreen === 'TrainingPlanDetails' ||
-                            currentScreen === 'TrainingDaysView' ||
-                            currentScreen === 'TrainingDaysDetails' ||
-                            currentScreen === 'ExerciseDetails' ||
-                            currentScreen === 'ExercisesView' ||
-                            currentScreen === 'Exercising'
+                            location.pathname.startsWith('/plans') ||
+                            location.pathname.startsWith('/days') ||
+                            location.pathname.startsWith('/exercises') ||
+                            location.pathname.startsWith('/workout')
                         }
-                        onClick={() => checkAndRedirect('Trainings')}
+                        onClick={() => checkAndRedirect('/plans')}
                     />
-                    <DietIcon
+                    <DietIcon   
                         $active={
-                            currentScreen === 'Diet'
+                            location.pathname === '/diet'
                         }
-                        onClick={() => checkAndRedirect('Diet')}
+                        onClick={() => checkAndRedirect('/diet')}
                     />
                     <CalculatorIcon
                         $active={
-                            currentScreen === 'Calculator'
+                            location.pathname === '/calculator'
                         }
-                        onClick={() => checkAndRedirect('Calculator')}
+                        onClick={() => checkAndRedirect('/calculator')}
                     />
                 </IconsWrapper>
             </StyledNavigation>

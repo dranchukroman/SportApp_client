@@ -6,11 +6,15 @@ import Button from "../../../../../components/Buttons/Button";
 import HistoryTile from "./components/HistoryTile";
 import PageWrapper from "../../../../../components/layout/PageWrapper/PageWrapper";
 import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar";
+import { useParams, useNavigate  } from "react-router-dom";
 
-function ExercisingHistory({ exerciseId, onScreenChange }) {
+function ExercisingHistory() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
     const [status, setStatus] = useState('loading');
     const [exerciseHistory, setExerciseHistory] = useState([]);
-
+    const { exerciseId } = useParams();
+    const navigate = useNavigate();
     const fetchData = useCallback(async () => {
         setStatus('loading');
         try {
@@ -44,12 +48,12 @@ function ExercisingHistory({ exerciseId, onScreenChange }) {
         return <EmptyFunctionalBar
             headerText={'No records to display'}
             backButtonText={'Back'}
-            onBackButtonClick={() => onScreenChange('Exercising')}
+            onBackButtonClick={() => navigate(`/workout/${exerciseId}`)}
         />
     }
     return (
         <PageWrapper>
-            <Button onClick={() => onScreenChange('Exercising')}>Back</Button>
+            <Button onClick={() => navigate(`/workout/${exerciseId}`)}>Back</Button>
             {exerciseHistory.map(training => (
                 <HistoryTile key={training.session_id} trainingData={training} />
             ))}

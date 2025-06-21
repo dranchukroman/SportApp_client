@@ -7,11 +7,14 @@ import TrainingPlanCard from "./components/TrainingPlanCard";
 import ControllButtonsGroup from "../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup";
 import PageWrapper from "../../../../../components/layout/PageWrapper/PageWrapper";
 import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar";
+import { useNavigate } from "react-router-dom";
 
-function TrainingPlansView({ onScreenChange, setControllTrainings, setEditModeStatus, editModeStatus }) {
+function TrainingPlansView() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
     const [status, setStatus] = useState('loading');
     const [trainingPlans, setTrainingPlans] = useState([]);
-
+    const navigate = useNavigate();
     const getTrainingPlans = useCallback(async () => {
         setStatus('loading');
         try {
@@ -47,28 +50,16 @@ function TrainingPlansView({ onScreenChange, setControllTrainings, setEditModeSt
         }
     }
 
-    const handleEdit = (plan_id) => {
-        setControllTrainings((prev) => ({
-            ...prev,
-            trainingPlanId: plan_id
-        }));
-        onScreenChange('TrainingPlanDetails');
-    }
+    const handleEdit = (plan_id) => navigate(`/plans/${plan_id}/edit`);
 
     const handlePlanCreation = () => {
         setEditModeStatus(false);
-        onScreenChange('TrainingPlanDetails');
+        navigate('/plans/new');
     }
 
     const handleToggleEditMode = () => setEditModeStatus((prev) => !prev);
 
-    const showTrainingDays = (planId) => {
-        setControllTrainings((prev) => ({
-            ...prev,
-            trainingPlanId: planId
-        }));
-        onScreenChange('TrainingDaysView');
-    }
+    const showTrainingDays = (planId) => navigate(`/plans/${planId}/days`);
 
     if (status === 'loading') {
         return <FunctionalBarLoader />

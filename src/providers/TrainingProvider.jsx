@@ -9,7 +9,7 @@ export function TrainingProvider({ children }) {
 
     const startTraining = () => setIsExercising(true);
     const updateProgress = (data) => setTrainingProgress(data);
-    const finishTraining = ({ shouldSave }) => setIsExercising(false);
+    const finishTraining = ({ shouldSave }) => setIsExercising(false); // Add function to save
 
     const value = {
         isExercising,

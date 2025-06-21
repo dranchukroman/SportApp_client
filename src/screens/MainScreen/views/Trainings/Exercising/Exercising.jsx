@@ -27,8 +27,14 @@ import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/Sing
 import { getExerciseInDayById } from "../../../../../api/trainings/exercise.api";
 import Timer from "../../../../../components/Timer/Timer";
 import { useTraining } from "../../../../../providers/TrainingProvider";
+import { useParams, useNavigate } from "react-router-dom";
 
-function Exercising({ token, onScreenChange, trainingExerciseId }) {
+function Exercising() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { exerciseId } = useParams();
+    const { dayId } = useParams();
+    const navigate = useNavigate();
     // Current exercise
     const [exerciseData, setExerciseData] = useState({
         exerciseName: 'No data to show',
@@ -43,7 +49,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId }) {
 
     // Save or get training history
     const [exerciseHistory, setExerciseHistory] = useState(() => {
-        const existingExercise = trainingProgress?.progress?.find(exercise => exercise.exerciseId === trainingExerciseId);
+        const existingExercise = trainingProgress?.progress?.find(exercise => exercise.exerciseId === exerciseId);
         return existingExercise ? existingExercise.records : [];
     });
 
@@ -66,7 +72,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId }) {
             try {
                 setLoading(true);
                 setAfterLoad(0);
-                const response = await getExerciseInDayById(trainingExerciseId);
+                const response = await getExerciseInDayById(exerciseId);
 
                 const exerciseData = response.data.exercise;
                 const { minutes, seconds } = parseRestTime(exerciseData.rest_time);
@@ -88,7 +94,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId }) {
             }
         }
         fetchExerciseData();
-    }, [token, trainingExerciseId]);
+    }, [exerciseId]);
 
     const addRecordToHistory = () => {
         const now = new Date();
@@ -109,18 +115,18 @@ function Exercising({ token, onScreenChange, trainingExerciseId }) {
             const progressArray = Array.isArray(prev?.progress) ? prev.progress : [];
             return {
                 ...prev,
-                progress: progressArray.some(ex => ex.exerciseId === trainingExerciseId)
+                progress: progressArray.some(ex => ex.exerciseId === exerciseId)
                     ? progressArray.map(ex =>
-                        ex.exerciseId === trainingExerciseId
+                        ex.exerciseId === exerciseId
                             ? { ...ex, records: [...exerciseHistory] }
                             : ex
                     )
-                    : [...progressArray, { exerciseId: trainingExerciseId, records: [...exerciseHistory] }]
+                    : [...progressArray, { exerciseId: exerciseId, records: [...exerciseHistory] }]
             };
         });
         setExerciseHistory([]);
         setRecordInfo({ weight: '', reps: '', note: '' });
-        onScreenChange('ExercisesView');
+        navigate(`/days/${dayId}/exercises`);
     }
 
     return (
@@ -148,7 +154,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId }) {
                                 Note - {exerciseData.description}
                             </ExerciseParagraf>
                         </ExerciseInfoFrame>
-                        <div onClick={() => onScreenChange('ExercisingHistory')}>
+                        <div onClick={() => navigate(`/exercises/${exerciseId}/history`)}>
                             <HistoryIcon />
                         </div>
                     </FlexItems>

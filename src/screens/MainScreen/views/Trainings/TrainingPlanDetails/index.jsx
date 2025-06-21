@@ -4,8 +4,12 @@ import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBar
 import { addTrainingPlan, getTrainingPlanById, updateTrainingPlan } from "./api";
 import TrainingPlanForm from "./components/TrainingPlanForm";
 import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar";
+import { useNavigate, useParams } from "react-router-dom";
 
-function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeStatus, trainingPlanId }) {
+function TrainingPlanDetails() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
+    const navigate = useNavigate();
     const [status, setStatus] = useState(editModeStatus ? 'loading' : 'idle')
     const [formData, setFormData] = useState({
         name: '',
@@ -14,6 +18,7 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
         thumbnail_image: null,
         is_current_plan: false,
     });
+    const { planId } = useParams();
 
     useEffect(() => {
         const fetchTrainingPlansData = async () => {
@@ -21,7 +26,7 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
 
             setStatus('loading');
             try {
-                const response = await getTrainingPlanById(trainingPlanId);
+                const response = await getTrainingPlanById(planId);
                 if (response.success && response?.data?.trainingPlan) {
                     const { name, description, days_per_week, thumbnail_image, is_current_plan } = response.data.trainingPlan;
                     setFormData((prev) => ({
@@ -44,7 +49,7 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
         }
 
         fetchTrainingPlansData();
-    }, [editModeStatus, trainingPlanId]);
+    }, [editModeStatus, planId]);
 
     const handleSubmitClick = async () => {
         if (formData.name === '' || formData.description === '' || formData.days_per_week.length === 0)
@@ -53,7 +58,7 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
         setStatus('submitting');
         try {
             const dataToSend = editModeStatus
-                ? { ...formData, trainingPlanId }
+                ? { ...formData, planId }
                 : formData;
 
             const response = editModeStatus
@@ -63,12 +68,8 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
             if (response.success) {
 
                 if (!editModeStatus) {
-                    setControllTrainings((prev) => ({
-                        ...prev,
-                        trainingPlanId: response.data.planId
-                    }))
-                    onScreenChange('TrainingDaysView');
-                } else onScreenChange('Trainings');
+                    navigate(`/plans/${response.data.planId}/days`);
+                } else navigate('/plans');
             } else {
                 toast.error(response.message || 'Action failed');
             }
@@ -109,7 +110,7 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
         return <EmptyFunctionalBar
             headerText={'No data to display'}
             backButtonText={'Back'}
-            onBackButtonClick={() => onScreenChange('Trainings')}
+            onBackButtonClick={() => navigate('/plans')}
         />
     }
     return <TrainingPlanForm
@@ -121,7 +122,7 @@ function TrainingPlanDetails({ setControllTrainings, onScreenChange, editModeSta
         isEditing={editModeStatus}
         isSubmitting={status === 'submitting'}
         status={status}
-        onBack={() => onScreenChange('Trainings')}
+        onBack={() => navigate('/plans')}
     />
 }
 

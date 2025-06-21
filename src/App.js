@@ -80,7 +80,7 @@ function App() {
 						<Route path="/days/:dayId/exercises/new" element={<ExerciseDetails />} />
 						<Route path="/exercises/:exerciseId/edit" element={<ExerciseDetails />} />
 						<Route path="/exercises/:exerciseId/history" element={<ExercisingHistory />} />
-						<Route path="/workout/:dayId" element={<Exercising />} />
+						<Route path="/workout/:exerciseId" element={<Exercising />} />
 
 						{/* Інші роути основного додатку */}
 						<Route path="/diet" element={<Diet />} />

@@ -9,14 +9,18 @@ import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoa
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { toast } from "sonner";
 import { getFullDbStatistic } from "./api/statistic.api";
+import { useNavigate } from "react-router-dom";
 
-function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
+function Dashboard() {
+    const navigate = useNavigate();
     const [headerUnderTraininTile, setHeaderUnderTraininTile] = useState('Set up your first training plan');
     const [trainingProgress, setTrainingProgress] = useState({
         total_sessions: 0,
         avg_sessions_per_week: 0,
         total_training_minutes: 0
     })
+
+    const [trainingPlans, setTrainingPlans] = useState([]);
 
     const [loading, setLoading] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
@@ -81,10 +85,7 @@ function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
                             {currentPlan[0].name}
                         </Heading>
                         <Button
-                            onClick={() => {
-                                setControllTrainings(prev => ({ ...prev, trainingPlanId: currentPlan[0].plan_id }));
-                                onScreenChange('TrainingDaysView');
-                            }}
+                            onClick={() => navigate(`/plans/${currentPlan[0].plan_id}/days`)}
                             width={'280px'}
                         >
                             Start training
@@ -101,7 +102,7 @@ function Dashboard({ onScreenChange, trainingPlans, setControllTrainings }) {
                 }}
             >
                 <Button
-                    onClick={() => { onScreenChange('TrainingPlanDetails') }}
+                        onClick={() => { navigate('/plans/new') }}
                     width={'280px'}
                 >
                     Create training plan

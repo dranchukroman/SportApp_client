@@ -14,11 +14,11 @@ import UserIcon from '../../components/UserIcon/UserIcon';
 import Settings from './views/Settings/Settings';
 
 // Other functions
-import renderScreen from './utils/renderScreen.js';
 import getPageTitles from './utils/getPageTitles.js';
 import useFunctionalBarHeight from './hooks/useFunctionalBarHeight.js';
 import { getTrainingPlan } from '../../api/trainings/plans.api.js';
 import { useAuth } from '../../providers/AuthProvider.jsx';
+import { Outlet } from 'react-router-dom';
 
 function MainScreen() {
     const { user, updateUser } = useAuth();
@@ -46,14 +46,6 @@ function MainScreen() {
     const [trainingPlans, setTrainingPlans] = useState([]);
 
     // Move it to context
-    // Data to manipulate trainings
-    const [controllTrainings, setControllTrainings] = useState({
-        trainingPlanId: 0,
-        trainingDayId: 0,
-        trainingExerciseId: 0
-    });
-
-    // Move it to context
     // State to check if it is edit mode or not;
     const [editModeStatus, setEditModeStatus] = useState(false); // Edit trainings
 
@@ -75,10 +67,9 @@ function MainScreen() {
         fetchTrainingPlans();
     }, []);
 
-    const [currentScreen, setCurrentScreen] = useState('Dashboard'); // Current screen
     const pageTitles = useMemo(() => getPageTitles(user.first_name), [user.first_name]); // Get page titles
     const [pageTitle, changePageTitle] = useState(pageTitles["Dashboard"]); // Page title
-    useEffect(() => changePageTitle(pageTitles[currentScreen]), [currentScreen, pageTitles]); // Change page title
+    // useEffect(() => changePageTitle(pageTitles[currentScreen]), [currentScreen, pageTitles]); // Change page title
 
     return (
         <MainScreenWrapper>
@@ -105,18 +96,10 @@ function MainScreen() {
                         overflowX: 'hidden',
                     }}
                 >
-                    {renderScreen({
-                        trainingPlans,
-                        currentScreen,
-                        setCurrentScreen,
-                        controllTrainings,
-                        setControllTrainings,
-                        editModeStatus,
-                        setEditModeStatus,
-                    })}
+                    <Outlet />
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} />
+            <Navigation/>
         </MainScreenWrapper>
     );
 }

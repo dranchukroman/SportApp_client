@@ -6,22 +6,26 @@ import { addTrainingDay, getTrainingDayById, updateTrainingDay } from "./api";
 import PageWrapper from '../../../../../components/layout/PageWrapper/PageWrapper'
 import ControllButtonsGroup from '../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup'
 import EmptyFunctionalBar from '../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar'
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 
-function TrainingDaysDetails({ onScreenChange, trainingPlanId, editModeStatus, trainingDayId }) {
+function TrainingDaysDetails() {
+    // To remove it
+    const [editModeStatus, setEditModeStatus] = useState(false);
     const [status, setStatus] = useState(editModeStatus ? 'loading' : 'idle');
     const [trainingDayData, setTrainingDayData] = useState({
         name: '',
         description: '',
     })
-
-
+    const navigate = useNavigate();
+    const { planId, dayId } = useParams();
+    const location = useLocation();
     useEffect(() => {
         const fetchTrainingDaysData = async () => {
             if (!editModeStatus) return;
 
             setStatus('loading');
             try {
-                const response = await getTrainingDayById(trainingDayId);
+                const response = await getTrainingDayById(dayId);
                 if (response.success) {
                     if (response?.data) {
                         setTrainingDayData((prev) => ({
@@ -42,7 +46,7 @@ function TrainingDaysDetails({ onScreenChange, trainingPlanId, editModeStatus, t
             }
         }
         fetchTrainingDaysData();
-    }, [editModeStatus, trainingDayId]);
+    }, [editModeStatus, dayId]);
 
     const handleSubmitClick = async () => {
         if (trainingDayData.name === '' || trainingDayData.description === '') {
@@ -50,17 +54,17 @@ function TrainingDaysDetails({ onScreenChange, trainingPlanId, editModeStatus, t
         }
         setStatus('submitting');
         try {
-            const isNewDay = trainingDayId === 0;
+            const isNewDay = location.pathname.includes('new');
             const dataToSend = isNewDay
-                ? { trainingPlanId, ...trainingDayData }
-                : { day_id: trainingDayId, ...trainingDayData };
+                ? { planId, ...trainingDayData }
+                : { day_id: dayId, ...trainingDayData };
 
             const response = isNewDay
                 ? await addTrainingDay(dataToSend)
                 : await updateTrainingDay(dataToSend)
 
             if (response.success) {
-                onScreenChange('TrainingDaysView');
+                navigate(`/plans/${planId}/days`);
             } else {
                 toast.error(response.message || 'Action failed');
             }
@@ -71,7 +75,7 @@ function TrainingDaysDetails({ onScreenChange, trainingPlanId, editModeStatus, t
         }
     }
 
-    const handleBackClick = () => onScreenChange('TrainingDaysView');
+    const handleBackClick = () => navigate(`/plans/${planId}/days`);
 
     const handleInputChange = (field, value) => {
         setTrainingDayData((prev) => ({

@@ -4,12 +4,11 @@ import Heading from "../../../../components/Headings/Heading";
 import Button from "../../../../components/Buttons/Button";
 import FunctionalBarLoader from '../../../../components/Loaders/FunctionalBarLoader/FunctionalBarLoader';
 import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleLoader.styled";
+import { useNavigate } from "react-router-dom";
 
-function NotFound({ children, onScreenChange }) {
-    const handleGoToDashboard = () => {
-        onScreenChange('Dashboard');
-    }
-
+function NotFound({ children }) {
+    const handleGoToDashboard = () => navigate('/dashboard');
+    const navigate = useNavigate();
 
     const [loading,] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
@@ -26,7 +25,7 @@ function NotFound({ children, onScreenChange }) {
                         }}
                     >
                         <Heading
-
+                            onClick={handleGoToDashboard}
                             fontSize={'23px'}
                         >
                             Not found 404
