@@ -1,6 +1,5 @@
 // External components
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
 
 // Themes and style
@@ -18,153 +17,72 @@ import Settings from './views/Settings/Settings';
 import renderScreen from './utils/renderScreen.js';
 import getPageTitles from './utils/getPageTitles.js';
 import useFunctionalBarHeight from './hooks/useFunctionalBarHeight.js';
-import { getProfileData, updateProfile } from '../../api/user/profile.api';
-import { checkIfTokenValid } from '../../api/user/token.api.js';
 import { getTrainingPlan } from '../../api/trainings/plans.api.js';
+import { useAuth } from '../../providers/AuthProvider.jsx';
 
 function MainScreen() {
-    const navigate = useNavigate(); // Create navigation object
-    const token = localStorage.getItem('authToken'); // Get token
-
-    // Check if token exist and valid
-    useEffect(() => {
-        !token && navigate('/login');
-        const tokenValidation = async () => {
-            try {
-                const token = await checkIfTokenValid();
-                if (!token || !token.tokenStatus) {
-                    localStorage.removeItem('authToken');
-                    toast.error('Session expired, please log in again', {id: 'expired-token'});
-                    navigate('/login');
-                }
-            } catch (error) {
-                toast.error('Session expired, please log in again', {id: 'expired-token'});
-                navigate('/login');
-            }
+    const { user, updateUser } = useAuth();
+    // All profile data
+    const [formData, setFormData] = useState(user);
+    // Variable that virify if user changed profile data in settings;
+    const [isDataChanged, setIsDataChanged] = useState(false);
+    
+    // Custom hook to change height of functional bar
+    const { userInformationHeight, functionalBarHeight, scrollablePartHeight, userDataHeight, visiblePartOfScreen } = useFunctionalBarHeight();
+    // Show/hide settings
+    const [settingsVisibility, setSettingsVisibility] = useState(false);
+    // Show/hide settings function
+    const showSettings = async () => {
+        // If user changed profile data in settings, update user data
+        if (settingsVisibility && isDataChanged) {
+            await updateUser(formData);
+            setIsDataChanged(false);
         }
-        tokenValidation()
-    }, [token, navigate]);
+        // Show/hide settings
+        setSettingsVisibility(prev => !prev);
+    };
 
-    const [userData, setUserData] = useState({
-        name: '',
-        surname: '',
-        height: 0,
-        weight: 0,
-        age: 0,
-        gender: 'other',
-        goal: '',
-        activity_level: 'low'
-    }); // Save user data
+    // Save all training plans
+    const [trainingPlans, setTrainingPlans] = useState([]);
 
-    const [trainingPlans, setTrainingPlans] = useState([]); // Save all training plans
-
+    // Move it to context
+    // Data to manipulate trainings
     const [controllTrainings, setControllTrainings] = useState({
         trainingPlanId: 0,
         trainingDayId: 0,
         trainingExerciseId: 0
-    }); // Data to manipulate trainings
+    });
 
+    // Move it to context
+    // State to check if it is edit mode or not;
     const [editModeStatus, setEditModeStatus] = useState(false); // Edit trainings
-
-    const [exercisingStatus, setExercisingStatus] = useState(false); // Exercising status (Do user started training?)
+    // State to check if user is exercising
+    const [exercisingStatus, setExercisingStatus] = useState(false);
+    // Training process is here
     const [trainingProgress, setTrainingProgress] = useState({}); // Save progress from training
 
-    const [isDataChanged, setIsDataChanged] = useState(false); // Have data been changed in settings?
-    const [updateData, setUpdateData] = useState(false); // Trigger to update data
-    const [isLoading, setLoader] = useState(false)
-
-    // Function to get user profile data
-    const getUserData = useCallback(async () => {
-        try {
-            const userData = await getProfileData();
-            if (!userData.success || !userData.data.profile) {
-                return navigate('/createProfile');
-            }
-            const { profile } = userData.data;
-            setUserData((prevState) => ({
-                ...prevState,
-                name: profile.first_name,
-                surname: profile.last_name,
-                height: profile.height,
-                weight: profile.weight,
-                age: profile.age,
-                gender: profile.gender,
-                goal: profile.goal,
-                activity_level: profile.activity_level,
-            }))
-        } catch (error) {
-            console.error('Error fetching user data:', error);
-        }
-    }, [navigate]);
-
-    // Fetch user profile data
-    useEffect(() => {
-        getUserData();
-    }, [getUserData]);
-
-    // Update user profile data
-    useEffect(() => {
-        if (updateData && isDataChanged) {
-            const update = async () => {
-                try {
-                    const newProfileData = {
-                        first_name: userData.name,
-                        last_name: userData.surname,
-                        height: userData.height,
-                        weight: userData.weight,
-                        age: userData.age,
-                        gender: userData.gender,
-                        goal: userData.goal,
-                        activity_level: userData.activity_level,
-                    }
-                    const profileUpdateData = await updateProfile(newProfileData);
-                    profileUpdateData.success ? toast.info(profileUpdateData.message || 'Profile updated') : toast.error(profileUpdateData.message || 'Updating profile data failed');
-                } catch (error) {
-                    toast.error(error.response?.data?.message || 'Updating profile data failed');
-                } finally {
-                    setIsDataChanged(false);
-                    setUpdateData(false);
-                }
-            }
-            update();
-        }
-    }, [updateData, isDataChanged, getUserData, token, userData]);
-
+    // Change it to take only current training
     // Get all training plans
     useEffect(() => {
         const fetchTrainingPlans = async () => {
             try {
                 const planData = await getTrainingPlan();
-                if(planData.success && planData.data.trainingPlans.length > 0){
+                if (planData.success && planData.data.trainingPlans.length > 0) {
                     setTrainingPlans(planData.data.trainingPlans);
                 }
-                
+
             } catch (error) {
                 console.error('Error fetching data:', error);
                 toast.error('Can\'t get training plans');
             }
         };
         fetchTrainingPlans();
-    }, [token]);
+    }, []);
 
     const [currentScreen, setCurrentScreen] = useState('Dashboard'); // Current screen
-    const pageTitles = useMemo(() => getPageTitles(userData.name), [userData.name]); // Get page titles
+    const pageTitles = useMemo(() => getPageTitles(user.first_name), [user.first_name]); // Get page titles
     const [pageTitle, changePageTitle] = useState(pageTitles["Dashboard"]); // Page title
     useEffect(() => changePageTitle(pageTitles[currentScreen]), [currentScreen, pageTitles]); // Change page title
-
-    // Custom hook to change height of functional bar
-    const { userInformationHeight, functionalBarHeight, scrollablePartHeight, userDataHeight, visiblePartOfScreen } = useFunctionalBarHeight();
-
-    // Show/hide settings
-    const [settingsVisibility, setSettingsVisibility] = useState(false);
-    const showSettings = () => {
-        setSettingsVisibility(prev => {
-            if (prev) {
-                setUpdateData(true);
-            }
-            return !prev;
-        });
-    };
 
     return (
         <MainScreenWrapper>
@@ -173,7 +91,7 @@ function MainScreen() {
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
             {settingsVisibility && (
-                <Settings setUserData={setUserData} userData={userData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} />
+                <Settings setFormData={setFormData} formData={formData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} />
             )}
             <FunctionalBar
                 style={{
@@ -183,7 +101,6 @@ function MainScreen() {
                     transition: 'top 0.3s ease',
                 }}
                 trainingPlans={trainingPlans}
-                isLoading={isLoading}
             >
                 <div
                     style={{
@@ -193,7 +110,6 @@ function MainScreen() {
                     }}
                 >
                     {renderScreen({
-                        token,
                         trainingPlans,
                         currentScreen,
                         setCurrentScreen,
@@ -205,7 +121,6 @@ function MainScreen() {
                         setExercisingStatus,
                         trainingProgress,
                         setTrainingProgress,
-                        setLoader,
                     })}
                 </div>
             </FunctionalBar>

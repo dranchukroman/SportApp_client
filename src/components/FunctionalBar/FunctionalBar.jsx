@@ -11,7 +11,7 @@ function FunctionalBar({ style, children, trainingPlans, isLoading }) {
             <FunctionalBarWrapper>
                 <Calendar currentPlan={trainingPlans?.find(plan => plan.is_current_plan === true)} />
                 <DivideLine marginTop={'0'} marginBottom={'10px'} />
-                {isLoading ? <FunctionalBarLoader/> : children}
+                {children}
             </FunctionalBarWrapper>
 
         </StyledFunctionalBar>

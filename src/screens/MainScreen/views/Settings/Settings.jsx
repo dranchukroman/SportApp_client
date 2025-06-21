@@ -1,36 +1,27 @@
-import React from "react";
+import React, { useState, useEffect} from "react";
 import { toast } from 'sonner';
 
 import { SettingScreen, ButtonsGroup, Button, SettingInput } from "./Settings.styled";
 import theme from "../../../../styles/theme";
 import DivideLine from "../../../../components/Dividers/DivideLine";
-import { deleteAccoutn } from "../../../../api/user/profile.api";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../../../providers/AuthProvider";
 
 
-function Settings({ userData, setUserData, visiblePartOfScreen, setIsDataChanged }) {
-    const navigate = useNavigate(); // Create navigation object
+function Settings({ formData, setFormData, visiblePartOfScreen, setIsDataChanged }) {
 
-    async function deleteAccount() {
-        try {
-            const response = await deleteAccoutn();
+    const { user, logout, deleteAccount } = useAuth();
 
-            if (response.success) {
-                localStorage.removeItem('authToken');
-                navigate('/login')
-                return;
-            } else toast.error(response?.message || 'Account has not been deleted');
-        } catch (error) {
-            toast.error(error.response?.message || 'Deleting account failed');
-        }
-    }
 
-    async function logOut() {
-        if (localStorage.getItem('authToken')) {
-            localStorage.removeItem('authToken');
-        }
-        window.location.href = '/login';
-    }
+    // Додаємо useEffect, щоб оновити форму, якщо глобальний user зміниться
+    useEffect(() => {
+        setFormData(user);
+    }, [user]);
+
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+        setIsDataChanged(true);
+    };
 
     return (
         <SettingScreen>
@@ -47,70 +38,45 @@ function Settings({ userData, setUserData, visiblePartOfScreen, setIsDataChanged
                     <Button>
                         <SettingInput
                             placeholder={'Name'}
-                            onChange={(e) => {
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    name: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.name}
+                            onChange={(e) => handleInputChange(e)}
+                            name="first_name"
+                            value={formData.first_name}
 
                         />
                     </Button>
                     <Button>
                         <SettingInput
                             placeholder={'Surname'}
-                            onChange={(e) => {
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    surname: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.surname}
+                            onChange={(e) => handleInputChange(e)}
+                            name="last_name"
+                            value={formData.last_name}
 
                         />
                     </Button>
                     <Button>
                         <SettingInput
                             placeholder={'Height'}
-                            onChange={(e) => {
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    height: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.height}
+                            onChange={(e) => handleInputChange(e)}
+                            name="height"
+                            value={formData.height}
                             type="number"
                         />
                     </Button>
                     <Button>
                         <SettingInput
                             placeholder={'Weight'}
-                            onChange={(e) => {
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    weight: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.weight}
+                            onChange={(e) => handleInputChange(e)}
+                            name="weight"
+                            value={formData.weight}
                             type="number"
                         />
                     </Button>
                     <Button>
                         <SettingInput
                             placeholder={'Age'}
-                            onChange={(e) => {
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    age: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.age}
+                            onChange={(e) => handleInputChange(e)}
+                            name="age"
+                            value={formData.age}
                             type="number"
                         />
                     </Button>
@@ -130,14 +96,9 @@ function Settings({ userData, setUserData, visiblePartOfScreen, setIsDataChanged
                             Gender:
                         </div>
                         <select
-                            onChange={(e) => {
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    gender: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.gender}
+                            onChange={(e) => handleInputChange(e)}
+                            name="gender"
+                            value={formData.gender}
                             style={{
                                 backgroundColor: 'transparent',
                                 border: 'none',
@@ -172,15 +133,9 @@ function Settings({ userData, setUserData, visiblePartOfScreen, setIsDataChanged
                             Activity level:
                         </div>
                         <select
-                            onChange={(e) => {
-                                console.log(e);
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    activity_level: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.activity_level}
+                            onChange={(e) => handleInputChange(e)}
+                            name="activity_level"
+                            value={formData.activity_level}
                             style={{
                                 backgroundColor: 'transparent',
                                 border: 'none',
@@ -207,14 +162,9 @@ function Settings({ userData, setUserData, visiblePartOfScreen, setIsDataChanged
                     >
                         <SettingInput
                             placeholder={'Your goal'}
-                            onChange={(e) => {
-                                setUserData((prevState) => ({
-                                    ...prevState,
-                                    goal: e.target.value
-                                }));
-                                setIsDataChanged(true);
-                            }}
-                            value={userData.goal}
+                            onChange={(e) => handleInputChange(e)}
+                            name="goal"
+                            value={formData.goal}
                         />
                     </Button>
                 </ButtonsGroup>
@@ -300,7 +250,7 @@ function Settings({ userData, setUserData, visiblePartOfScreen, setIsDataChanged
                             justifyContent: 'center'
                         }}
 
-                        onClick={logOut}
+                        onClick={logout}
                     >
                         <div>
                             <p

@@ -1,11 +1,14 @@
 import React from "react";
 import { ModalProvider } from "./ModalProvider";
+import { AuthProvider } from "./AuthProvider";
 
 function AppProvider({ children }) {
     return (
-        <ModalProvider>
-            {children}
-        </ModalProvider>
+        <AuthProvider>
+            <ModalProvider>
+                {children}
+            </ModalProvider>
+        </AuthProvider>
     )
 }
 
