@@ -5,23 +5,21 @@ import { useModal } from "../../providers/ModalProvider";
 import { NavigationWrapper, StyledNavigation, IconsWrapper, DashboardIcon, DietIcon, TrainingIcon, CalculatorIcon } from './Navigation.styled';
 import DivideLine from "../Dividers/DivideLine";
 import { saveTrainingRecords } from "../../api/trainings/training.api";
+import { useTraining } from "../../providers/TrainingProvider";
 
 function Navigation({
     currentScreen,
     onScreenChange,
-    setTrainingProgress,
-    exercisingStatus,
-    setExercisingStatus,
     trainingPlanId,
     trainingDayId,
-    progress
 }) {
     const { showModal, hideModal } = useModal();
+    const { isExercising, trainingProgress, updateProgress, finishTraining } = useTraining();
 
     const handleSaveProgress = async () => {
-        if (!progress) return true; // Якщо немає чого зберігати, вважаємо успіхом
+        if (!trainingProgress.progress) return true; // Якщо немає чого зберігати, вважаємо успіхом
         try {
-            const result = await saveTrainingRecords(trainingPlanId, trainingDayId, progress);
+            const result = await saveTrainingRecords(trainingPlanId, trainingDayId, trainingProgress.progress);
             if (!result.success) {
                 toast.error(result?.message || 'Training data saving failed');
                 return false; // Повертаємо ознаку неуспіху
@@ -34,13 +32,13 @@ function Navigation({
     };
 
     const handleEmptyProgress = () => {
-        setTrainingProgress({});
-        setExercisingStatus(false);
+        updateProgress({});
+        finishTraining();
     };
 
     const checkAndRedirect = (targetView) => {
         // Якщо тренування не активне, просто переходимо
-        if (!exercisingStatus) {
+        if (!isExercising) {
             onScreenChange(targetView);
             return;
         }

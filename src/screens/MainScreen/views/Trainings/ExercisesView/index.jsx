@@ -8,12 +8,13 @@ import ControllButtonsGroup from "../../../../../components/ui/ControllButtonsGr
 import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar";
 import TrainingExerciseCard from "./components/TrainingExerciseCard";
 import { useModal } from "../../../../../providers/ModalProvider";
+import { useTraining } from "../../../../../providers/TrainingProvider";
 
-function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editModeStatus, setControllTrainings, setExercisingStatus, setTrainingProgress, trainingProgress }) {
+function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editModeStatus, setControllTrainings }) {
     const [status, setStatus] = useState('loading');
     const [exercises, setExercises] = useState([]);
     const { showModal, hideModal } = useModal();
-
+    const { trainingProgress, updateProgress, finishTraining } = useTraining();
     useEffect(() => {
         const fetchData = async () => {
             setStatus('loading');
@@ -52,8 +53,8 @@ function ExercisesView({ onScreenChange, trainingDayId, trainingPlanId, editMode
     }
 
     const handleEmptyProgress = () => {
-        setTrainingProgress({});
-        setExercisingStatus(false);
+        updateProgress({});
+        finishTraining();
         hideModal();
         onScreenChange('TrainingDaysView');
     }

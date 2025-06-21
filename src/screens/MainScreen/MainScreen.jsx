@@ -56,10 +56,6 @@ function MainScreen() {
     // Move it to context
     // State to check if it is edit mode or not;
     const [editModeStatus, setEditModeStatus] = useState(false); // Edit trainings
-    // State to check if user is exercising
-    const [exercisingStatus, setExercisingStatus] = useState(false);
-    // Training process is here
-    const [trainingProgress, setTrainingProgress] = useState({}); // Save progress from training
 
     // Change it to take only current training
     // Get all training plans
@@ -117,14 +113,10 @@ function MainScreen() {
                         setControllTrainings,
                         editModeStatus,
                         setEditModeStatus,
-                        exercisingStatus,
-                        setExercisingStatus,
-                        trainingProgress,
-                        setTrainingProgress,
                     })}
                 </div>
             </FunctionalBar>
-            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} exercisingStatus={exercisingStatus} setTrainingProgress={setTrainingProgress} setExercisingStatus={setExercisingStatus} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} progress={trainingProgress.progress} />
+            <Navigation currentScreen={currentScreen} onScreenChange={setCurrentScreen} trainingPlanId={controllTrainings.trainingPlanId} trainingDayId={controllTrainings.trainingDayId} />
         </MainScreenWrapper>
     );
 }

@@ -6,10 +6,12 @@ import EmptyFunctionalBar from '../../../../../components/states/EmptyFunctional
 import PageWrapper from '../../../../../components/layout/PageWrapper/PageWrapper'
 import ControllButtonsGroup from '../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup'
 import TrainingDayCard from "./components/TrainingDayCard";
+import { useTraining } from "../../../../../providers/TrainingProvider";
 
-function TrainingDaysView({ onScreenChange, trainingPlanId, setControllTrainings, editModeStatus, setExercisingStatus }) {
+function TrainingDaysView({ onScreenChange, trainingPlanId, setControllTrainings, editModeStatus }) {
     const [status, setStatus] = useState('loading');
     const [trainingDays, setTrainingDays] = useState([]);
+    const { startTraining } = useTraining();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -44,7 +46,7 @@ function TrainingDaysView({ onScreenChange, trainingPlanId, setControllTrainings
     const handleEditing = (trainingDayId) => setDayIdAndNavigate(trainingDayId, "TrainingDaysDetails");
     const handleEditExercise = (trainingDayId) => setDayIdAndNavigate(trainingDayId, "ExercisesView");
     const handleTrainingStart = (trainingDayId) => {
-        setExercisingStatus(true);
+        startTraining();
         setDayIdAndNavigate(trainingDayId, "ExercisesView");
     }
 

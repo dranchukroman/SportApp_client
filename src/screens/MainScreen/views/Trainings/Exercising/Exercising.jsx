@@ -26,8 +26,9 @@ import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBar
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { getExerciseInDayById } from "../../../../../api/trainings/exercise.api";
 import Timer from "../../../../../components/Timer/Timer";
+import { useTraining } from "../../../../../providers/TrainingProvider";
 
-function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProgress, trainingProgress }) {
+function Exercising({ token, onScreenChange, trainingExerciseId }) {
     // Current exercise
     const [exerciseData, setExerciseData] = useState({
         exerciseName: 'No data to show',
@@ -37,6 +38,8 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
         sets: '0',
         description: 'No data to show'
     });
+
+    const { trainingProgress, updateProgress } = useTraining();
 
     // Save or get training history
     const [exerciseHistory, setExerciseHistory] = useState(() => {
@@ -102,7 +105,7 @@ function Exercising({ token, onScreenChange, trainingExerciseId, setTrainingProg
     };
 
     const handleDoneButton = () => {
-        setTrainingProgress(prev => {
+        updateProgress(prev => {
             const progressArray = Array.isArray(prev?.progress) ? prev.progress : [];
             return {
                 ...prev,

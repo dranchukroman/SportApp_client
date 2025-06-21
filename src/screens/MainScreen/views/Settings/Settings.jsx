@@ -8,15 +8,14 @@ import { useAuth } from "../../../../providers/AuthProvider";
 
 
 function Settings({ formData, setFormData, visiblePartOfScreen, setIsDataChanged }) {
-
     const { user, logout, deleteAccount } = useAuth();
 
-
-    // Додаємо useEffect, щоб оновити форму, якщо глобальний user зміниться
+    // Update form if user changes
     useEffect(() => {
         setFormData(user);
     }, [user]);
 
+    // Handle input changes
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
