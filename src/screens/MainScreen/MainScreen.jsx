@@ -1,19 +1,12 @@
 // External components
 import React, { useState, useEffect, useMemo } from 'react';
 import { toast } from 'sonner';
-
-// Themes and style
 import { MainScreenWrapper, InfoBarWrapper, ScreenTitle } from './MainScreen.styled.js';
-
-// Global components
 import FunctionalBar from '../../components/FunctionalBar/FunctionalBar';
 import Navigation from '../../components/Navigation/Navigation';
 import UserIcon from '../../components/UserIcon/UserIcon';
-
-// Main pages/views
+import {SettingsContainer} from './MainScreen.styled.js';
 import Settings from './views/Settings/Settings';
-
-// Other functions
 import getPageTitles from './utils/getPageTitles.js';
 import useFunctionalBarHeight from './hooks/useFunctionalBarHeight.js';
 import { getTrainingPlan } from '../../api/trainings/plans.api.js';
@@ -22,27 +15,25 @@ import { Outlet } from 'react-router-dom';
 
 function MainScreen() {
     const { user, updateUser } = useAuth();
-    // All profile data
+
+    //Settings
     const [formData, setFormData] = useState(user);
-    // Variable that virify if user changed profile data in settings;
     const [isDataChanged, setIsDataChanged] = useState(false);
     
     // Custom hook to change height of functional bar
     const { userInformationHeight, functionalBarHeight, scrollablePartHeight, userDataHeight, visiblePartOfScreen } = useFunctionalBarHeight();
-    // Show/hide settings
     const [settingsVisibility, setSettingsVisibility] = useState(false);
-    // Show/hide settings function
+    
     const showSettings = async () => {
-        // If user changed profile data in settings, update user data
+        // If user changed profile data in settings than update user data
         if (settingsVisibility && isDataChanged) {
             await updateUser(formData);
             setIsDataChanged(false);
         }
-        // Show/hide settings
         setSettingsVisibility(prev => !prev);
     };
 
-    // Save all training plans
+
     const [trainingPlans, setTrainingPlans] = useState([]);
 
     // Move it to context
@@ -77,15 +68,16 @@ function MainScreen() {
                 <ScreenTitle>{pageTitle}</ScreenTitle>
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
-            {settingsVisibility && (
+            <SettingsContainer $isOpen={settingsVisibility}>
                 <Settings setFormData={setFormData} formData={formData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} />
-            )}
+            </SettingsContainer>
             <FunctionalBar
                 style={{
                     height: `${functionalBarHeight}px`,
                     position: 'absolute',
                     top: settingsVisibility ? (visiblePartOfScreen - 207) : (userDataHeight + 15),
-                    transition: 'top 0.3s ease',
+                    transition: 'top 0.3s ease-in-out',
+                    zIndex: 1,
                 }}
                 trainingPlans={trainingPlans}
             >

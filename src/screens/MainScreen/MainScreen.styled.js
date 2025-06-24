@@ -21,3 +21,13 @@ export const ScreenTitle = styled(StyledHeader)`
     color: ${theme.colors.darkBackground};
     font-size: ${theme.fontSizes.largeHeader};
 `
+
+export const SettingsContainer = styled.div`
+  overflow: hidden; // 👈 Дуже важливо, щоб приховати контент, коли max-height=0
+
+  // ✅ Плавний перехід для висоти
+  transition: max-height 0.3s ease-in-out;
+
+  // ✅ Встановлюємо max-height в залежності від пропса $isOpen
+  max-height: ${({ $isOpen }) => ($isOpen ? '500px' : '0')};
+`;

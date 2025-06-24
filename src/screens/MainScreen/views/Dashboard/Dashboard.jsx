@@ -10,6 +10,7 @@ import { LoadWrapper } from "../../../../components/Loaders/SingleLoader/SingleL
 import { toast } from "sonner";
 import { getFullDbStatistic } from "./api/statistic.api";
 import { useNavigate } from "react-router-dom";
+import { getTrainingPlan } from "../../../../api/trainings/plans.api";
 
 function Dashboard() {
     const navigate = useNavigate();
@@ -20,26 +21,17 @@ function Dashboard() {
         total_training_minutes: 0
     })
 
-    const [trainingPlans, setTrainingPlans] = useState([]);
+    const [currentPlan, setCurrentPlan] = useState(null);
 
     const [loading, setLoading] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
 
-    const changeHeaderIfTrainingPlanExist = useCallback(() => {
-        if (trainingPlans?.length > 0) {
-            const currentPlan = trainingPlans.find(plan => plan.is_current_plan === true);
-            if (currentPlan) {
-                setHeaderUnderTraininTile('Current training plan');
-            }
-        }
-    }, [trainingPlans]);
-
     useEffect(() => {
         const fetchStatistic = async () => {
             try {
-                const result = await getFullDbStatistic();
-                if (result?.success) {
-                    const { total_sessions, avg_sessions_per_week, total_training_minutes } = result.data;
+                const stats = await getFullDbStatistic();
+                if (stats?.success) {
+                    const { total_sessions, avg_sessions_per_week, total_training_minutes } = stats.data;
 
                     const hours = Math.floor(total_training_minutes / 60);
                     const minutes = total_training_minutes % 60;
@@ -49,6 +41,17 @@ function Dashboard() {
                         total_training_minutes: `${hours ? hours + 'h' : null} ${minutes}m`
                     })
                 }
+
+                const plans = await getTrainingPlan();
+                if (plans?.success) {
+                    setCurrentPlan(plans.data.trainingPlans.filter(plan => {
+                        const currentPlan = plan.is_current_plan === true;
+                        if (currentPlan) {
+                            setHeaderUnderTraininTile('Current training plan');
+                        }
+                        return currentPlan;
+                    }));
+                }
             } catch (error) {
                 toast.error(error?.response?.message || 'Getting statistic failed');
             }
@@ -57,7 +60,6 @@ function Dashboard() {
         try {
             setLoading(true);
             setAfterLoad(0);
-            changeHeaderIfTrainingPlanExist()
             fetchStatistic();
         } catch (error) {
             toast.error('Something went wrong!');
@@ -65,11 +67,10 @@ function Dashboard() {
             setLoading(false);
             setTimeout(() => setAfterLoad(1), 100);
         }
-    }, [trainingPlans, changeHeaderIfTrainingPlanExist]);
+    }, []);
 
     function createTrainingTile() {
-        if (trainingPlans?.length > 0) {
-            const currentPlan = trainingPlans.filter(plan => plan.is_current_plan === true);
+        if (currentPlan) {
             if (currentPlan.length === 1) {
                 return (
                     <Card
