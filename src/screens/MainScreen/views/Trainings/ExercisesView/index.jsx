@@ -9,11 +9,11 @@ import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctional
 import TrainingExerciseCard from "./components/TrainingExerciseCard";
 import { useModal } from "../../../../../providers/ModalProvider";
 import { useTraining } from "../../../../../providers/TrainingProvider";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 
 function ExercisesView() {
     // To remove it
-    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { editModeStatus, setEditModeStatus } = useOutletContext();
     const [status, setStatus] = useState('loading');
     const [exercises, setExercises] = useState([]);
     const { showModal, hideModal } = useModal();

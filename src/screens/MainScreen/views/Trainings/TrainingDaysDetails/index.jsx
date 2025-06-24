@@ -6,11 +6,11 @@ import { addTrainingDay, getTrainingDayById, updateTrainingDay } from "./api";
 import PageWrapper from '../../../../../components/layout/PageWrapper/PageWrapper'
 import ControllButtonsGroup from '../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup'
 import EmptyFunctionalBar from '../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar'
-import { useNavigate, useParams, useLocation } from "react-router-dom";
+import { useNavigate, useParams, useLocation, useOutletContext } from "react-router-dom";
 
 function TrainingDaysDetails() {
     // To remove it
-    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { editModeStatus, setEditModeStatus } = useOutletContext();
     const [status, setStatus] = useState(editModeStatus ? 'loading' : 'idle');
     const [trainingDayData, setTrainingDayData] = useState({
         name: '',

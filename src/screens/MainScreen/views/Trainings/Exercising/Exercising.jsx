@@ -27,11 +27,11 @@ import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/Sing
 import { getExerciseInDayById } from "../../../../../api/trainings/exercise.api";
 import Timer from "../../../../../components/Timer/Timer";
 import { useTraining } from "../../../../../providers/TrainingProvider";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 
 function Exercising() {
     // To remove it
-    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { editModeStatus, setEditModeStatus } = useOutletContext();
     const { exerciseId } = useParams();
     const { dayId } = useParams();
     const navigate = useNavigate();

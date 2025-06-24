@@ -6,11 +6,11 @@ import Button from "../../../../../components/Buttons/Button";
 import HistoryTile from "./components/HistoryTile";
 import PageWrapper from "../../../../../components/layout/PageWrapper/PageWrapper";
 import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar";
-import { useParams, useNavigate  } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 
 function ExercisingHistory() {
     // To remove it
-    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { editModeStatus, setEditModeStatus } = useOutletContext();
     const [status, setStatus] = useState('loading');
     const [exerciseHistory, setExerciseHistory] = useState([]);
     const { exerciseId } = useParams();

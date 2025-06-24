@@ -11,11 +11,11 @@ import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBar
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { getExercisesFromLibrary, getMuscleGroups, addExerciseInDay, updateExerciseInDay } from "./api";
 import {getExerciseInDayById} from '../../../../../api/trainings/exercise.api'
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 
 function ExerciseDetails() {
     // To remove it
-    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { editModeStatus, setEditModeStatus } = useOutletContext();
     const [exerciseList, setExerciseList] = useState([]);
     const [muscleGroupList, setMuscleGroups] = useState([]);
     const { dayId, exerciseId, planId } = useParams();

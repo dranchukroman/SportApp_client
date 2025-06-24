@@ -24,6 +24,7 @@ import ExercisesView from './screens/MainScreen/views/Trainings/ExercisesView';
 import Exercising from './screens/MainScreen/views/Trainings/Exercising/Exercising';
 import ExercisingHistory from './screens/MainScreen/views/Trainings/ExercisingHistory';
 import NotFound from './screens/MainScreen/views/NotFound/NotFound';
+import TrainingsLayout from './screens/MainScreen/views/Trainings/TrainingLayout';
 
 function App() {
 	//Function to make user use PWA on mobile
@@ -64,23 +65,26 @@ function App() {
 					{/* --- Основний додаток (для авторизованих користувачів) --- */}
 					{/* Всі ці роути будуть рендеритись всередині <MainScreen> */}
 					<Route element={<PageWithBackground $bgColor='#EEE'><MainScreen /></PageWithBackground>}>
+						<Route path="/trainings" element={<TrainingsLayout />}>
+							{/* Редірект, щоб /trainings вів на список планів */}
+							<Route index element={<Navigate to="plans" replace />} />
+							{/* Роути тренувань */}
+							<Route path="/plans" element={<TrainingPlansView />} />
+							<Route path="/plans/new" element={<TrainingPlanDetails />} />
+							<Route path="/plans/:planId/edit" element={<TrainingPlanDetails />} />
+							<Route path="/plans/:planId/days" element={<TrainingDaysView />} />
+							<Route path="/plans/:planId/days/new" element={<TrainingDaysDetails />} />
+							<Route path="/days/:dayId/edit" element={<TrainingDaysDetails />} />
+							<Route path="/days/:dayId/exercises" element={<ExercisesView />} />
+							<Route path="/days/:dayId/exercises/new" element={<ExerciseDetails />} />
+							<Route path="/exercises/:exerciseId/edit" element={<ExerciseDetails />} />
+							<Route path="/exercises/:exerciseId/history" element={<ExercisingHistory />} />
+							<Route path="/workout/:exerciseId" element={<Exercising />} />
+						</Route>
 
 						{/* Головний роут та редірект з кореня */}
 						<Route path="/" element={<Navigate to="/dashboard" replace />} />
 						<Route path="/dashboard" element={<Dashboard />} />
-
-						{/* Роути тренувань */}
-						<Route path="/plans" element={<TrainingPlansView />} />
-						<Route path="/plans/new" element={<TrainingPlanDetails />} />
-						<Route path="/plans/:planId/edit" element={<TrainingPlanDetails />} />
-						<Route path="/plans/:planId/days" element={<TrainingDaysView />} />
-						<Route path="/plans/:planId/days/new" element={<TrainingDaysDetails />} />
-						<Route path="/days/:dayId/edit" element={<TrainingDaysDetails />} />
-						<Route path="/days/:dayId/exercises" element={<ExercisesView />} />
-						<Route path="/days/:dayId/exercises/new" element={<ExerciseDetails />} />
-						<Route path="/exercises/:exerciseId/edit" element={<ExerciseDetails />} />
-						<Route path="/exercises/:exerciseId/history" element={<ExercisingHistory />} />
-						<Route path="/workout/:exerciseId" element={<Exercising />} />
 
 						{/* Інші роути основного додатку */}
 						<Route path="/diet" element={<Diet />} />

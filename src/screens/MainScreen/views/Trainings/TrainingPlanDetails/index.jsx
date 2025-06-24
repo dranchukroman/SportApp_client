@@ -4,11 +4,11 @@ import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBar
 import { addTrainingPlan, getTrainingPlanById, updateTrainingPlan } from "./api";
 import TrainingPlanForm from "./components/TrainingPlanForm";
 import EmptyFunctionalBar from "../../../../../components/states/EmptyFunctionalBar/EmptyFunctionalBar";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useOutletContext } from "react-router-dom";
 
 function TrainingPlanDetails() {
     // To remove it
-    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { editModeStatus, setEditModeStatus } = useOutletContext();
     const navigate = useNavigate();
     const [status, setStatus] = useState(editModeStatus ? 'loading' : 'idle')
     const [formData, setFormData] = useState({

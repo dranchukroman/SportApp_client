@@ -7,11 +7,11 @@ import PageWrapper from '../../../../../components/layout/PageWrapper/PageWrappe
 import ControllButtonsGroup from '../../../../../components/ui/ControllButtonsGroup/ControlButtonsGroup'
 import TrainingDayCard from "./components/TrainingDayCard";
 import { useTraining } from "../../../../../providers/TrainingProvider";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 
 function TrainingDaysView() {
     // To remove it
-    const [editModeStatus, setEditModeStatus] = useState(false);
+    const { editModeStatus, setEditModeStatus } = useOutletContext();
     const [status, setStatus] = useState('loading');
     const [trainingDays, setTrainingDays] = useState([]);
     const { startTraining } = useTraining();
