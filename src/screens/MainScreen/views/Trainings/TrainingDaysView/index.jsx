@@ -41,13 +41,13 @@ function TrainingDaysView() {
     }, [planId]);
 
 
-    const handleBackButton = () => navigate("/plans");
-    const handleAddDayButton = () => navigate(`/plans/${planId}/days/new`);
-    const handleEditing = (trainingDayId) => navigate(`/plans/${planId}/days/${trainingDayId}/edit`);
-    const handleEditExercise = (trainingDayId) => navigate(`/plans/${planId}/days/${trainingDayId}/exercises`);
+    const handleBackButton = () => navigate("/trainings/plans");
+    const handleAddDayButton = () => navigate(`/trainings/plans/${planId}/days/new`);
+    const handleEditing = (trainingDayId) => navigate(`/trainings/plans/${planId}/days/${trainingDayId}/edit`);
+    const handleEditExercise = (trainingDayId) => navigate(`/trainings/plans/${planId}/days/${trainingDayId}/exercises`);
     const handleTrainingStart = (trainingDayId) => {
         startTraining();
-        navigate(`/days/${trainingDayId}/exercises`);
+        navigate(`/trainings/days/${trainingDayId}/exercises`);
     }
 
     const handleDelete = async (dayIdToDelete) => {

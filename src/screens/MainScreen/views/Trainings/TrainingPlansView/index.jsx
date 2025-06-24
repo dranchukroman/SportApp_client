@@ -50,16 +50,16 @@ function TrainingPlansView() {
         }
     }
 
-    const handleEdit = (plan_id) => navigate(`/plans/${plan_id}/edit`);
+    const handleEdit = (plan_id) => navigate(`/trainings/plans/${plan_id}/edit`);
 
     const handlePlanCreation = () => {
         setEditModeStatus(false);
-        navigate('/plans/new');
+        navigate('/trainings/plans/new');
     }
 
     const handleToggleEditMode = () => setEditModeStatus((prev) => !prev);
 
-    const showTrainingDays = (planId) => navigate(`/plans/${planId}/days`);
+    const showTrainingDays = (planId) => navigate(`/trainings/plans/${planId}/days`);
 
     if (status === 'loading') {
         return <FunctionalBarLoader />

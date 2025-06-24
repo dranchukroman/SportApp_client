@@ -68,8 +68,8 @@ function TrainingPlanDetails() {
             if (response.success) {
 
                 if (!editModeStatus) {
-                    navigate(`/plans/${response.data.planId}/days`);
-                } else navigate('/plans');
+                    navigate(`/trainings/plans/${response.data.planId}/days`);
+                } else navigate('/trainings/plans');
             } else {
                 toast.error(response.message || 'Action failed');
             }
@@ -110,7 +110,7 @@ function TrainingPlanDetails() {
         return <EmptyFunctionalBar
             headerText={'No data to display'}
             backButtonText={'Back'}
-            onBackButtonClick={() => navigate('/plans')}
+            onBackButtonClick={() => navigate('/trainings/plans')}
         />
     }
     return <TrainingPlanForm
@@ -122,7 +122,7 @@ function TrainingPlanDetails() {
         isEditing={editModeStatus}
         isSubmitting={status === 'submitting'}
         status={status}
-        onBack={() => navigate('/plans')}
+        onBack={() => navigate('/trainings/plans')}
     />
 }
 

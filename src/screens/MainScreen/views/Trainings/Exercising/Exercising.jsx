@@ -126,7 +126,7 @@ function Exercising() {
         });
         setExerciseHistory([]);
         setRecordInfo({ weight: '', reps: '', note: '' });
-        navigate(`/days/${dayId}/exercises`);
+        navigate(`/trainings/days/${dayId}/exercises`);
     }
 
     return (
@@ -154,7 +154,7 @@ function Exercising() {
                                 Note - {exerciseData.description}
                             </ExerciseParagraf>
                         </ExerciseInfoFrame>
-                        <div onClick={() => navigate(`/exercises/${exerciseId}/history`)}>
+                        <div onClick={() => navigate(`/trainings/exercises/${exerciseId}/history`)}>
                             <HistoryIcon />
                         </div>
                     </FlexItems>

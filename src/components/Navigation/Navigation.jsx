@@ -90,7 +90,7 @@ function Navigation() {
                             location.pathname.startsWith('/exercises') ||
                             location.pathname.startsWith('/workout')
                         }
-                        onClick={() => checkAndRedirect('/plans')}
+                        onClick={() => checkAndRedirect('/trainings/plans')}
                     />
                     <DietIcon   
                         $active={

@@ -145,7 +145,7 @@ function ExerciseDetails() {
                 : await addExerciseInDay(dataToSend)
             if (!response.success) {
                 return toast.error(response.message);
-            } return navigate(`/plans/${planId}/days/${dayId}/exercises`);
+            } return navigate(`/trainings/plans/${planId}/days/${dayId}/exercises`);
         } catch (error) {
             toast.error(error.response?.data?.message);
         }
@@ -228,7 +228,7 @@ function ExerciseDetails() {
                     </TimerWrapper>
 
                     <div style={{ display: "flex", justifyContent: "space-between", marginTop: '10px' }}>
-                        <Button onClick={() => navigate(`/days/${dayId}/exercises`)} width={'172px'}>Back</Button>
+                        <Button onClick={() => navigate(`/trainings/days/${dayId}/exercises`)} width={'172px'}>Back</Button>
                         <Button onClick={handleExercise} width={'172px'}>{editModeStatus ? 'Save' : 'Add'}</Button>
                     </div>
                 </LoadWrapper>}

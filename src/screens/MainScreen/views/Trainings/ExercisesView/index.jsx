@@ -61,7 +61,7 @@ function ExercisesView() {
         updateProgress({});
         finishTraining();
         hideModal();
-        navigate(`/plans/${planId}/days`);
+        navigate(`/trainings/plans/${planId}/days`);
     }
 
     const handleDelete = async (exerciseIdToDelete) => {
@@ -78,12 +78,12 @@ function ExercisesView() {
     }
 
     const handleEdit = (trainingExerciseId) => {
-        navigate(`/exercises/${trainingExerciseId}/edit`);
+        navigate(`/trainings/exercises/${trainingExerciseId}/edit`);
     }
 
     const handleBackButton = () => {
         if (editModeStatus) {
-            navigate(`/plans/${planId}/days`);
+            navigate(`/trainings/plans/${planId}/days`);
         } else {
             showModal({
                 mainText: 'Would you like to finish your training?',
@@ -110,9 +110,9 @@ function ExercisesView() {
 
     const handleSubmitButton = (trainingExerciseId) => {
         if (editModeStatus) {
-            navigate(`/exercises/${trainingExerciseId}/edit`);
+            navigate(`/trainings/exercises/${trainingExerciseId}/edit`);
         } else if (!trainingProgress?.progress[0]?.records?.length > 0) {
-            navigate(`/plans/${planId}/days`);
+            navigate(`/trainings/plans/${planId}/days`);
         } else {
             console.log('Its training')
             showModal({
@@ -142,7 +142,7 @@ function ExercisesView() {
         if (editModeStatus) {
             toast.warning('Save editing before starting training')
         } else {
-            navigate(`/workout/${trainingExerciseId}`);
+            navigate(`/trainings/workout/${trainingExerciseId}`);
         }
     }
 

@@ -64,7 +64,7 @@ function TrainingDaysDetails() {
                 : await updateTrainingDay(dataToSend)
 
             if (response.success) {
-                navigate(`/plans/${planId}/days`);
+                navigate(`/trainings/plans/${planId}/days`);
             } else {
                 toast.error(response.message || 'Action failed');
             }
@@ -75,7 +75,7 @@ function TrainingDaysDetails() {
         }
     }
 
-    const handleBackClick = () => navigate(`/plans/${planId}/days`);
+    const handleBackClick = () => navigate(`/trainings/plans/${planId}/days`);
 
     const handleInputChange = (field, value) => {
         setTrainingDayData((prev) => ({

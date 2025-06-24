@@ -69,17 +69,17 @@ function App() {
 							{/* Редірект, щоб /trainings вів на список планів */}
 							<Route index element={<Navigate to="plans" replace />} />
 							{/* Роути тренувань */}
-							<Route path="/plans" element={<TrainingPlansView />} />
-							<Route path="/plans/new" element={<TrainingPlanDetails />} />
-							<Route path="/plans/:planId/edit" element={<TrainingPlanDetails />} />
-							<Route path="/plans/:planId/days" element={<TrainingDaysView />} />
-							<Route path="/plans/:planId/days/new" element={<TrainingDaysDetails />} />
-							<Route path="/days/:dayId/edit" element={<TrainingDaysDetails />} />
-							<Route path="/days/:dayId/exercises" element={<ExercisesView />} />
-							<Route path="/days/:dayId/exercises/new" element={<ExerciseDetails />} />
-							<Route path="/exercises/:exerciseId/edit" element={<ExerciseDetails />} />
-							<Route path="/exercises/:exerciseId/history" element={<ExercisingHistory />} />
-							<Route path="/workout/:exerciseId" element={<Exercising />} />
+							<Route path="plans" element={<TrainingPlansView />} />
+							<Route path="plans/new" element={<TrainingPlanDetails />} />
+							<Route path="plans/:planId/edit" element={<TrainingPlanDetails />} />
+							<Route path="plans/:planId/days" element={<TrainingDaysView />} />
+							<Route path="plans/:planId/days/new" element={<TrainingDaysDetails />} />
+							<Route path="days/:dayId/edit" element={<TrainingDaysDetails />} />
+							<Route path="days/:dayId/exercises" element={<ExercisesView />} />
+							<Route path="days/:dayId/exercises/new" element={<ExerciseDetails />} />
+							<Route path="exercises/:exerciseId/edit" element={<ExerciseDetails />} />
+							<Route path="exercises/:exerciseId/history" element={<ExercisingHistory />} />
+							<Route path="workout/:exerciseId" element={<Exercising />} />
 						</Route>
 
 						{/* Головний роут та редірект з кореня */}

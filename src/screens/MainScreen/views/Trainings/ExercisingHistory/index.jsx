@@ -48,12 +48,12 @@ function ExercisingHistory() {
         return <EmptyFunctionalBar
             headerText={'No records to display'}
             backButtonText={'Back'}
-            onBackButtonClick={() => navigate(`/workout/${exerciseId}`)}
+            onBackButtonClick={() => navigate(`/trainings/workout/${exerciseId}`)}
         />
     }
     return (
         <PageWrapper>
-            <Button onClick={() => navigate(`/workout/${exerciseId}`)}>Back</Button>
+            <Button onClick={() => navigate(`/trainings/workout/${exerciseId}`)}>Back</Button>
             {exerciseHistory.map(training => (
                 <HistoryTile key={training.session_id} trainingData={training} />
             ))}
