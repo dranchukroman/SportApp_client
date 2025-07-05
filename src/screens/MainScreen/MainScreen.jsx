@@ -6,38 +6,40 @@ import Navigation from '../../components/Navigation/Navigation';
 import UserIcon from '../../components/UserIcon/UserIcon';
 import { SettingsContainer } from './MainScreen.styled.js';
 import Settings from './views/Settings/Settings';
-import getPageTitles from './utils/pageTitles.js';
 import useFunctionalBarHeight from './hooks/useFunctionalBarHeight.js';
 import { useAuth } from '../../providers/AuthProvider.jsx';
-import { Outlet, useLocation, useNavigate } from 'react-router-dom';
+import { Outlet } from 'react-router-dom';
 import { usePageTitle } from './hooks/usePageTitle.js';
 
 function MainScreen() {
-    const location = useLocation();
-    const navigate = useNavigate();
     const { user, updateUser } = useAuth();
+
+    //Form data from settings, it is here, because profile is saving after closing settings
+    const [formData, setFormData] = useState(user);
+    const [isProfileChanged, setIsProfileChanged] = useState(false);
+
     const pageTitle = usePageTitle();
 
-    //Settings
-    const [formData, setFormData] = useState(user);
-    const [isDataChanged, setIsDataChanged] = useState(false);
-
     // Custom hook to change height of functional bar
-    const { userInformationHeight, functionalBarHeight, scrollablePartHeight, userDataHeight, visiblePartOfScreen } = useFunctionalBarHeight();
+    const { 
+        userInformationHeight, 
+        functionalBarHeight, 
+        scrollablePartHeight, 
+        userDataHeight, 
+        visiblePartOfScreen 
+    } = useFunctionalBarHeight();
     const [settingsVisibility, setSettingsVisibility] = useState(false);
 
+    // Save new profile data only, if data have been changed and settings are closed
     const showSettings = async () => {
-        // If user changed profile data in settings than update user data\
-        console.log(location.pathname);
-        if (settingsVisibility && isDataChanged) {
+        if (settingsVisibility && isProfileChanged) {
             await updateUser(formData);
-            setIsDataChanged(false);
-            navigate('/trainings/plans');
-        } else {
-            navigate('/dashboard');
+            setIsProfileChanged(false);
         }
         setSettingsVisibility(prev => !prev);
     };
+
+    const functionalBarPosition = settingsVisibility ? (visiblePartOfScreen - 207) : (userDataHeight + 15);
 
     return (
         <MainScreenWrapper>
@@ -46,28 +48,12 @@ function MainScreen() {
                 <UserIcon onClick={showSettings} />
             </InfoBarWrapper>
             <SettingsContainer $isOpen={settingsVisibility}>
-                <Settings setFormData={setFormData} formData={formData} visiblePartOfScreen={visiblePartOfScreen} setIsDataChanged={setIsDataChanged} />
+                <Settings setFormData={setFormData} formData={formData} visiblePartOfScreen={visiblePartOfScreen} setIsProfileChanged={setIsProfileChanged} />
             </SettingsContainer>
-            <FunctionalBar
-                style={{
-                    height: `${functionalBarHeight}px`,
-                    position: 'absolute',
-                    top: settingsVisibility ? (visiblePartOfScreen - 207) : (userDataHeight + 15),
-                    transition: 'top 0.3s ease-in-out',
-                    zIndex: 1,
-                }}
-            >
-                <div
-                    style={{
-                        height: `${scrollablePartHeight}px`,
-                        overflowY: 'scroll',
-                        overflowX: 'hidden',
-                    }}
-                >
-                    <Outlet />
-                </div>
+            <FunctionalBar height={functionalBarHeight} topPosition={functionalBarPosition} scrollHeight={scrollablePartHeight}>
+                <Outlet />
             </FunctionalBar>
-            <Navigation />
+            <Navigation isActive={!settingsVisibility}/>
         </MainScreenWrapper>
     );
 }

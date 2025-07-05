@@ -4,7 +4,6 @@ const useFunctionalBarHeight = () => {
     const userInformationHeight = useRef(null);
     const [userDataHeight, setUserDataHeight] = useState(0);
 
-    
     useEffect(() => {
         if (userInformationHeight.current) {
             setUserDataHeight(userInformationHeight.current.offsetHeight);
@@ -13,7 +12,7 @@ const useFunctionalBarHeight = () => {
 
     const visiblePartOfScreen = window.innerHeight;
     const functionalBarHeight = visiblePartOfScreen - userDataHeight - 85;
-    const scrollablePartHeight = functionalBarHeight - 160;
+    const scrollablePartHeight = functionalBarHeight - 130;
 
     return { userInformationHeight, functionalBarHeight, scrollablePartHeight, userDataHeight, visiblePartOfScreen };
 };

@@ -8,7 +8,7 @@ import { saveTrainingRecords } from "../../api/trainings/training.api";
 import { useTraining } from "../../providers/TrainingProvider";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 
-function Navigation() {
+function Navigation({ isActive }) {
     const { showModal, hideModal } = useModal();
     const { isExercising, trainingProgress, updateProgress, finishTraining } = useTraining();
     const { dayId, planId } = useParams();
@@ -36,6 +36,8 @@ function Navigation() {
     };
 
     const checkAndRedirect = (targetView) => {
+        if(!isActive) return;
+
         // Якщо тренування не активне, просто переходимо
         if (!isExercising) {
             navigate(targetView);

@@ -7,7 +7,7 @@ import DivideLine from "../../../../components/Dividers/DivideLine";
 import { useAuth } from "../../../../providers/AuthProvider";
 
 
-function Settings({ formData, setFormData, visiblePartOfScreen, setIsDataChanged }) {
+function Settings({ formData, setFormData, visiblePartOfScreen, setIsProfileChanged }) {
     const { user, logout, deleteAccount } = useAuth();
 
     // Update form if user changes
@@ -19,7 +19,7 @@ function Settings({ formData, setFormData, visiblePartOfScreen, setIsDataChanged
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
-        setIsDataChanged(true);
+        setIsProfileChanged(true);
     };
 
     return (
