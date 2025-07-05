@@ -53,7 +53,7 @@ function MainScreen() {
             <FunctionalBar height={functionalBarHeight} topPosition={functionalBarPosition} scrollHeight={scrollablePartHeight}>
                 <Outlet />
             </FunctionalBar>
-            <Navigation isActive={!settingsVisibility}/>
+            <Navigation active={!settingsVisibility}/>
         </MainScreenWrapper>
     );
 }

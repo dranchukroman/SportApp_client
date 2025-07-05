@@ -39,6 +39,8 @@ export const NavigationWrapper = styled.div`
 
     // Form
     width: 100%;
+
+    pointer-events: ${({ $disabled }) => (!$disabled ? 'none' : 'auto')};
 `;
 
 export const DashboardIcon = styled(Dashboard)`
