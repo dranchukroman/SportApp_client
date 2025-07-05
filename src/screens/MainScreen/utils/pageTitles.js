@@ -1,0 +1,17 @@
+export const pageTitles = {
+    Dashboard: `Hi`,
+    TrainingPlans: 'Training plans',
+    CreatePlan: 'New training plan',
+    EditPlan: 'Edit training plan',
+    TrainingDays: 'Training days',
+    CreateDay: 'New training day',
+    EditDay: 'Edit training day',
+    Exercises: 'Exercises',
+    CreateExercise: 'New exercise',
+    EditExercise: 'Edit exercise',
+    Workout: 'Workout',
+    History: 'History',
+    Calculator: 'Calculator',
+    Diet: 'Diet',
+    NotFound: 'Not found',
+}

@@ -14,11 +14,12 @@ import { useParams, useNavigate, useOutletContext } from "react-router-dom";
 function ExercisesView() {
     // To remove it
     const { editModeStatus, setEditModeStatus } = useOutletContext();
+    console.log(editModeStatus)
     const [status, setStatus] = useState('loading');
     const [exercises, setExercises] = useState([]);
     const { showModal, hideModal } = useModal();
     const { trainingProgress, updateProgress, finishTraining } = useTraining();
-    const { dayId, planId } = useParams();
+    const { dayId, planId, exerciseId } = useParams();
     const navigate = useNavigate();
     useEffect(() => {
         const fetchData = async () => {
@@ -78,7 +79,7 @@ function ExercisesView() {
     }
 
     const handleEdit = (trainingExerciseId) => {
-        navigate(`/trainings/exercises/${trainingExerciseId}/edit`);
+        navigate(`/trainings/plans/${planId}/days/${dayId}/exercises/${trainingExerciseId}/edit`);
     }
 
     const handleBackButton = () => {
@@ -109,11 +110,15 @@ function ExercisesView() {
     }
 
     const handleSubmitButton = (trainingExerciseId) => {
-        if (editModeStatus) {
-            navigate(`/trainings/exercises/${trainingExerciseId}/edit`);
-        } else if (!trainingProgress?.progress[0]?.records?.length > 0) {
-            navigate(`/trainings/plans/${planId}/days`);
-        } else {
+        // console.log(editModeStatus)
+        // if (editModeStatus) {
+        //     navigate(`/trainings/plans${planId}/days/${dayId}/exercises/${trainingExerciseId}/edit`);
+        // } 
+        // else if (!trainingProgress?.progress[0]?.records?.length > 0) {
+        //     navigate(`/trainings/plans/${planId}/days`);
+        //} 
+        // if {
+        console.log(editModeStatus)
             console.log('Its training')
             showModal({
                 mainText: 'Would you like to finish your training?',
@@ -135,15 +140,19 @@ function ExercisesView() {
                     },
                 ]
             });
-        }
+        // }
     }
 
     const handleStartTraining = (trainingExerciseId) => {
         if (editModeStatus) {
             toast.warning('Save editing before starting training')
         } else {
-            navigate(`/trainings/workout/${trainingExerciseId}`);
+            navigate(`/trainings/plans/${planId}/days/${dayId}/exercises/${trainingExerciseId}/workout`);
         }
+    }
+
+    const handleAddExercise = () => {
+        navigate(`/trainings/plans/${planId}/days/${dayId}/exercises/new`)
     }
 
     if (status === 'loading') {
@@ -156,7 +165,7 @@ function ExercisesView() {
             backButtonText={'Back'}
             onBackButtonClick={handleBackButton}
             buttonText={'Add exercise'}
-            onButtonClick={handleSubmitButton(0)}
+            onButtonClick={editModeStatus ? handleAddExercise : () => {handleSubmitButton(exerciseId)}}
         />
     }
 
@@ -175,7 +184,7 @@ function ExercisesView() {
                 firstButtonText={'Back'}
                 onFirstButtonClick={handleBackButton}
                 secondButtonText={editModeStatus ? 'Add exercise' : 'Finish'}
-                onSecondButtonClick={() => handleSubmitButton(0)} // To thing how to get exercise id
+                onSecondButtonClick={editModeStatus ? handleAddExercise : () => {handleSubmitButton(exerciseId)}} // To thing how to get exercise id
             />
         </PageWrapper>
     );

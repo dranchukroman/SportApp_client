@@ -8,7 +8,7 @@ import { useNavigate, useParams, useOutletContext } from "react-router-dom";
 
 function TrainingPlanDetails() {
     // To remove it
-    const { editModeStatus, setEditModeStatus } = useOutletContext();
+    const { editModeStatus } = useOutletContext();
     const navigate = useNavigate();
     const [status, setStatus] = useState(editModeStatus ? 'loading' : 'idle')
     const [formData, setFormData] = useState({
@@ -52,6 +52,7 @@ function TrainingPlanDetails() {
     }, [editModeStatus, planId]);
 
     const handleSubmitClick = async () => {
+        console.log(planId)
         if (formData.name === '' || formData.description === '' || formData.days_per_week.length === 0)
             return toast.error('All fields should be filled');
 

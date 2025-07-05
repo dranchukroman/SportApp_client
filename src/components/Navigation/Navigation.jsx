@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import { toast } from "sonner";
 import { useModal } from "../../providers/ModalProvider";
 
@@ -84,24 +84,15 @@ function Navigation() {
                         onClick={() => checkAndRedirect('/dashboard')}
                     />
                     <TrainingIcon
-                        $active={
-                            location.pathname.startsWith('/plans') ||
-                            location.pathname.startsWith('/days') ||
-                            location.pathname.startsWith('/exercises') ||
-                            location.pathname.startsWith('/workout')
-                        }
+                        $active={location.pathname.startsWith('/trainings')}
                         onClick={() => checkAndRedirect('/trainings/plans')}
                     />
                     <DietIcon   
-                        $active={
-                            location.pathname === '/diet'
-                        }
+                        $active={location.pathname === '/diet'}
                         onClick={() => checkAndRedirect('/diet')}
                     />
                     <CalculatorIcon
-                        $active={
-                            location.pathname === '/calculator'
-                        }
+                        $active={location.pathname === '/calculator'}
                         onClick={() => checkAndRedirect('/calculator')}
                     />
                 </IconsWrapper>

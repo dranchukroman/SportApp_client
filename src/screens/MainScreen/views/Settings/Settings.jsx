@@ -25,11 +25,11 @@ function Settings({ formData, setFormData, visiblePartOfScreen, setIsDataChanged
     return (
         <SettingScreen>
             <div
-                className='no-scrollbar'
                 style={{
                     height: visiblePartOfScreen - 305 + "px",
-                    overflowY: 'scroll',
-                    overflowX: 'hidden',
+                    overflow: 'scroll',
+                    // overflowX: 'hidden',
+                    paddingRight: '10px',
                 }}
             >
                 {/* Persolnal information */}

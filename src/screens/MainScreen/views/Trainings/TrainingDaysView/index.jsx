@@ -47,7 +47,7 @@ function TrainingDaysView() {
     const handleEditExercise = (trainingDayId) => navigate(`/trainings/plans/${planId}/days/${trainingDayId}/exercises`);
     const handleTrainingStart = (trainingDayId) => {
         startTraining();
-        navigate(`/trainings/days/${trainingDayId}/exercises`);
+        navigate(`/trainings/plans/${planId}/days/${trainingDayId}/exercises`);
     }
 
     const handleDelete = async (dayIdToDelete) => {

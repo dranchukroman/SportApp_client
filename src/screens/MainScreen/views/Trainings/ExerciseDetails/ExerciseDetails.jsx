@@ -11,7 +11,7 @@ import FunctionalBarLoader from '../../../../../components/Loaders/FunctionalBar
 import { LoadWrapper } from "../../../../../components/Loaders/SingleLoader/SingleLoader.styled";
 import { getExercisesFromLibrary, getMuscleGroups, addExerciseInDay, updateExerciseInDay } from "./api";
 import {getExerciseInDayById} from '../../../../../api/trainings/exercise.api'
-import { useParams, useNavigate, useOutletContext } from "react-router-dom";
+import { useParams, useNavigate, useLocation, useOutletContext } from "react-router-dom";
 
 function ExerciseDetails() {
     // To remove it
@@ -34,6 +34,8 @@ function ExerciseDetails() {
 
     const [loading, setLoading] = useState(false);
     const [afterLoad, setAfterLoad] = useState(0);
+
+    const location = useLocation()
 
     useEffect(() => {
     const fetchExercises = async () => {
@@ -111,7 +113,7 @@ function ExerciseDetails() {
                 setTimeout(() => setAfterLoad(1), 100);
             }
         };
-        if (editModeStatus && exerciseId !== 0) fetchExerciseData();
+        if (editModeStatus && exerciseId !== 0 && !location.pathname.includes('new')) fetchExerciseData();
         else {
             setLoading(false);
             setAfterLoad(1);
@@ -126,7 +128,7 @@ function ExerciseDetails() {
     const handleExercise = async () => {
         if (exerciseData.name === '' || exerciseData.muscleGroup === '') return toast.error('Select muscle group and exercise');
         try {
-            const editing = editModeStatus && exerciseId !== 0;
+            const editing = editModeStatus && exerciseId !== 0 && !location.pathname.includes('new');
             const exerciseToSave = {
                 day_id: dayId,
                 exercise_id: exerciseData.exerciseId,
@@ -139,7 +141,7 @@ function ExerciseDetails() {
             };
 
             const dataToSend = editing ? { ...exerciseToSave, day_exercise_id: exerciseId } : exerciseToSave
-
+            console.log(editing)
             const response = editing
                 ? await updateExerciseInDay(dataToSend)
                 : await addExerciseInDay(dataToSend)
@@ -228,7 +230,7 @@ function ExerciseDetails() {
                     </TimerWrapper>
 
                     <div style={{ display: "flex", justifyContent: "space-between", marginTop: '10px' }}>
-                        <Button onClick={() => navigate(`/trainings/days/${dayId}/exercises`)} width={'172px'}>Back</Button>
+                        <Button onClick={() => navigate(`/trainings/plans/${planId}/days/${dayId}/exercises`)} width={'172px'}>Back</Button>
                         <Button onClick={handleExercise} width={'172px'}>{editModeStatus ? 'Save' : 'Add'}</Button>
                     </div>
                 </LoadWrapper>}

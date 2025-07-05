@@ -37,11 +37,11 @@ function TrainingPlansView() {
         getTrainingPlans();
     }, [getTrainingPlans]);
 
-    const handleDelete = async (deletePlanId) => {
+    const handleDelete = async (planId) => {
         try {
-            const response = await deleteTrainingPlan(deletePlanId);
+            const response = await deleteTrainingPlan(planId);
             if (response.success) {
-                setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== deletePlanId));
+                setTrainingPlans(prevDays => prevDays.filter(plan => plan.plan_id !== planId));
             } else {
                 toast.error(response?.message || 'Deleting training plan failed');
             }

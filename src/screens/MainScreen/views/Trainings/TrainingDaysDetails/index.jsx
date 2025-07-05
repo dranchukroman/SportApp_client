@@ -9,19 +9,20 @@ import EmptyFunctionalBar from '../../../../../components/states/EmptyFunctional
 import { useNavigate, useParams, useLocation, useOutletContext } from "react-router-dom";
 
 function TrainingDaysDetails() {
-    // To remove it
+    const location = useLocation();
+    const navigate = useNavigate();
+
     const { editModeStatus, setEditModeStatus } = useOutletContext();
-    const [status, setStatus] = useState(editModeStatus ? 'loading' : 'idle');
+    const [status, setStatus] = useState(location.pathname.includes('new') ? 'idle' : 'loading');
     const [trainingDayData, setTrainingDayData] = useState({
         name: '',
         description: '',
     })
-    const navigate = useNavigate();
     const { planId, dayId } = useParams();
-    const location = useLocation();
     useEffect(() => {
         const fetchTrainingDaysData = async () => {
-            if (!editModeStatus) return;
+            console.log(location.pathname.includes('new'));
+            if (!editModeStatus || location.pathname.includes('new')) return;
 
             setStatus('loading');
             try {
@@ -64,6 +65,7 @@ function TrainingDaysDetails() {
                 : await updateTrainingDay(dataToSend)
 
             if (response.success) {
+                console.log(planId)
                 navigate(`/trainings/plans/${planId}/days`);
             } else {
                 toast.error(response.message || 'Action failed');

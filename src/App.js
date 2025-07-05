@@ -29,26 +29,26 @@ import TrainingsLayout from './screens/MainScreen/views/Trainings/TrainingLayout
 function App() {
 	//Function to make user use PWA on mobile
 	const navigate = useNavigate();
-	useEffect(() => {
-		const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
-		const isStandaloneIOS = window.navigator.standalone === true;
-		const mobileOS = getMobileOS();
+	// useEffect(() => {
+	// 	const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+	// 	const isStandaloneIOS = window.navigator.standalone === true;
+	// 	const mobileOS = getMobileOS();
 
-		const isMobile = mobileOS === 'Android' || mobileOS === 'iOS';
+	// 	const isMobile = mobileOS === 'Android' || mobileOS === 'iOS';
 
-		if (isMobile && !(isStandalone || isStandaloneIOS)) {
-			const browser = getBrowserName();
+	// 	if (isMobile && !(isStandalone || isStandaloneIOS)) {
+	// 		const browser = getBrowserName();
 
-			// Передамо info в query, щоб показати браузер в інструкції
-			if (mobileOS) {
-				navigate(`/download?browser=${browser}&mobileOS=${mobileOS}`, { replace: true });
-			} else {
-				// Для невідомих ОС, можливо, загальна сторінка
-				navigate(`/download`, { replace: true });
-			}
-		}
+	// 		// Передамо info в query, щоб показати браузер в інструкції
+	// 		if (mobileOS) {
+	// 			navigate(`/download?browser=${browser}&mobileOS=${mobileOS}`, { replace: true });
+	// 		} else {
+	// 			// Для невідомих ОС, можливо, загальна сторінка
+	// 			navigate(`/download`, { replace: true });
+	// 		}
+	// 	}
 
-	}, [navigate])
+	// }, [navigate])
 
 	return (
 		<ThemeProvider theme={theme}>
@@ -74,12 +74,12 @@ function App() {
 							<Route path="plans/:planId/edit" element={<TrainingPlanDetails />} />
 							<Route path="plans/:planId/days" element={<TrainingDaysView />} />
 							<Route path="plans/:planId/days/new" element={<TrainingDaysDetails />} />
-							<Route path="days/:dayId/edit" element={<TrainingDaysDetails />} />
-							<Route path="days/:dayId/exercises" element={<ExercisesView />} />
-							<Route path="days/:dayId/exercises/new" element={<ExerciseDetails />} />
-							<Route path="exercises/:exerciseId/edit" element={<ExerciseDetails />} />
+							<Route path="plans/:planId/days/:dayId/edit" element={<TrainingDaysDetails />} />
+							<Route path="plans/:planId/days/:dayId/exercises/" element={<ExercisesView />} />
+							<Route path="plans/:planId/days/:dayId/exercises/new" element={<ExerciseDetails />} />
+							<Route path="plans/:planId/days/:dayId/exercises/:exerciseId/edit" element={<ExerciseDetails />} />
 							<Route path="exercises/:exerciseId/history" element={<ExercisingHistory />} />
-							<Route path="workout/:exerciseId" element={<Exercising />} />
+							<Route path="plans/:planId/days/:dayId/exercises/:exerciseId/workout" element={<Exercising />} />
 						</Route>
 
 						{/* Головний роут та редірект з кореня */}

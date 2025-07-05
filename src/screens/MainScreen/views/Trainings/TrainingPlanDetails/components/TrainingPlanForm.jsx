@@ -17,7 +17,7 @@ function TrainingPlanForm({ formData, onInput, onCheckBox, onSubmit, onBack, onW
                 onChange={(e) => onInput(e.target.name, e.target.value)}
             />
             <ViewInput
-                name='name'
+                name='description'
                 placeholder={'Description'}
                 value={description}
                 onChange={(e) => onInput(e.target.name, e.target.value)}

@@ -1,8 +1,8 @@
 import React from "react";
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import Input from "../../../components/Inputs/Input";
 import theme from "../../../styles/theme";
-import { ReactComponent as GoogleIcon} from "../../../assets/icons/google.svg"
+import { ReactComponent as GoogleIcon } from "../../../assets/icons/google.svg"
 import Button from "../../../components/Buttons/Button";
 import { InButtonWrapper } from "../LoginPage.styled";
 import { GoogleButtonWrapper } from "../LoginPage.styled";
@@ -16,7 +16,7 @@ function LoginForm({ changeScreen, authData, setAuthData }) {
 
     const sendCodeToRegister = async () => {
         try {
-            if(authData.email === '') return toast.error('Email field should not be empty');
+            if (authData.email === '') return toast.error('Email field should not be empty');
             const userExisting = await checkIfEmailExist(authData.email);
             if (userExisting.data.isExist) {
                 toast.error(userExisting.message);
@@ -38,9 +38,9 @@ function LoginForm({ changeScreen, authData, setAuthData }) {
 
     const handleLogIn = async () => {
         try {
-            if(!authData.email || !authData.password) return toast.error('All fields should be filled');
+            if (!authData.email || !authData.password) return toast.error('All fields should be filled');
             const loginData = await logIn(authData.email, authData.password);
-            if(!loginData.success) return toast.error(loginData.message);
+            if (!loginData.success) return toast.error(loginData.message);
             localStorage.setItem('authToken', loginData.data.token);
             navigate('/dashboard')
         } catch (error) {
@@ -71,9 +71,9 @@ function LoginForm({ changeScreen, authData, setAuthData }) {
                 </InButtonWrapper>
             </Button>
 
-            <a href={!isRegistrationPage ? '/registration' : '/login'} style={{ borderBottom: theme.colors.whiteText }}>
+            <Link to={!isRegistrationPage ? '/registration' : '/login'} style={{ borderBottom: theme.colors.whiteText, textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}>
                 <p>{!isRegistrationPage ? "Don't have an account yet? Click here" : "Do you already have an account? Click here"}</p>
-            </a>
+            </Link>
             {!isRegistrationPage ?
                 <p onClick={() => changeScreen('ForgotPassword')} style={{ color: '#999', cursor: 'pointer' }}>
                     Forgot password? Click here

@@ -33,7 +33,7 @@ function Exercising() {
     // To remove it
     const { editModeStatus, setEditModeStatus } = useOutletContext();
     const { exerciseId } = useParams();
-    const { dayId } = useParams();
+    const { dayId, planId } = useParams();
     const navigate = useNavigate();
     // Current exercise
     const [exerciseData, setExerciseData] = useState({
@@ -126,7 +126,7 @@ function Exercising() {
         });
         setExerciseHistory([]);
         setRecordInfo({ weight: '', reps: '', note: '' });
-        navigate(`/trainings/days/${dayId}/exercises`);
+        navigate(`/trainings/plans/${planId}/days/${dayId}/exercises`);
     }
 
     return (

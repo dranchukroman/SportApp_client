@@ -17,12 +17,12 @@ export function AuthProvider({ children }) {
 
     // 3. Переносимо логіку перевірки токена та завантаження юзера з MainScreen сюди
     const validateUser = useCallback(async () => {
-        const token = localStorage.getItem('authToken');
-        if (!token) {
-            setStatus('unauthenticated');
-            navigate('/login');
-            return;
-        }
+        // const token = localStorage.getItem('authToken');
+        // if (!token) {
+        //     setStatus('unauthenticated');
+        //     navigate('/login');
+        //     return;
+        // }
 
         try {
             // Перевіряємо токен
@@ -43,7 +43,7 @@ export function AuthProvider({ children }) {
         } catch (error) {
             localStorage.removeItem('authToken');
             toast.error('Session expired, please log in again', { id: 'expired-token' });
-            navigate('/login');
+            // navigate('/login');
             setStatus('unauthenticated');
         }
     }, [navigate]);
