@@ -6,7 +6,9 @@ const theme = {
       errorBackGround: '#9F1B00',
       lightBackground: 'none',
       gradientBase: '#C84B31',
-      gradient: 'linear-gradient(#C84B31, #622518)'
+      gradient: 'linear-gradient(#C84B31, #622518)',
+      dangerBase: '#9E0C0E',
+      dangerGradient: 'linear-gradient(180deg, rgba(158, 12, 14, 1) 30%, rgba(63, 0, 1, 1) 100%);'
     },
     fontSizes: {
       largeHeader: '27px',

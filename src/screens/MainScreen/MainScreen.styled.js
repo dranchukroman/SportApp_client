@@ -23,11 +23,7 @@ export const ScreenTitle = styled(StyledHeader)`
 `
 
 export const SettingsContainer = styled.div`
-//   overflow: hidden; // 👈 Дуже важливо, щоб приховати контент, коли max-height=0
-
-  // ✅ Плавний перехід для висоти
+  overflow: hidden;
   transition: max-height 0.3s ease-in-out;
-
-  // ✅ Встановлюємо max-height в залежності від пропса $isOpen
   max-height: ${({ $isOpen }) => ($isOpen ? '631px' : '0')};
 `;

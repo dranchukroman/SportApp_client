@@ -21,12 +21,12 @@ function MainScreen() {
     const pageTitle = usePageTitle();
 
     // Custom hook to change height of functional bar
-    const { 
-        userInformationHeight, 
-        functionalBarHeight, 
-        scrollablePartHeight, 
-        userDataHeight, 
-        visiblePartOfScreen 
+    const {
+        userInformationHeight,
+        functionalBarHeight,
+        scrollablePartHeight,
+        userDataHeight,
+        visiblePartOfScreen
     } = useFunctionalBarHeight();
     const [settingsVisibility, setSettingsVisibility] = useState(false);
 
@@ -53,7 +53,7 @@ function MainScreen() {
             <FunctionalBar height={functionalBarHeight} topPosition={functionalBarPosition} scrollHeight={scrollablePartHeight}>
                 <Outlet />
             </FunctionalBar>
-            <Navigation active={!settingsVisibility}/>
+            <Navigation active={!settingsVisibility} />
         </MainScreenWrapper>
     );
 }
